@@ -1,0 +1,14 @@
+namespace Blocktrust.PeerDID.Exceptions
+
+{
+    public class MalformedPeerDIDDocException : PeerDIDException
+    {
+        /// <summary>
+        /// Raised if the resolved peer DID Doc to be resolved in not a valid peer DID.
+        /// </summary>
+        /// <param name="innerException">the cause of this.</param>
+        public MalformedPeerDIDDocException(Exception innerException = null) : base("Invalid peer DID Doc", innerException)
+        {
+        }
+    }
+}
