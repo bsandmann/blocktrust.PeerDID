@@ -24,7 +24,7 @@ public class PeerDIDHelper
     /// </summary>
     /// <param name="service">service to encode</param>
     /// <returns>encoded service</returns>
-    internal static string EncodeService(string service)
+    public static string EncodeService(string service)
     {
 // TODO implement validateJson()
         var serviceToEncode = Regex.Replace(service, "[\n\t\\s]*", "");
@@ -46,7 +46,7 @@ public class PeerDIDHelper
     /// <param name="peerDID">PeerDID which will be used as an ID</param>
     /// <returns>decoded service</returns>
     /// <exception cref="ArgumentException">if service is not correctly decoded</exception>
-    internal static List<Service> DecodeService(string encodedService, PeerDID peerDID)
+    public static List<Service> DecodeService(string encodedService, PeerDID peerDID)
     {
         if (encodedService == "")
         {
@@ -152,7 +152,7 @@ public class PeerDIDHelper
     /// <param name="format">the format of public keys in the DID DOC</param>
     /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
     /// <returns>decoded encnumbasis as verification material for DID DOC</returns>
-    internal static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDID format)
+    public static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDID format)
     {
         var (encnumbasis, decodedEncnumbasis) = Multibase.FromBase58Multibase(multibase);
         var (codec, decodedEncnumbasisWithoutPrefix) = Multicodec.FromMulticodec(decodedEncnumbasis);

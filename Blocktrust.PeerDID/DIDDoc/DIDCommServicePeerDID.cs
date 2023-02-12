@@ -1,6 +1,6 @@
 namespace Blocktrust.PeerDID.DIDDoc;
 
-class DIDCommServicePeerDID : Service
+public class DIDCommServicePeerDID : Service
 {
     public string id;
     public string type;

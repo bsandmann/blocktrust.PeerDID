@@ -4,7 +4,7 @@ using Blocktrust.PeerDID.Exceptions;
 
 namespace Blocktrust.PeerDID.DIDDoc;
 
-class DIDDocPeerDID
+public class DIDDocPeerDID
 {
     public string did { get; set; }
     public List<VerificationMethodPeerDID> authentication { get; set; }

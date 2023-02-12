@@ -4,7 +4,7 @@ using System.Text.Json;
 
 public class Utils
 {
-    internal static string ToJson(object value)
+    public static string ToJson(object value)
     {
         return JsonSerializer.Serialize(value);
     }
