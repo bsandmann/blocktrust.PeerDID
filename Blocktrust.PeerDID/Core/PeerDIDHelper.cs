@@ -3,6 +3,7 @@ namespace Blocktrust.PeerDID.Core;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Common.Converter;
 using DIDDoc;
 using Types;
 
@@ -10,11 +11,11 @@ public class PeerDIDHelper
 {
     private static readonly Dictionary<string, string> ServicePrefix = new Dictionary<string, string>
     {
-        { "SERVICE_TYPE", "t" },
-        { "SERVICE_ENDPOINT", "s" },
-        { "SERVICE_DIDCOMM_MESSAGING", "dm" },
-        { "SERVICE_ROUTING_KEYS", "r" },
-        { "SERVICE_ACCEPT", "a" }
+        { ServiceConstants.SERVICE_TYPE, "t" },
+        { ServiceConstants.SERVICE_ENDPOINT, "s" },
+        { ServiceConstants.SERVICE_DIDCOMM_MESSAGING, "dm" },
+        { ServiceConstants.SERVICE_ROUTING_KEYS, "r" },
+        { ServiceConstants.SERVICE_ACCEPT, "a" }
     };
 
     /// <summary>
@@ -26,17 +27,18 @@ public class PeerDIDHelper
     /// <returns>encoded service</returns>
     public static string EncodeService(string service)
     {
-// TODO implement validateJson()
+        ValidateJson(service);
         var serviceToEncode = Regex.Replace(service, "[\n\t\\s]*", "");
         foreach (var entry in ServicePrefix)
         {
             serviceToEncode = serviceToEncode.Replace(entry.Key, entry.Value);
         }
 
-        var encodedService = Convert.ToBase64String(Encoding.UTF8.GetBytes(serviceToEncode));
+        var encodedService = Base64Url.Encode(Encoding.UTF8.GetBytes(serviceToEncode));
         encodedService = encodedService.Replace("/", "_").Replace("+", "-");
         return "." + Numalgo2Prefix.SERVICE + encodedService;
     }
+
 
     /// <summary>
     /// Decodes [encodedService] according to PeerDID spec
@@ -131,7 +133,7 @@ public class PeerDIDHelper
                 //TODO seconds??
                 // decodedKey = Multicodec.FromMulticodec(Multibase.FromBase58Multibase(key.Value.ToString()).Second).Second;
                 var x = Multibase.FromBase58Multibase(key.Value.ToString());
-                
+
                 decodedKey = Multicodec.FromMulticodec(x.Item2).Value;
                 break;
             case VerificationMaterialFormatPeerDID.JWK:
@@ -246,5 +248,17 @@ public class PeerDIDHelper
             Controller = did,
             VerMaterial = decodedEncumbasis.VerMaterial
         };
+    }
+    
+    private static void ValidateJson(string service)
+    {
+        try
+        {
+            JsonDocument.Parse(service);
+        }
+        catch (JsonException e)
+        {
+            throw new ArgumentException("Invalid JSON");
+        }
     }
 }

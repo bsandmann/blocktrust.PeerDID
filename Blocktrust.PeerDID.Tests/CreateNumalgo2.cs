@@ -119,9 +119,9 @@ public class CreateNumalgo2
                 VALID_ED25519_KEY_2_BASE58
             },
             encKeys = new List<VerificationMaterialAgreement>
-                {
-                    VALID_X25519_KEY_BASE58
-                }
+            {
+                VALID_X25519_KEY_BASE58
+            }
         });
         list.Add(new TestData
         {
@@ -184,16 +184,16 @@ public class CreateNumalgo2
         ]
         """;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(keys.encKeys, keys.signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(keys.encKeys, keys.signingKeys, service);
 
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
             ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
             ".Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg" +
             ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdLCJhIjpbImRpZGNvbW0vdjIiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzU4NyJdfV0",
-            peerDIDAlgo2);
+            peerDidAlgo2);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -209,9 +209,9 @@ public class CreateNumalgo2
             }
             """;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -226,9 +226,9 @@ public class CreateNumalgo2
             }
             """;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service)");
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -247,9 +247,9 @@ public class CreateNumalgo2
     ]
     ";
 
-        var peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -260,15 +260,15 @@ public class CreateNumalgo2
 
         string service = null;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
 
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
             ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
             ".Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg",
-            peerDIDAlgo2
+            peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -279,15 +279,15 @@ public class CreateNumalgo2
 
         string service = VALID_SERVICE;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
         Assert.Equal(
             "did:peer:2" +
             ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
             ".Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg" +
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
-            peerDIDAlgo2
+            peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -297,13 +297,13 @@ public class CreateNumalgo2
         List<VerificationMaterialAuthentication> signingKeys = new List<VerificationMaterialAuthentication>();
         string service = VALID_SERVICE;
 
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
-            peerDIDAlgo2
+            peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -396,11 +396,11 @@ public class CreateNumalgo2
         };
         var service = VALID_SERVICE;
 
-        var peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -418,11 +418,11 @@ public class CreateNumalgo2
     }
     """;
 
-        var peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
-        );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        ) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(\n            encryptionKeys: encryptionKeys, signingKeys: signingKeys,\n            service: service\n        )");
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
@@ -439,11 +439,11 @@ public class CreateNumalgo2
     }
     """;
 
-        var peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
-        );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo2));
+        ) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(\n            encryptionKeys: encryptionKeys, signingKeys: signingKeys,\n            service: service\n        )");
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
     }
 
     [Fact]
