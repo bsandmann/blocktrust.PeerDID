@@ -1,5 +1,6 @@
 namespace Blocktrust.PeerDID.Core;
 
+using System.Buffers.Text;
 using System.Text.Json;
 using Types;
 
@@ -31,17 +32,31 @@ public static class JWK_OKP
         return jwk;
     }
 
-    //TODO check if this is correct 
     internal static byte[] FromJwk(VerificationMaterialPeerDID<VerificationMethodTypePeerDID> verMaterial)
     {
-        Dictionary<string, string> jwkDict = verMaterial.Value as Dictionary<string, string>;
-        if (jwkDict == null)
+        // This code could need improvement: it is not clear what is the expected input is. It could be a string, a dictionary (s,s) or a dictionary (s,o)
+        var isDictionaryStringObject = verMaterial.Value is Dictionary<string, object>;
+        var isDictionaryStringString = verMaterial.Value is Dictionary<string, string>;
+        Dictionary<string, string>? jwkDict = null;
+        if (isDictionaryStringObject)
         {
-            var jwk = JsonSerializer.Deserialize<Dictionary<string, string>>(verMaterial.Value.ToString());
+            jwkDict = ((Dictionary<string, object>)verMaterial.Value)
+                .Select(x => new KeyValuePair<string, string>(x.Key, (string)x.Value))
+                .ToDictionary(x => x.Key, x => x.Value);
+        }
+        else if (isDictionaryStringString)
+        {
+            jwkDict = ((Dictionary<string, string>)verMaterial.Value);
+        }
+
+        if (jwkDict is null)
+        {
+            var jwk = JsonSerializer.Deserialize<Dictionary<string, string>>((string)verMaterial.Value);
             jwkDict = jwk;
         }
 
-        if (!jwkDict.ContainsKey("crv"))
+        // ReSharper disable once NullableWarningSuppressionIsUsed
+        if (!jwkDict!.ContainsKey("crv"))
         {
             throw new System.ArgumentException("Invalid JWK key - no 'crv' fields: " + verMaterial.Value);
         }
@@ -63,6 +78,25 @@ public static class JWK_OKP
         }
 
         string value = jwkDict["x"];
-        return System.Convert.FromBase64String(value);
+
+        return Common.Converter.Base64Url.Decode(value);
+    }
+
+    public static byte[] Decode(string input)
+    {
+        string s = input.Replace('-', '+').Replace('_', '/');
+        switch (s.Length % 4)
+        {
+            case 0:
+                return Convert.FromBase64String(s);
+            case 2:
+                s += "==";
+                goto case 0;
+            case 3:
+                s += "=";
+                goto case 0;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(input), "Illegal base64url string!");
+        }
     }
 }

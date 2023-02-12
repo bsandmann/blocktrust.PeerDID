@@ -60,28 +60,9 @@ public static class Multicodec
         {
             return Ed25519;
         }
-        
-        // // Codec[] codecs = (Codec[])Enum.GetValues(typeof(Codec));
-        // // foreach (var item in codecs)
-        // // {
-        // //     if (item.prefix == prefix)
-        // //     {
-        // //         return item;
-        // //     }
-        // // }
-        // // throw new ArgumentException("Invalid key: Prefix " + prefix + " not supported");
-        //
-        // if (236 == prefix)
-        // {
-        //     return Codec.X25519;
-        // }
-        // else if (237 == prefix)
-        // {
-        //     return Codec.ED25519;
-        // }
         else
         {
-            throw new Exception("Multicodec prefix $prefix is not supported");
+            throw new ArgumentException("Invalid key: Prefix " + prefix + " not supported");
         }
     } 
 }

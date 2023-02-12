@@ -21,7 +21,7 @@ public static class Validation
     {
         try
         {
-          JsonSerializer.Deserialize<object>(value);
+            JsonSerializer.Deserialize<object>(value);
         }
         catch (Exception ex)
         {
@@ -35,6 +35,8 @@ public static class Validation
     {
 // for all supported key types now (ED25519 and X25510) the expected size is 32
         if (key.Length != 32)
-            throw new System.ArgumentException("Invalid key " + key);
+        {
+            throw new ArgumentException("Invalid key " + key);
+        }
     }
 }

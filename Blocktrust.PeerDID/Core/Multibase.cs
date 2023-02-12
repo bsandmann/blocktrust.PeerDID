@@ -20,7 +20,6 @@ public class Multibase
 
     public static string ToBase58(byte[] value)
     {
-        // return Base58.Encode(value);
         return Base58.Bitcoin.Encode(value);
     }
 
@@ -44,18 +43,17 @@ public class Multibase
 
     public static byte[] FromBase58(string value)
     {
-        if (!IsBase58(value))
+        try
         {
-            throw new System.ArgumentException("Invalid key: Invalid base58 encoding: " + value);
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException();
+            }
+            return Base58.Bitcoin.Decode(value);
         }
-
-        return Base58.Bitcoin.Decode(value);
-        // return Base58.Decode(value);
-    }
-
-    public static bool IsBase58(string value)
-    {
-        Regex alphabet = new Regex("[1-9a-km-zA-HJ-NP-Z]+");
-        return alphabet.IsMatch(value);
+        catch (ArgumentException)
+        {
+            throw new ArgumentException("Invalid key: Invalid base58 encoding: " + value);
+        }
     }
 }

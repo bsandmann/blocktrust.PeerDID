@@ -197,37 +197,37 @@ public class CreateNumalgo0
 
     [Theory]
     [MemberData(nameof(ValidKeys))]
-    public void testCreateNumalgo0Positive(VerificationMaterialAuthentication key)
+    public void TestCreateNumalgo0Positive(VerificationMaterialAuthentication key)
     {
-        var peerDIDAlgo0 = PeerDIDCreator.CreatePeerDIDNumalgo0(key);
-        Assert.Equal("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V", peerDIDAlgo0);
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDIDAlgo0));
+        var peerDidAlgo0 = PeerDIDCreator.CreatePeerDIDNumalgo0(key);
+        Assert.Equal("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V", peerDidAlgo0);
+        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo0));
     }
-
+    
     [Theory]
     [MemberData(nameof(NotBase58Keys))]
-    public void testCreateNumalgo0MalformedInceptionKeyNotBase58Encoded(VerificationMaterialAuthentication key)
+    public void TestCreateNumalgo0MalformedInceptionKeyNotBase58Encoded(VerificationMaterialAuthentication key)
     {
         var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
         Assert.Matches("Invalid key: Invalid base58 encoding.*", ex.Message);
     }
-
+    
     [Theory]
     [MemberData(nameof(ShortKeys))]
     public void TestCreateNumalgo0MalformedShortInceptionKey(VerificationMaterialAuthentication key)
     {
-        var ex = Assert.Throws<Exception>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
         Assert.Matches(new Regex("Invalid key.*"), ex.Message);
     }
-
+    
     [Theory]
     [MemberData(nameof(LongKeys))]
     public void TestCreateNumalgo0MalformedLongInceptionKey(VerificationMaterialAuthentication key)
     {
         var ex = Assert.Throws<System.ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
-        Assert.True(System.Text.RegularExpressions.Regex.IsMatch(ex.Message, "Invalid key.*"));
+        Assert.Matches("Invalid key.*", ex.Message);
     }
-
+    
     [Theory]
     [MemberData(nameof(EmptyKeys))]
     public void TestCreateNumalgo0MalformedEmptyInceptionKey(VerificationMaterialAuthentication key)
@@ -249,8 +249,8 @@ public class CreateNumalgo0
                 expectedError = string.Empty;
                 break;
         }
-
-        Assert.True(System.Text.RegularExpressions.Regex.IsMatch(ex.Message, expectedError));
+    
+        Assert.Matches(expectedError, ex.Message);
     }
 
     [Fact]
@@ -263,6 +263,6 @@ public class CreateNumalgo0
             format: VerificationMaterialFormatPeerDID.MULTIBASE
         );
         var ex = Assert.Throws<System.ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
-        Assert.True(System.Text.RegularExpressions.Regex.IsMatch(ex.Message, "Invalid key: Prefix.not supported."));
+        Assert.Matches("Invalid key: Prefix 1 not supported", ex.Message);
     }
 }

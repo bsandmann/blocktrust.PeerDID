@@ -83,7 +83,7 @@ public class ServiceEncodeDecode
             "eyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9",
             new PeerDID(Fixture.PEER_DID_NUMALGO_2)
         );
-        Assert.Equal(expected, service);
+        Assert.Equivalent(expected, service);
     }
 
     [Fact]
@@ -142,6 +142,6 @@ public class ServiceEncodeDecode
             "W3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il0sImEiOlsiZGlkY29tbS92MiIsImRpZGNvbW0vYWlwMjtlbnY9cmZjNTg3Il19LHsidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQyIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTIiXX1d",
             new PeerDID(Fixture.PEER_DID_NUMALGO_2)
         );
-        Assert.Equal(expected, service);
+        Assert.Equivalent(expected, service);
     }
 }

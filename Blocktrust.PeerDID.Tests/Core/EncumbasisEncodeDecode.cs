@@ -87,6 +87,6 @@ public class EncumbasisEncodeDecode
     [MemberData(nameof(DecodeEncumbasisData))]
     public void TestDecodeEncumbasis(DecodeEncumbasisTestData data)
     {
-        Assert.Equal(data.Expected, PeerDIDHelper.DecodeMultibaseEncnumbasis(data.InputMultibase, data.Format).VerMaterial);
+        Assert.Equivalent(data.Expected, PeerDIDHelper.DecodeMultibaseEncnumbasis(data.InputMultibase, data.Format).VerMaterial);
     }
 }
