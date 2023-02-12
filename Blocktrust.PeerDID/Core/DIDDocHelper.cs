@@ -4,9 +4,9 @@ using System.Text.Json.Nodes;
 using DIDDoc;
 using Types;
 
-public static class DIDDocHelper
+public static class DidDocHelper
 {
-    private static readonly Dictionary<string, string> verTypeToField = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> VerTypeToField = new Dictionary<string, string>()
     {
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, PublicKeyFieldValues.BASE58 },
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, PublicKeyFieldValues.MULTIBASE },
@@ -16,17 +16,17 @@ public static class DIDDocHelper
         { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, PublicKeyFieldValues.JWK },
     };
 
-    private static readonly Dictionary<string, VerificationMaterialFormatPeerDID> verTypeToFormat = new Dictionary<string, VerificationMaterialFormatPeerDID>()
+    private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> VerTypeToFormat = new Dictionary<string, VerificationMaterialFormatPeerDid>()
     {
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, VerificationMaterialFormatPeerDID.BASE58 },
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, VerificationMaterialFormatPeerDID.MULTIBASE },
-        { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDID.JWK },
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, VerificationMaterialFormatPeerDID.BASE58 },
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, VerificationMaterialFormatPeerDID.MULTIBASE },
-        { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDID.JWK },
+        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, VerificationMaterialFormatPeerDid.BASE58 },
+        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
+        { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
+        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, VerificationMaterialFormatPeerDid.BASE58 },
+        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
+        { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
     };
 
-    internal static DIDDocPeerDID DidDocFromJson(JsonObject jsonObject)
+    internal static DidDocPeerDid DidDocFromJson(JsonObject jsonObject)
     {
         //TODO
         jsonObject.TryGetPropertyValue("id", out JsonNode? didJsonNode);
@@ -40,7 +40,7 @@ public static class DIDDocHelper
 
         //TODO
         jsonObject.TryGetPropertyValue("authentication", out JsonNode? authenticationJsonNode);
-        List<VerificationMethodPeerDID> authentication = authenticationJsonNode.AsArray().Select(p => VerificationMethodFromJson(p.AsObject())).ToList();
+        List<VerificationMethodPeerDid> authentication = authenticationJsonNode.AsArray().Select(p => VerificationMethodFromJson(p.AsObject())).ToList();
         // IList<VerificationMethodPeerDID> authentication = jsonObject.Get("authentication")
         //                                                       ?.AsJsonArray
         //                                                       ?.Select(item => VerificationMethodFromJson(item.AsJsonObject))
@@ -58,17 +58,17 @@ public static class DIDDocHelper
         
         //TODO
         jsonObject.TryGetPropertyValue("service", out JsonNode? serviceJsonNode);
-        var service = serviceJsonNode.AsArray().Select(p => serviceFromJson(p.AsObject())).ToList();
+        var service = serviceJsonNode.AsArray().Select(p => ServiceFromJson(p.AsObject())).ToList();
         
         // IList<Service> service = jsonObject.Get("service")
         //     ?.AsJsonArray
         //     ?.Select(item => serviceFromJson(item.AsJsonObject))
         //     .ToList();
-        return new DIDDocPeerDID(did, authentication, keyAgreement, service);
+        return new DidDocPeerDid(did, authentication, keyAgreement, service);
     }
 
 
-    internal static VerificationMethodPeerDID VerificationMethodFromJson(JsonObject jsonObject)
+    internal static VerificationMethodPeerDid VerificationMethodFromJson(JsonObject jsonObject)
     {
         //TODO
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
@@ -81,9 +81,9 @@ public static class DIDDocHelper
         // string controller = jsonObject.GetValue("controller")?.ToString();
         if (controller == null) throw new System.Exception("No 'controller' field in method " + jsonObject.ToString());
 
-        VerificationMethodTypePeerDID verMaterialType = GetVerMethodType(jsonObject);
-        var field = verTypeToField[verMaterialType.Value];
-        VerificationMaterialFormatPeerDID format = verTypeToFormat[verMaterialType.Value];
+        VerificationMethodTypePeerDid verMaterialType = GetVerMethodType(jsonObject);
+        var field = VerTypeToField[verMaterialType.Value];
+        VerificationMaterialFormatPeerDid format = VerTypeToFormat[verMaterialType.Value];
 
         object value = null;
         if (verMaterialType == VerificationMethodTypeAgreement.JSON_WEB_KEY_2020 ||
@@ -102,18 +102,18 @@ public static class DIDDocHelper
             string stringValue = jsonObject[field].GetValue<string>();
         }
 
-        return new VerificationMethodPeerDID()
+        return new VerificationMethodPeerDid()
         {
             Id = id,
             Controller = controller,
-            VerMaterial = new VerificationMaterialPeerDID<VerificationMethodTypePeerDID>(
+            VerMaterial = new VerificationMaterialPeerDid<VerificationMethodTypePeerDid>(
                 format: format,
                 type: verMaterialType,
                 value: value)
         };
     }
 
-    internal static Service serviceFromJson(JsonObject jsonObject)
+    internal static Service ServiceFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
         string id = jsonObject["SERVICE_ID"]?.ToString();
@@ -137,7 +137,7 @@ public static class DIDDocHelper
         List<string> routingKeys = jsonObject["SERVICE_ROUTING_KEYS"]?.AsArray()?.Select(x => x.ToString()).ToList();
         List<string> accept = jsonObject["SERVICE_ACCEPT"]?.AsArray()?.Select(x => x.ToString()).ToList();
 
-        return new DIDCommServicePeerDID(
+        return new DidCommServicePeerDid(
             id: id,
             type: type,
             serviceEndpoint: endpoint ?? "",
@@ -146,7 +146,7 @@ public static class DIDDocHelper
         );
     }
 
-    private static VerificationMethodTypePeerDID GetVerMethodType(JsonObject jsonObject)
+    private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)
     {
         //TODO
         jsonObject.TryGetPropertyValue("type", out JsonNode? typeJsonNode);

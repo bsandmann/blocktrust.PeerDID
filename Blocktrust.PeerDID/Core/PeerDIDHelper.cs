@@ -7,7 +7,7 @@ using Common.Converter;
 using DIDDoc;
 using Types;
 
-public class PeerDIDHelper
+public class PeerDidHelper
 {
     private static readonly Dictionary<string, string> ServicePrefix = new Dictionary<string, string>
     {
@@ -45,10 +45,10 @@ public class PeerDIDHelper
     ///<a href="https://identity.foundation/peer-did-method-spec/index.html#example-2-abnf-for-peer-dids">Specification</a>
     /// </summary>
     /// <param name="encodedService">service to decod</param>
-    /// <param name="peerDID">PeerDID which will be used as an ID</param>
+    /// <param name="peerDid">PeerDID which will be used as an ID</param>
     /// <returns>decoded service</returns>
     /// <exception cref="ArgumentException">if service is not correctly decoded</exception>
-    public static List<Service> DecodeService(string encodedService, PeerDID peerDID)
+    public static List<Service> DecodeService(string encodedService, PeerDid peerDid)
     {
         if (encodedService == "")
         {
@@ -89,7 +89,7 @@ public class PeerDIDHelper
             var serviceType = s.Replace(ServicePrefix["SERVICE_DIDCOMM_MESSAGING"], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
             var service = new Dictionary<string, object>
             {
-                { "id", $"{peerDID}#{((string)serviceType).ToLower()}-{serviceNumber}" },
+                { "id", $"{peerDid}#{((string)serviceType).ToLower()}-{serviceNumber}" },
                 { "type", serviceType }
             };
 
@@ -120,24 +120,24 @@ public class PeerDIDHelper
     /// <param name="key">public key</param>
     /// <returns>transform+encnumbasis</returns>
     /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
-    internal static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDID<VerificationMethodTypePeerDID> key)
+    internal static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> key)
     {
         byte[] decodedKey;
 
         switch (key.Format)
         {
-            case VerificationMaterialFormatPeerDID.BASE58:
+            case VerificationMaterialFormatPeerDid.BASE58:
                 decodedKey = Multibase.FromBase58(key.Value.ToString());
                 break;
-            case VerificationMaterialFormatPeerDID.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.MULTIBASE:
                 //TODO seconds??
                 // decodedKey = Multicodec.FromMulticodec(Multibase.FromBase58Multibase(key.Value.ToString()).Second).Second;
                 var x = Multibase.FromBase58Multibase(key.Value.ToString());
 
                 decodedKey = Multicodec.FromMulticodec(x.Item2).Value;
                 break;
-            case VerificationMaterialFormatPeerDID.JWK:
-                decodedKey = JWK_OKP.FromJwk(key);
+            case VerificationMaterialFormatPeerDid.JWK:
+                decodedKey = JwkOkp.FromJwk(key);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -154,16 +154,16 @@ public class PeerDIDHelper
     /// <param name="format">the format of public keys in the DID DOC</param>
     /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
     /// <returns>decoded encnumbasis as verification material for DID DOC</returns>
-    public static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDID format)
+    public static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDid format)
     {
         var (encnumbasis, decodedEncnumbasis) = Multibase.FromBase58Multibase(multibase);
         var (codec, decodedEncnumbasisWithoutPrefix) = Multicodec.FromMulticodec(decodedEncnumbasis);
         Validation.ValidateRawKeyLength(decodedEncnumbasisWithoutPrefix);
 
-        VerificationMaterialPeerDID<VerificationMethodTypePeerDID> verMaterial = null;
+        VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial = null;
         switch (format)
         {
-            case VerificationMaterialFormatPeerDID.BASE58:
+            case VerificationMaterialFormatPeerDid.BASE58:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
@@ -183,7 +183,7 @@ public class PeerDIDHelper
                 }
 
                 break;
-            case VerificationMaterialFormatPeerDID.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.MULTIBASE:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
@@ -213,21 +213,21 @@ public class PeerDIDHelper
                 }
 
                 break;
-            case VerificationMaterialFormatPeerDID.JWK:
+            case VerificationMaterialFormatPeerDid.JWK:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
                         verMaterial = new VerificationMaterialAgreement(
                             format: format,
                             type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-                            value: JWK_OKP.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JSON_WEB_KEY_2020)
+                            value: JwkOkp.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JSON_WEB_KEY_2020)
                         );
                         break;
                     case Multicodec.NameED25519:
                         verMaterial = new VerificationMaterialAuthentication(
                             format: format,
                             type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                            value: JWK_OKP.ToJwk(
+                            value: JwkOkp.ToJwk(
                                 decodedEncnumbasisWithoutPrefix,
                                 VerificationMethodTypeAgreement.JSON_WEB_KEY_2020)
                         );
@@ -240,9 +240,9 @@ public class PeerDIDHelper
         return new DecodedEncumbasis(encnumbasis, verMaterial);
     }
 
-    internal static VerificationMethodPeerDID GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
+    internal static VerificationMethodPeerDid GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
     {
-        return new VerificationMethodPeerDID
+        return new VerificationMethodPeerDid
         {
             Id = $"{did}#{decodedEncumbasis.Encnumbasis}",
             Controller = did,

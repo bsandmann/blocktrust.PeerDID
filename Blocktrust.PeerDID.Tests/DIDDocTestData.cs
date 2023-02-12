@@ -3,15 +3,15 @@ namespace Blocktrust.PeerDID.Tests;
 using DIDDoc;
 using Types;
 
-public class DIDDocTestData
+public class DidDocTestData
 {
-    public JSON DidDoc { get; set; }
-    public VerificationMaterialFormatPeerDID ExpectedFormat { get; set; }
-    public VerificationMethodTypePeerDID ExpectedAuthType { get; set; }
-    public VerificationMethodTypePeerDID ExpectedAgreemType { get; set; }
+    public Json DidDoc { get; set; }
+    public VerificationMaterialFormatPeerDid ExpectedFormat { get; set; }
+    public VerificationMethodTypePeerDid ExpectedAuthType { get; set; }
+    public VerificationMethodTypePeerDid ExpectedAgreemType { get; set; }
     public string ExpectedField { get; set; }
 
-    public DIDDocTestData(JSON didDoc, VerificationMaterialFormatPeerDID expectedFormat, VerificationMethodTypePeerDID expectedAuthType, VerificationMethodTypePeerDID expectedAgreemType, string expectedField)
+    public DidDocTestData(Json didDoc, VerificationMaterialFormatPeerDid expectedFormat, VerificationMethodTypePeerDid expectedAuthType, VerificationMethodTypePeerDid expectedAgreemType, string expectedField)
     {
         DidDoc = didDoc;
         ExpectedFormat = expectedFormat;

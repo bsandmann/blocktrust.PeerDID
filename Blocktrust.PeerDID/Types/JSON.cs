@@ -1,10 +1,10 @@
 namespace Blocktrust.PeerDID.Types;
 
-public class JSON
+public class Json
 {
     public string Value { get; }
 
-    public JSON(string value)
+    public Json(string value)
     {
         Value = value;
     }

@@ -5,13 +5,13 @@ using Types;
 
 public static class Validation
 {
-    internal static void ValidateAuthenticationMaterialType(VerificationMaterialPeerDID<VerificationMethodTypePeerDID> verificationMaterial)
+    internal static void ValidateAuthenticationMaterialType(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verificationMaterial)
     {
         if (!(verificationMaterial.Type is VerificationMethodTypeAuthentication))
             throw new System.ArgumentException("Invalid verification material type: " + verificationMaterial.Type + " instead of VerificationMaterialAuthentication");
     }
 
-    internal static void ValidateAgreementMaterialType(VerificationMaterialPeerDID<VerificationMethodTypePeerDID> verificationMaterial)
+    internal static void ValidateAgreementMaterialType(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verificationMaterial)
     {
         if (!(verificationMaterial.Type is VerificationMethodTypeAgreement))
             throw new System.ArgumentException("Invalid verification material type: " + verificationMaterial.Type + " instead of VerificationMaterialAgreement");

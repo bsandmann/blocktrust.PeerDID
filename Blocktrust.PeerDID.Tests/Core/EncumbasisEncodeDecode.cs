@@ -11,29 +11,29 @@ public class EncumbasisEncodeDecode
         {
             new DecodeEncumbasisTestData(
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDID.BASE58,
+                format: VerificationMaterialFormatPeerDid.BASE58,
                 expected: new VerificationMaterialAuthentication
                 (
-                    format: VerificationMaterialFormatPeerDID.BASE58,
+                    format: VerificationMaterialFormatPeerDid.BASE58,
                     type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
                     value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7"
                 )),
             new DecodeEncumbasisTestData(
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDID.BASE58,
+                format: VerificationMaterialFormatPeerDid.BASE58,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDID.BASE58,
+                    format: VerificationMaterialFormatPeerDid.BASE58,
                     type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
                     value: "JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr"
                 )),
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDID.MULTIBASE,
+                format: VerificationMaterialFormatPeerDid.MULTIBASE,
                 expected: new VerificationMaterialAuthentication
                 (
-                    format: VerificationMaterialFormatPeerDID.MULTIBASE,
+                    format: VerificationMaterialFormatPeerDid.MULTIBASE,
                     type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
                     value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V"
                 )
@@ -41,10 +41,10 @@ public class EncumbasisEncodeDecode
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDID.MULTIBASE,
+                format: VerificationMaterialFormatPeerDid.MULTIBASE,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDID.MULTIBASE,
+                    format: VerificationMaterialFormatPeerDid.MULTIBASE,
                     type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
                     value: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc"
                 )
@@ -52,9 +52,9 @@ public class EncumbasisEncodeDecode
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDID.JWK,
+                format: VerificationMaterialFormatPeerDid.JWK,
                 expected: new VerificationMaterialAuthentication(
-                    format: VerificationMaterialFormatPeerDID.JWK,
+                    format: VerificationMaterialFormatPeerDid.JWK,
                     type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
                     value: new Dictionary<string, object>
                     {
@@ -66,10 +66,10 @@ public class EncumbasisEncodeDecode
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDID.JWK,
+                format: VerificationMaterialFormatPeerDid.JWK,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDID.JWK,
+                    format: VerificationMaterialFormatPeerDid.JWK,
                     type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
                     value: new Dictionary<string, object>
                     {
@@ -87,6 +87,6 @@ public class EncumbasisEncodeDecode
     [MemberData(nameof(DecodeEncumbasisData))]
     public void TestDecodeEncumbasis(DecodeEncumbasisTestData data)
     {
-        Assert.Equivalent(data.Expected, PeerDIDHelper.DecodeMultibaseEncnumbasis(data.InputMultibase, data.Format).VerMaterial);
+        Assert.Equivalent(data.Expected, PeerDidHelper.DecodeMultibaseEncnumbasis(data.InputMultibase, data.Format).VerMaterial);
     }
 }

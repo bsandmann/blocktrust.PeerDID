@@ -16,13 +16,13 @@ public class CreateNumalgo0
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.MULTIBASE
+                format: VerificationMaterialFormatPeerDid.MULTIBASE
             ),
             new VerificationMaterialAuthentication
             (
@@ -33,7 +33,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
                 },
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             ),
             new VerificationMaterialAuthentication
             (
@@ -44,7 +44,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
                 }),
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             )
         };
         return list.Select(p => new object[] { p });
@@ -58,13 +58,13 @@ public class CreateNumalgo0
             (
                 value: "x8xB2pv7cw8q1Pd0DacS",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "zx8xB2pv7cw8q1Pd0DacS",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.MULTIBASE
+                format: VerificationMaterialFormatPeerDid.MULTIBASE
             ),
         };
         return list.Select(p => new object[] { p });
@@ -78,13 +78,13 @@ public class CreateNumalgo0
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.MULTIBASE
+                format: VerificationMaterialFormatPeerDid.MULTIBASE
             ),
             new VerificationMaterialAuthentication
             (
@@ -95,7 +95,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_Ygm" },
                 },
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             ),
             new VerificationMaterialAuthentication
             (
@@ -106,7 +106,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_Ygm" },
                 }),
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             )
         };
         return list.Select(p => new object[] { p });
@@ -120,13 +120,13 @@ public class CreateNumalgo0
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L77",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7VVV",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.MULTIBASE
+                format: VerificationMaterialFormatPeerDid.MULTIBASE
             ),
             new VerificationMaterialAuthentication
             (
@@ -137,7 +137,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA7" },
                 },
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             ),
             new VerificationMaterialAuthentication
             (
@@ -148,7 +148,7 @@ public class CreateNumalgo0
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA7" },
                 }),
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             )
         };
         return list.Select(p => new object[] { p });
@@ -162,12 +162,12 @@ public class CreateNumalgo0
             new VerificationMaterialAuthentication(
                 value: "",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication(
                 value: "",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.MULTIBASE
+                format: VerificationMaterialFormatPeerDid.MULTIBASE
             ),
             new VerificationMaterialAuthentication(
                 value: new Dictionary<string, object>()
@@ -177,7 +177,7 @@ public class CreateNumalgo0
                     { "x", "" },
                 },
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             ),
             new VerificationMaterialAuthentication(
                 value: JsonSerializer.Serialize(
@@ -189,7 +189,7 @@ public class CreateNumalgo0
                     }
                 ),
                 type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDID.JWK
+                format: VerificationMaterialFormatPeerDid.JWK
             )
         };
         return list.Select(p => new object[] { p });
@@ -199,16 +199,16 @@ public class CreateNumalgo0
     [MemberData(nameof(ValidKeys))]
     public void TestCreateNumalgo0Positive(VerificationMaterialAuthentication key)
     {
-        var peerDidAlgo0 = PeerDIDCreator.CreatePeerDIDNumalgo0(key);
+        var peerDidAlgo0 = PeerDidCreator.CreatePeerDidNumalgo0(key);
         Assert.Equal("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V", peerDidAlgo0);
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo0));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo0));
     }
     
     [Theory]
     [MemberData(nameof(NotBase58Keys))]
     public void TestCreateNumalgo0MalformedInceptionKeyNotBase58Encoded(VerificationMaterialAuthentication key)
     {
-        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         Assert.Matches("Invalid key: Invalid base58 encoding.*", ex.Message);
     }
     
@@ -216,7 +216,7 @@ public class CreateNumalgo0
     [MemberData(nameof(ShortKeys))]
     public void TestCreateNumalgo0MalformedShortInceptionKey(VerificationMaterialAuthentication key)
     {
-        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         Assert.Matches(new Regex("Invalid key.*"), ex.Message);
     }
     
@@ -224,7 +224,7 @@ public class CreateNumalgo0
     [MemberData(nameof(LongKeys))]
     public void TestCreateNumalgo0MalformedLongInceptionKey(VerificationMaterialAuthentication key)
     {
-        var ex = Assert.Throws<System.ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<System.ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         Assert.Matches("Invalid key.*", ex.Message);
     }
     
@@ -232,17 +232,17 @@ public class CreateNumalgo0
     [MemberData(nameof(EmptyKeys))]
     public void TestCreateNumalgo0MalformedEmptyInceptionKey(VerificationMaterialAuthentication key)
     {
-        var ex = Assert.Throws<System.ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<System.ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         string expectedError;
         switch (key.Format)
         {
-            case VerificationMaterialFormatPeerDID.BASE58:
+            case VerificationMaterialFormatPeerDid.BASE58:
                 expectedError = "Invalid key: Invalid base58 encoding.*";
                 break;
-            case VerificationMaterialFormatPeerDID.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.MULTIBASE:
                 expectedError = "Invalid key: No transform part in multibase encoding.*";
                 break;
-            case VerificationMaterialFormatPeerDID.JWK:
+            case VerificationMaterialFormatPeerDid.JWK:
                 expectedError = "Invalid key.*";
                 break;
             default:
@@ -260,9 +260,9 @@ public class CreateNumalgo0
         (
             value: "z78kqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
             type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-            format: VerificationMaterialFormatPeerDID.MULTIBASE
+            format: VerificationMaterialFormatPeerDid.MULTIBASE
         );
-        var ex = Assert.Throws<System.ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo0(key));
+        var ex = Assert.Throws<System.ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         Assert.Matches("Invalid key: Prefix 1 not supported", ex.Message);
     }
 }

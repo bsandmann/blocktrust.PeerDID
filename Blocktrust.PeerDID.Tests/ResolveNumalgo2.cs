@@ -10,57 +10,57 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolvePositiveDefault()
     {
-        string realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2));
+        string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2));
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveBase58()
     {
-        string realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDID.BASE58);
+        string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.BASE58);
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_BASE58), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveMultibase()
     {
-        string realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDID.MULTIBASE);
+        string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.MULTIBASE);
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveJWK()
     {
-        string realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDID.JWK);
+        string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.JWK);
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_JWK), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveServiceIs2ElementsArray()
     {
-        var realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2_2_SERVICES));
+        var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_2_SERVICES));
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveNoService()
     {
-        var realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES));
+        var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES));
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_NO_SERVICES), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveMinimalService()
     {
-        var realValue =  PeerDIDResolver.ResolvePeerDID(new PeerDID(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES));
+        var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES));
         Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_MINIMAL_SERVICES), Fixture.FromJson(realValue));
     }
 
     [Fact]
     public void TestResolveUnsupportedNumalgoCode()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() =>
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+        var ex = Assert.Throws<MalformedPeerDidException>(() =>
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
             "did:peer:1.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
             ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
             ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0="
@@ -71,8 +71,8 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveSigningMalformedBase58Encoding()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() =>
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+        var ex = Assert.Throws<MalformedPeerDidException>(() =>
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSpSrLxbAh02SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Vz6MkqRYqQi0gvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0="
@@ -85,8 +85,8 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveEncryptionMalformedBase58Encoding()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() =>
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+        var ex = Assert.Throws<MalformedPeerDidException>(() =>
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSpSrLxbAh02SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0="
@@ -99,8 +99,8 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveUnsupportedTransformCode()
     {
-        Exception ex = Assert.Throws<MalformedPeerDIDException>(() =>
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+        Exception ex = Assert.Throws<MalformedPeerDidException>(() =>
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ea6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Va6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0="
@@ -111,8 +111,8 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveMalformedSigningMulticodecEncoding()
     {
-        Exception ex = Assert.Throws<MalformedPeerDIDException>(() =>
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+        Exception ex = Assert.Throws<MalformedPeerDidException>(() =>
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Vz7MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0="
@@ -124,9 +124,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveInvalidVerificationKeyType()
     {
-        var exception = Assert.Throws<MalformedPeerDIDException>(() =>
+        var exception = Assert.Throws<MalformedPeerDidException>(() =>
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Vz6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXX0="
@@ -138,9 +138,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveInvalidEncryptionKeyType()
     {
-        var exception = Assert.Throws<MalformedPeerDIDException>(() =>
+        var exception = Assert.Throws<MalformedPeerDidException>(() =>
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
                 ".Ez6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXX0="
@@ -152,9 +152,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveMalformedServiceEncoding()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() => 
+        var ex = Assert.Throws<MalformedPeerDidException>(() => 
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9\\\\GxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXX0="
@@ -166,9 +166,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveMalformedService()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() => 
+        var ex = Assert.Throws<MalformedPeerDidException>(() => 
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SeyJ0IjoiZG0iLCJzIjo"
@@ -180,9 +180,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveInvalidPrefix()
     {
-        var exception = Assert.Throws<MalformedPeerDIDException>(() =>
+        var exception = Assert.Throws<MalformedPeerDidException>(() =>
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2" +
                 ".Cz6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
@@ -196,9 +196,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveShortSigningKey()
     {
-        var exception = Assert.Throws<MalformedPeerDIDException>(() =>
+        var exception = Assert.Throws<MalformedPeerDidException>(() =>
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2" +
                 ".Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
@@ -214,9 +214,9 @@ public class ResolveNumalgo2
     [Fact]
     public void TestResolveLongEncryptionKey()
     {
-        var ex = Assert.Throws<MalformedPeerDIDException>(() => 
+        var ex = Assert.Throws<MalformedPeerDidException>(() => 
         {
-            PeerDIDResolver.ResolvePeerDID(new PeerDID(
+            PeerDidResolver.ResolvePeerDid(new PeerDid(
                 "did:peer:2" +
                 ".Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCccccc" +
                 ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +

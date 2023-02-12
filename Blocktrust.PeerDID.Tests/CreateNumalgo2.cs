@@ -11,14 +11,14 @@ public class CreateNumalgo2
     (
         value: "JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr",
         type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-        format: VerificationMaterialFormatPeerDID.BASE58
+        format: VerificationMaterialFormatPeerDid.BASE58
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_MULTIBASE = new VerificationMaterialAgreement
     (
         value: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
         type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.MULTIBASE
+        format: VerificationMaterialFormatPeerDid.MULTIBASE
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_JWK_DICT = new VerificationMaterialAgreement
@@ -30,7 +30,7 @@ public class CreateNumalgo2
             { "x", "BIiFcQEn3dfvB2pjlhOQQour6jXy9d5s2FKEJNTOJik" },
         },
         type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.JWK
+        format: VerificationMaterialFormatPeerDid.JWK
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_JWK_JSON = new VerificationMaterialAgreement
@@ -44,21 +44,21 @@ public class CreateNumalgo2
             }
         ),
         type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.JWK
+        format: VerificationMaterialFormatPeerDid.JWK
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_BASE58 = new VerificationMaterialAuthentication
     (
         value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
         type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-        format: VerificationMaterialFormatPeerDID.BASE58
+        format: VerificationMaterialFormatPeerDid.BASE58
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_MULTIBASE = new VerificationMaterialAuthentication
     (
         value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
         type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.MULTIBASE
+        format: VerificationMaterialFormatPeerDid.MULTIBASE
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_JWK = new VerificationMaterialAuthentication
@@ -70,21 +70,21 @@ public class CreateNumalgo2
             { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
         },
         type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.JWK
+        format: VerificationMaterialFormatPeerDid.JWK
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_BASE58 = new VerificationMaterialAuthentication
     (
         value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
         type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-        format: VerificationMaterialFormatPeerDID.BASE58
+        format: VerificationMaterialFormatPeerDid.BASE58
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_MULTIBASE = new VerificationMaterialAuthentication
     (
         value: "z6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg",
         type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.MULTIBASE
+        format: VerificationMaterialFormatPeerDid.MULTIBASE
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_JWK = new VerificationMaterialAuthentication
@@ -96,7 +96,7 @@ public class CreateNumalgo2
             { "x", "Itv8B__b1-Jos3LCpUe8EdTFGTCa_Dza6_3848P3R70" },
         },
         type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDID.JWK
+        format: VerificationMaterialFormatPeerDid.JWK
     );
 
     public const string VALID_SERVICE = """
@@ -113,24 +113,24 @@ public class CreateNumalgo2
         var list = new List<TestData>();
         list.Add(new TestData
         {
-            signingKeys = new List<VerificationMaterialAuthentication>
+            SigningKeys = new List<VerificationMaterialAuthentication>
             {
                 VALID_ED25519_KEY_1_BASE58,
                 VALID_ED25519_KEY_2_BASE58
             },
-            encKeys = new List<VerificationMaterialAgreement>
+            EncKeys = new List<VerificationMaterialAgreement>
             {
                 VALID_X25519_KEY_BASE58
             }
         });
         list.Add(new TestData
         {
-            signingKeys = new List<VerificationMaterialAuthentication>
+            SigningKeys = new List<VerificationMaterialAuthentication>
             {
                 VALID_ED25519_KEY_1_MULTIBASE,
                 VALID_ED25519_KEY_2_MULTIBASE
             },
-            encKeys = new List<VerificationMaterialAgreement>
+            EncKeys = new List<VerificationMaterialAgreement>
             {
                 VALID_X25519_KEY_MULTIBASE
             }
@@ -138,12 +138,12 @@ public class CreateNumalgo2
 
         list.Add(new TestData
         {
-            signingKeys = new List<VerificationMaterialAuthentication>
+            SigningKeys = new List<VerificationMaterialAuthentication>
             {
                 VALID_ED25519_KEY_1_JWK,
                 VALID_ED25519_KEY_2_JWK
             },
-            encKeys = new List<VerificationMaterialAgreement>
+            EncKeys = new List<VerificationMaterialAgreement>
             {
                 VALID_X25519_KEY_JWK_DICT
             }
@@ -151,12 +151,12 @@ public class CreateNumalgo2
 
         list.Add(new TestData
         {
-            signingKeys = new List<VerificationMaterialAuthentication>
+            SigningKeys = new List<VerificationMaterialAuthentication>
             {
                 VALID_ED25519_KEY_1_JWK,
                 VALID_ED25519_KEY_2_JWK
             },
-            encKeys = new List<VerificationMaterialAgreement>
+            EncKeys = new List<VerificationMaterialAgreement>
             {
                 VALID_X25519_KEY_JWK_JSON
             }
@@ -184,7 +184,7 @@ public class CreateNumalgo2
         ]
         """;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(keys.encKeys, keys.signingKeys, service);
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(keys.EncKeys, keys.SigningKeys, service);
 
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
@@ -193,7 +193,7 @@ public class CreateNumalgo2
             ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il19LHsidCI6ImV4YW1wbGUiLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdLCJhIjpbImRpZGNvbW0vdjIiLCJkaWRjb21tL2FpcDI7ZW52PXJmYzU4NyJdfV0",
             peerDidAlgo2);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -209,9 +209,9 @@ public class CreateNumalgo2
             }
             """;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -226,9 +226,9 @@ public class CreateNumalgo2
             }
             """;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service)");
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service)");
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -247,9 +247,9 @@ public class CreateNumalgo2
     ]
     ";
 
-        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        var peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service);
 
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -258,9 +258,9 @@ public class CreateNumalgo2
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement> { VALID_X25519_KEY_MULTIBASE };
         List<VerificationMaterialAuthentication> signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
 
-        string service = null;
+        string? service = null;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service);
 
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
@@ -268,18 +268,18 @@ public class CreateNumalgo2
             ".Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg",
             peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
-    public void testCreateNumalgo2WithoutEncryptionKeys()
+    public void TestCreateNumalgo2WithoutEncryptionKeys()
     {
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement>();
         List<VerificationMaterialAuthentication> signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
 
         string service = VALID_SERVICE;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service);
         Assert.Equal(
             "did:peer:2" +
             ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
@@ -287,23 +287,23 @@ public class CreateNumalgo2
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
             peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
-    public void testCreateNumalgo2EmptySigningKeys()
+    public void TestCreateNumalgo2EmptySigningKeys()
     {
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement> { VALID_X25519_KEY_MULTIBASE };
         List<VerificationMaterialAuthentication> signingKeys = new List<VerificationMaterialAuthentication>();
         string service = VALID_SERVICE;
 
-        string peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service);
+        string peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service);
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
             peerDidAlgo2
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -315,7 +315,7 @@ public class CreateNumalgo2
             (
                 value: "...",
                 type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -323,7 +323,7 @@ public class CreateNumalgo2
 
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -341,20 +341,20 @@ public class CreateNumalgo2
             (
                 value: "....",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var service = VALID_SERVICE;
 
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -370,7 +370,7 @@ public class CreateNumalgo2
         var service = """...""";
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -396,11 +396,11 @@ public class CreateNumalgo2
         };
         var service = VALID_SERVICE;
 
-        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
         );
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -418,15 +418,15 @@ public class CreateNumalgo2
     }
     """;
 
-        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
         ) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(\n            encryptionKeys: encryptionKeys, signingKeys: signingKeys,\n            service: service\n        )");
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
-    public void TestCreateNumalgo2ServiceIsNotdidcommmessaging()
+    public void TestCreateNumalgo2ServiceIsNotDidcommmessaging()
     {
         var encryptionKeys = new List<VerificationMaterialAgreement> { VALID_X25519_KEY_MULTIBASE };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -439,11 +439,11 @@ public class CreateNumalgo2
     }
     """;
 
-        var peerDidAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        var peerDidAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(
             encryptionKeys: encryptionKeys, signingKeys: signingKeys,
             service: service
         ) ?? throw new ArgumentNullException("PeerDIDCreator.CreatePeerDIDNumalgo2(\n            encryptionKeys: encryptionKeys, signingKeys: signingKeys,\n            service: service\n        )");
-        Assert.True(PeerDIDCreator.IsPeerDID(peerDidAlgo2));
+        Assert.True(PeerDidCreator.IsPeerDid(peerDidAlgo2));
     }
 
     [Fact]
@@ -454,8 +454,8 @@ public class CreateNumalgo2
         var service = "";
 
         Assert.True(
-            PeerDIDCreator.IsPeerDID(
-                PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.IsPeerDid(
+                PeerDidCreator.CreatePeerDidNumalgo2(
                     encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                     service: service
                 )
@@ -472,7 +472,7 @@ public class CreateNumalgo2
             (
                 value: "JhNWeSVLMYcc0k7iopQW4guaSJTojqpMEELgSLhKwRr",
                 type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -481,7 +481,7 @@ public class CreateNumalgo2
 
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -499,19 +499,19 @@ public class CreateNumalgo2
             (
                 value: "ByHnpUCFb1vA0h9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var service = VALID_SERVICE;
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -528,7 +528,7 @@ public class CreateNumalgo2
             (
                 value: "JhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWe",
                 type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -537,7 +537,7 @@ public class CreateNumalgo2
 
         var ex = Assert.Throws<ArgumentException>(() =>
         {
-            PeerDIDCreator.CreatePeerDIDNumalgo2(
+            PeerDidCreator.CreatePeerDidNumalgo2(
                 encryptionKeys: encryptionKeys, signingKeys: signingKeys,
                 service: service
             );
@@ -554,13 +554,13 @@ public class CreateNumalgo2
             (
                 value: "JhNWeSV",
                 type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
         var service = VALID_SERVICE;
 
-        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service));
         Assert.Matches(new Regex("Invalid key.*"), ex.Message);
     }
 
@@ -574,18 +574,18 @@ public class CreateNumalgo2
             (
                 value: "JhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWe",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var service = VALID_SERVICE;
 
-        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service));
         Assert.Matches(new Regex("Invalid key.*"), ex.Message);
     }
 
@@ -599,17 +599,17 @@ public class CreateNumalgo2
             (
                 value: "JhNWeSV",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58
+                format: VerificationMaterialFormatPeerDid.BASE58
             )
         };
         var service = "VALID_SERVICE";
-        var ex = Assert.Throws<ArgumentException>(() => PeerDIDCreator.CreatePeerDIDNumalgo2(encryptionKeys, signingKeys, service));
+        var ex = Assert.Throws<ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo2(encryptionKeys, signingKeys, service));
         Assert.Matches("Invalid key.*", ex.Message);
     }
 }

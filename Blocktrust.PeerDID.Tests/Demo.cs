@@ -4,17 +4,16 @@ namespace Blocktrust.PeerDID.Tests;
 
 using DIDDoc;
 using PeerDIDCreateResolve;
-using PeerDID = Types.PeerDID;
 
 class Demo
 {
-    public void TestCreateResolvePeerDID()
+    public void TestCreateResolvePeerDid()
     {
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement>()
         {
             new VerificationMaterialAgreement(
                 type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDID.BASE58,
+                format: VerificationMaterialFormatPeerDid.BASE58,
                 value: "DmgBSHMqaZiYqwNMEJJuxWzsGGC8jUYADrfSdBrC6L8s"
             )
         };
@@ -23,7 +22,7 @@ class Demo
         {
             new VerificationMaterialAuthentication(
                 type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDID.BASE58,
+                format: VerificationMaterialFormatPeerDid.BASE58,
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7"
             )
         };
@@ -37,8 +36,8 @@ class Demo
             }
         ";
 
-        string peerDIDAlgo0 = PeerDIDCreator.CreatePeerDIDNumalgo0(signingKeys[0]);
-        string peerDIDAlgo2 = PeerDIDCreator.CreatePeerDIDNumalgo2(
+        string peerDIDAlgo0 = PeerDidCreator.CreatePeerDidNumalgo0(signingKeys[0]);
+        string peerDIDAlgo2 = PeerDidCreator.CreatePeerDidNumalgo2(
             encryptionKeys, signingKeys, service
         );
 
@@ -47,16 +46,16 @@ class Demo
         Console.WriteLine("PeerDID algo 2:" + peerDIDAlgo2);
         Console.WriteLine("==================================");
 
-        string didDocAlgo0Json = PeerDIDResolver.ResolvePeerDID(new PeerDID(peerDIDAlgo0));
-        string didDocAlgo2Json = PeerDIDResolver.ResolvePeerDID(new PeerDID(peerDIDAlgo2));
+        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0));
+        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2));
         Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0Json);
         Console.WriteLine("==================================");
         Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2Json);
 
-        DIDDocPeerDID didDocAlgo0 = DIDDoc.DIDDocPeerDID.fromJson(didDocAlgo0Json);
-        DIDDocPeerDID didDocAlgo2 = DIDDoc.DIDDocPeerDID.fromJson(didDocAlgo2Json);
-        Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0.toDict());
+        DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json);
+        DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json);
+        Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0.ToDict());
         Console.WriteLine("==================================");
-        Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2.toDict());
+        Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2.ToDict());
     }
 }

@@ -1,7 +1,7 @@
 namespace Blocktrust.PeerDID.Exceptions
 
 {
-    public class MalformedPeerDIDDocException : PeerDIDException
+    public abstract class MalformedPeerDIDDocException : PeerDidException
     {
         /// <summary>
         /// Raised if the resolved peer DID Doc to be resolved in not a valid peer DID.

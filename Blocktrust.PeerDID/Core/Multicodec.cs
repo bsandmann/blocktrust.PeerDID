@@ -6,8 +6,8 @@ public static class Multicodec
 {
    public const string NameX25519 = "X25519";
    public const string NameED25519 = "ED25519";
-   public static readonly MulticodecPOCO X25519 = new MulticodecPOCO(NameX25519, new byte[] { 0xEC }, 236);
-   public static readonly MulticodecPOCO Ed25519 = new MulticodecPOCO(NameED25519, new byte[] { 0xED }, 237);
+   public static readonly MulticodecPoco X25519 = new MulticodecPoco(NameX25519, new byte[] { 0xEC }, 236);
+   public static readonly MulticodecPoco Ed25519 = new MulticodecPoco(NameED25519, new byte[] { 0xED }, 237);
     
     // public enum Codec
     // {
@@ -15,7 +15,7 @@ public static class Multicodec
     //     ED25519 = 0xED
     // }
 
-    public static byte[] ToMulticodec(byte[] value, VerificationMethodTypePeerDID keyType)
+    public static byte[] ToMulticodec(byte[] value, VerificationMethodTypePeerDid keyType)
     {
         int prefix = GetCodec(keyType).PrefixInt;
         var byteBuffer = new byte[2];
@@ -25,18 +25,18 @@ public static class Multicodec
         return byteBuffer.Concat(value).ToArray();
     }
 
-    public static KeyValuePair<MulticodecPOCO, byte[]> FromMulticodec(byte[] value)
+    public static KeyValuePair<MulticodecPoco, byte[]> FromMulticodec(byte[] value)
     {
         int prefix = VarInt.ReadVarInt(new MemoryStream(value));
-        MulticodecPOCO codec = GetCodec(prefix);
+        MulticodecPoco codec = GetCodec(prefix);
         var byteBuffer = new byte[2];
         //TODO unclear if the implementation is correct
         MemoryStream stream = new MemoryStream(byteBuffer);
         VarInt.WriteVarInt(prefix, stream);
-        return new KeyValuePair<MulticodecPOCO, byte[]>(codec, value.Skip(byteBuffer.Length).ToArray());
+        return new KeyValuePair<MulticodecPoco, byte[]>(codec, value.Skip(byteBuffer.Length).ToArray());
     }
 
-    private static MulticodecPOCO GetCodec(VerificationMethodTypePeerDID keyType)
+    private static MulticodecPoco GetCodec(VerificationMethodTypePeerDid keyType)
     {
         switch (keyType)
         {
@@ -49,7 +49,7 @@ public static class Multicodec
         }
     }
 
-    private static MulticodecPOCO GetCodec(int prefix)
+    private static MulticodecPoco GetCodec(int prefix)
     {
         // //TODO very simimlar to DIDComm
         if (prefix == X25519.PrefixInt)

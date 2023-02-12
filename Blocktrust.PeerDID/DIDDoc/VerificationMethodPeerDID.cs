@@ -2,21 +2,21 @@ namespace Blocktrust.PeerDID.DIDDoc;
 
 using Types;
 
-public class VerificationMethodPeerDID
+public class VerificationMethodPeerDid
 {
     public string Id { get; set; }
     public string Controller { get; set; }
-    public VerificationMaterialPeerDID<VerificationMethodTypePeerDID> VerMaterial { get; set; }
+    public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; set; }
 
     private string PublicKeyField()
     {
         switch (VerMaterial.Format)
         {
-            case VerificationMaterialFormatPeerDID.BASE58:
+            case VerificationMaterialFormatPeerDid.BASE58:
                 return PublicKeyFieldValues.BASE58;
-            case VerificationMaterialFormatPeerDID.JWK:
+            case VerificationMaterialFormatPeerDid.JWK:
                 return PublicKeyFieldValues.JWK;
-            case VerificationMaterialFormatPeerDID.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.MULTIBASE:
                 return PublicKeyFieldValues.MULTIBASE;
         }
 

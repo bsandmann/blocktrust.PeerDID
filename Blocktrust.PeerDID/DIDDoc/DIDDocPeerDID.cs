@@ -4,27 +4,27 @@ using Blocktrust.PeerDID.Exceptions;
 
 namespace Blocktrust.PeerDID.DIDDoc;
 
-public class DIDDocPeerDID
+public class DidDocPeerDid
 {
-    public string did { get; set; }
-    public List<VerificationMethodPeerDID> authentication { get; set; }
-    public List<VerificationMethodPeerDID> keyAgreement { get; set; }
-    public List<Service> service { get; set; }
+    public string Did { get; set; }
+    public List<VerificationMethodPeerDid> Authentication { get; set; }
+    public List<VerificationMethodPeerDid> KeyAgreement { get; set; }
+    public List<Service> Service { get; set; }
 
 
-    public DIDDocPeerDID(string did, List<VerificationMethodPeerDID> authentication, List<VerificationMethodPeerDID> keyAgreement, List<Service> service)
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<Service> service)
     {
-        this.did = did;
-        this.authentication = authentication;
-        this.keyAgreement = keyAgreement;
-        this.service = service;
+        this.Did = did;
+        this.Authentication = authentication;
+        this.KeyAgreement = keyAgreement;
+        this.Service = service;
     }
     
     
-    public DIDDocPeerDID(string did, List<VerificationMethodPeerDID> authentication)
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication)
     {
-        this.did = did;
-        this.authentication = authentication;
+        this.Did = did;
+        this.Authentication = authentication;
     }
 
     /// <summary>
@@ -32,25 +32,25 @@ public class DIDDocPeerDID
     /// </summary>
     /// <param name="value">value DID Doc JSON</param>
     /// <returns>DIDDoc PeerDID instance</returns>
-    /// <exception cref="MalformedPeerDIDException">MalformedPeerDIDDOcException if the input DID Doc JSON is not a valid peerdid DID Doc</exception>
-    public static DIDDocPeerDID fromJson(string value)
+    /// <exception cref="MalformedPeerDidException">MalformedPeerDIDDOcException if the input DID Doc JSON is not a valid peerdid DID Doc</exception>
+    public static DidDocPeerDid FromJson(string value)
     {
         try
         {
-            return JsonSerializer.Deserialize<DIDDocPeerDID>(value);
+            return JsonSerializer.Deserialize<DidDocPeerDid>(value);
         }
         catch (System.Exception e)
         {
-            throw new MalformedPeerDIDException(e.Message);
+            throw new MalformedPeerDidException(e.Message);
         }
     }
 
-    public List<string> authenticationKids
+    public List<string> AuthenticationKids
     {
         get
         {
             List<string> res = new List<string>();
-            foreach (var item in authentication)
+            foreach (var item in Authentication)
             {
                 res.Add(item.Id);
             }
@@ -59,12 +59,12 @@ public class DIDDocPeerDID
         }
     }
 
-    public List<string> agreementKids
+    public List<string> AgreementKids
     {
         get
         {
             List<string> res = new List<string>();
-            foreach (var item in keyAgreement)
+            foreach (var item in KeyAgreement)
             {
                 res.Add(item.Id);
             }
@@ -73,30 +73,30 @@ public class DIDDocPeerDID
         }
     }
 
-    public Dictionary<string, object> toDict()
+    public Dictionary<string, object> ToDict()
     {
         Dictionary<string, object> res = new Dictionary<string, object>()
         {
-            { "id", did },
-            { "authentication", authentication.Select(item => item.ToDict()) }
+            { "id", Did },
+            { "authentication", Authentication.Select(item => item.ToDict()) }
         };
-        if (keyAgreement.Count > 0)
+        if (KeyAgreement.Count > 0)
         {
-            res.Add("keyAgreement", keyAgreement.Select(item => item.ToDict()));
+            res.Add("keyAgreement", KeyAgreement.Select(item => item.ToDict()));
         }
 
-        if (service != null)
+        if (Service != null)
         {
             List<object> serviceList = new List<object>();
-            foreach (var item in service)
+            foreach (var item in Service)
             {
                 if (item is OtherService)
                 {
-                    serviceList.Add(((OtherService)item).data);
+                    serviceList.Add(((OtherService)item).Data);
                 }
-                else if (item is DIDCommServicePeerDID)
+                else if (item is DidCommServicePeerDid)
                 {
-                    serviceList.Add(((DIDCommServicePeerDID)item).ToDict());
+                    serviceList.Add(((DidCommServicePeerDid)item).ToDict());
                 }
             }
 
@@ -106,9 +106,9 @@ public class DIDDocPeerDID
         return res;
     }
 
-    public string toJson()
+    public string ToJson()
     {
         //TODO indenting?
-        return JsonSerializer.Serialize(this.toDict()); //, Formatting.Indented);
+        return JsonSerializer.Serialize(this.ToDict()); //, Formatting.Indented);
     }
 }

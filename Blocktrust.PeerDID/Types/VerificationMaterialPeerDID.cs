@@ -1,12 +1,12 @@
 namespace Blocktrust.PeerDID.Types;
 
-public class VerificationMaterialPeerDID<T> where T : VerificationMethodTypePeerDID
+public class VerificationMaterialPeerDid<T> where T : VerificationMethodTypePeerDid
 {
-    public VerificationMaterialFormatPeerDID Format { get; }
+    public VerificationMaterialFormatPeerDid Format { get; }
     public object Value { get; }
     public T Type { get; }
 
-    public VerificationMaterialPeerDID(VerificationMaterialFormatPeerDID format, object value, T type)
+    public VerificationMaterialPeerDid(VerificationMaterialFormatPeerDid format, object value, T type)
     {
         Format = format;
         Value = value;

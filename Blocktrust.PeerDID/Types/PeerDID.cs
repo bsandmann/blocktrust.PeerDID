@@ -1,10 +1,10 @@
 namespace Blocktrust.PeerDID.Types;
 
-public class PeerDID
+public class PeerDid
 {
     public string Value { get; }
 
-    public PeerDID(string value)
+    public PeerDid(string value)
     {
         Value = value;
     }

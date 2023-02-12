@@ -1,6 +1,6 @@
 ﻿namespace Blocktrust.PeerDID.Types
 {
-    public enum VerificationMaterialFormatPeerDID
+    public enum VerificationMaterialFormatPeerDid
     {
         JWK,
         BASE58,

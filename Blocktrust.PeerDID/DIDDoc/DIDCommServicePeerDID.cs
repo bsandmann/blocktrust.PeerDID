@@ -1,31 +1,31 @@
 namespace Blocktrust.PeerDID.DIDDoc;
 
-public class DIDCommServicePeerDID : Service
+public class DidCommServicePeerDid : Service
 {
-    public string id;
-    public string type;
-    public string serviceEndpoint;
-    public List<string> routingKeys;
-    public List<string> accept;
-    public DIDCommServicePeerDID(string id, string type, string serviceEndpoint, List<string> routingKeys, List<string> accept)
+    public string Id;
+    public string Type;
+    public string ServiceEndpoint;
+    public List<string> RoutingKeys;
+    public List<string> Accept;
+    public DidCommServicePeerDid(string id, string type, string serviceEndpoint, List<string> routingKeys, List<string> accept)
     {
-        this.id = id;
-        this.type = type;
-        this.serviceEndpoint = serviceEndpoint;
-        this.routingKeys = routingKeys;
-        this.accept = accept;
+        this.Id = id;
+        this.Type = type;
+        this.ServiceEndpoint = serviceEndpoint;
+        this.RoutingKeys = routingKeys;
+        this.Accept = accept;
     }
 
     public Dictionary<string, object> ToDict()
     {
         var res = new Dictionary<string, object>
         {
-            { "id", id },
-            { "type", type }
+            { "id", Id },
+            { "type", Type }
         };
-        res.Add("serviceEndpoint", serviceEndpoint);
-        res.Add("routingKeys", routingKeys);
-        res.Add("accept", accept);
+        res.Add("serviceEndpoint", ServiceEndpoint);
+        res.Add("routingKeys", RoutingKeys);
+        res.Add("accept", Accept);
         return res;
     }
 }

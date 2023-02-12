@@ -1,10 +1,10 @@
 namespace Blocktrust.PeerDID.Types;
 
-public abstract class VerificationMethodTypePeerDID
+public abstract class VerificationMethodTypePeerDid
 {
     public string Value { get; }
 
-    protected VerificationMethodTypePeerDID(string value)
+    protected VerificationMethodTypePeerDid(string value)
     {
         Value = value;
     }

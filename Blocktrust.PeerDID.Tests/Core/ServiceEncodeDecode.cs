@@ -11,7 +11,7 @@ public class ServiceEncodeDecode
     {
         Assert.Equal(
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
-            PeerDIDHelper.EncodeService(
+            PeerDidHelper.EncodeService(
                 """
                         {
                             "type": "DIDCommMessaging",
@@ -41,9 +41,9 @@ public class ServiceEncodeDecode
                 }
             )
         };
-        var service = PeerDIDHelper.DecodeService(
+        var service = PeerDidHelper.DecodeService(
             "eyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
-            new PeerDID(Fixture.PEER_DID_NUMALGO_2)
+            new PeerDid(Fixture.PEER_DID_NUMALGO_2)
         );
         Assert.Equal(expected, service);
     }
@@ -53,7 +53,7 @@ public class ServiceEncodeDecode
     {
         Assert.Equal(
             ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9",
-            PeerDIDHelper.EncodeService(
+            PeerDidHelper.EncodeService(
                 """
                         {
                             "type": "DIDCommMessaging",
@@ -79,9 +79,9 @@ public class ServiceEncodeDecode
                 }
             )
         };
-        var service = PeerDIDHelper.DecodeService(
+        var service = PeerDidHelper.DecodeService(
             "eyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9",
-            new PeerDID(Fixture.PEER_DID_NUMALGO_2)
+            new PeerDid(Fixture.PEER_DID_NUMALGO_2)
         );
         Assert.Equivalent(expected, service);
     }
@@ -91,7 +91,7 @@ public class ServiceEncodeDecode
     {
         Assert.Equal(
             ".SW3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il0sImEiOlsiZGlkY29tbS92MiIsImRpZGNvbS9haXAyO2Vudj1yZmM1ODciXX0seyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludDIiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5MiJdfV0=",
-            PeerDIDHelper.EncodeService(
+            PeerDidHelper.EncodeService(
                 """
                         [
                             {
@@ -138,9 +138,9 @@ public class ServiceEncodeDecode
                 }
             )
         };
-        var service = PeerDIDHelper.DecodeService(
+        var service = PeerDidHelper.DecodeService(
             "W3sidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQiLCJyIjpbImRpZDpleGFtcGxlOnNvbWVtZWRpYXRvciNzb21la2V5Il0sImEiOlsiZGlkY29tbS92MiIsImRpZGNvbW0vYWlwMjtlbnY9cmZjNTg3Il19LHsidCI6ImRtIiwicyI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQyIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTIiXX1d",
-            new PeerDID(Fixture.PEER_DID_NUMALGO_2)
+            new PeerDid(Fixture.PEER_DID_NUMALGO_2)
         );
         Assert.Equivalent(expected, service);
     }

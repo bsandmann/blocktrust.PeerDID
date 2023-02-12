@@ -4,9 +4,9 @@ using System.Buffers.Text;
 using System.Text.Json;
 using Types;
 
-public static class JWK_OKP
+public static class JwkOkp
 {
-    internal static Dictionary<string, string> ToJwk(byte[] publicKey, VerificationMethodTypePeerDID verMethodType)
+    internal static Dictionary<string, string> ToJwk(byte[] publicKey, VerificationMethodTypePeerDid verMethodType)
     {
         string x = System.Convert.ToBase64String(publicKey);
         string crv;
@@ -32,7 +32,7 @@ public static class JWK_OKP
         return jwk;
     }
 
-    internal static byte[] FromJwk(VerificationMaterialPeerDID<VerificationMethodTypePeerDID> verMaterial)
+    internal static byte[] FromJwk(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial)
     {
         // This code could need improvement: it is not clear what is the expected input is. It could be a string, a dictionary (s,s) or a dictionary (s,o)
         var isDictionaryStringObject = verMaterial.Value is Dictionary<string, object>;

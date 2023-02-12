@@ -4,13 +4,13 @@ using Types;
 
 public class TestData
 {
-    public List<VerificationMaterialAuthentication> signingKeys { get; set; }
-    public List<VerificationMaterialAgreement> encKeys { get; set; }
+    public List<VerificationMaterialAuthentication> SigningKeys { get; set; }
+    public List<VerificationMaterialAgreement> EncKeys { get; set; }
     
     public TestData(List<VerificationMaterialAuthentication> signingKeys, List<VerificationMaterialAgreement> encKeys)
     {
-        this.signingKeys = signingKeys;
-        this.encKeys = encKeys;
+        this.SigningKeys = signingKeys;
+        this.EncKeys = encKeys;
     }
 
     public TestData()
