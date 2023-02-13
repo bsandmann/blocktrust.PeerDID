@@ -77,40 +77,6 @@ public class PeerDidHelper
             }
         }
 
-        // var otherServiceList = serviceMapList.Select((serviceMap, serviceNumber) =>
-        // {
-        //     if (!serviceMap.ContainsKey(ServicePrefix["SERVICE_TYPE"]))
-        //     {
-        //         throw new ArgumentException("service doesn't contain a type");
-        //     }
-        //
-        //     var f = serviceMap[ServicePrefix["SERVICE_TYPE"]];
-        //     var s = f.ToString();
-        //     var serviceType = s.Replace(ServicePrefix["SERVICE_DIDCOMM_MESSAGING"], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
-        //     var service = new Dictionary<string, object>
-        //     {
-        //         { "id", $"{peerDid}#{((string)serviceType).ToLower()}-{serviceNumber}" },
-        //         { "type", serviceType }
-        //     };
-        //
-        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ENDPOINT"]))
-        //     {
-        //         service["SERVICE_ENDPOINT"] = serviceMap[ServicePrefix["SERVICE_ENDPOINT"]];
-        //     }
-        //
-        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ROUTING_KEYS"]))
-        //     {
-        //         service["SERVICE_ROUTING_KEYS"] = serviceMap[ServicePrefix["SERVICE_ROUTING_KEYS"]];
-        //     }
-        //
-        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ACCEPT"]))
-        //     {
-        //         service["SERVICE_ACCEPT"] = serviceMap[ServicePrefix["SERVICE_ACCEPT"]];
-        //     }
-        //
-        //     return new OtherService(service);
-        // }).ToList().Select(p => (Service)p).ToList();
-
         var otherServiceList2 = new List<Service>();
         for (int i = 0; i < serviceMapList.Count; i++)
         {
@@ -131,21 +97,78 @@ public class PeerDidHelper
 
             if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]))
             {
-                service[ServiceConstants.SERVICE_ENDPOINT] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]];
+                if (obj is JsonElement)
+                {
+                    var jsonElement = (JsonElement)obj;
+                    if (jsonElement.ValueKind == JsonValueKind.String)
+                    {
+                        service[ServiceConstants.SERVICE_ENDPOINT] = jsonElement.GetString() ?? string.Empty;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unexpected value kind in JSON element");
+                    }
+                }
+                else
+                {
+                    service[ServiceConstants.SERVICE_ENDPOINT] = obj;
+                }
             }
 
             if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]))
             {
-                service[ServiceConstants.SERVICE_ROUTING_KEYS] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
+                var obj =serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
+                if (obj is JsonElement)
+                {
+                    var jsonElement = (JsonElement)obj;
+                    if (jsonElement.ValueKind == JsonValueKind.String)
+                    {
+                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.GetString() ?? string.Empty;
+                    }
+                    else if (jsonElement.ValueKind == JsonValueKind.Array)
+                    {
+                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.EnumerateArray().Select(p => p.GetString());
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unexpected value kind in JSON element");
+                    } 
+                }
+                else
+                {
+                    service[ServiceConstants.SERVICE_ROUTING_KEYS] = obj;
+                }
             }
 
             if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ACCEPT]))
             {
-                service[ServiceConstants.SERVICE_ACCEPT] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
+                var obj =serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
+                if (obj is JsonElement)
+                {
+                    var jsonElement = (JsonElement)obj;
+                    if (jsonElement.ValueKind == JsonValueKind.String)
+                    {
+                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.GetString() ?? string.Empty;
+                    }
+                    else if (jsonElement.ValueKind == JsonValueKind.Array)
+                    {
+                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.EnumerateArray().Select(p => p.GetString());
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unexpected value kind in JSON element");
+                    } 
+                }
+                else
+                {
+                    service[ServiceConstants.SERVICE_ACCEPT] = obj;
+                }
             }
+
             otherServiceList2.Add(new OtherService(service));
-        } 
-        
+        }
+
         return otherServiceList2;
     }
 
@@ -285,7 +308,7 @@ public class PeerDidHelper
             VerMaterial = decodedEncumbasis.VerMaterial
         };
     }
-    
+
     private static void ValidateJson(string service)
     {
         try

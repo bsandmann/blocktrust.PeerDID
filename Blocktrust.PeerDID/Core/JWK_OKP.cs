@@ -80,24 +80,6 @@ public static class JwkOkp
 
         string value = jwkDict["x"];
 
-        return Common.Converter.Base64Url.Decode(value);
-    }
-
-    public static byte[] Decode(string input)
-    {
-        string s = input.Replace('-', '+').Replace('_', '/');
-        switch (s.Length % 4)
-        {
-            case 0:
-                return Convert.FromBase64String(s);
-            case 2:
-                s += "==";
-                goto case 0;
-            case 3:
-                s += "=";
-                goto case 0;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(input), "Illegal base64url string!");
-        }
+        return Base64Url.Decode(value);
     }
 }
