@@ -11,49 +11,49 @@ public class ResolveNumalgo2
     public void TestResolvePositiveDefault()
     {
         string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2));
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.FromJson(realValue));
+        Assert.Equal( Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveBase58()
     {
         string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.BASE58);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_BASE58), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_BASE58), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveMultibase()
     {
         string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.MULTIBASE);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_MULTIBASE), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveJWK()
     {
         string realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2), VerificationMaterialFormatPeerDid.JWK);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_JWK), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_JWK), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveServiceIs2ElementsArray()
     {
         var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_2_SERVICES));
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveNoService()
     {
         var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES));
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_NO_SERVICES), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_NO_SERVICES), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveMinimalService()
     {
         var realValue =  PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES));
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_MINIMAL_SERVICES), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_MINIMAL_SERVICES), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
@@ -132,7 +132,7 @@ public class ResolveNumalgo2
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXX0="
             ));
         });
-        Assert.Matches(new Regex("Invalid peer DID provided.Invalid key."), exception.Message);
+        Assert.Matches(new Regex("Invalid peer DID provided.*Invalid key.*"), exception.Message);
     }
     
     [Fact]
@@ -146,7 +146,7 @@ public class ResolveNumalgo2
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXX0="
             ));
         });
-        Assert.Matches(new Regex("Invalid peer DID provided.Invalid key."), exception.Message);
+        Assert.Matches(new Regex("Invalid peer DID provided.*Invalid key.*"), exception.Message);
     }
     
     [Fact]
@@ -190,7 +190,7 @@ public class ResolveNumalgo2
                 ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0="
             ));
         });
-        Assert.Matches(new Regex("Invalid peer DID provided.Does not match peer DID regexp."), exception.Message);
+        Assert.Matches(new Regex("Invalid peer DID provided.*Does not match peer DID regexp.*"), exception.Message);
     }
 
     [Fact]

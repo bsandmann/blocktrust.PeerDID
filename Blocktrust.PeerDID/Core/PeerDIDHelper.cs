@@ -55,7 +55,7 @@ public class PeerDidHelper
             return null;
         }
 
-        var decodedService = Encoding.UTF8.GetString(Convert.FromBase64String(encodedService));
+        var decodedService = Base64Url.Decode(encodedService);
 
         List<Dictionary<string, object>> serviceMapList;
         try
@@ -77,40 +77,76 @@ public class PeerDidHelper
             }
         }
 
-        var otherServiceList = serviceMapList.Select((serviceMap, serviceNumber) =>
+        // var otherServiceList = serviceMapList.Select((serviceMap, serviceNumber) =>
+        // {
+        //     if (!serviceMap.ContainsKey(ServicePrefix["SERVICE_TYPE"]))
+        //     {
+        //         throw new ArgumentException("service doesn't contain a type");
+        //     }
+        //
+        //     var f = serviceMap[ServicePrefix["SERVICE_TYPE"]];
+        //     var s = f.ToString();
+        //     var serviceType = s.Replace(ServicePrefix["SERVICE_DIDCOMM_MESSAGING"], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
+        //     var service = new Dictionary<string, object>
+        //     {
+        //         { "id", $"{peerDid}#{((string)serviceType).ToLower()}-{serviceNumber}" },
+        //         { "type", serviceType }
+        //     };
+        //
+        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ENDPOINT"]))
+        //     {
+        //         service["SERVICE_ENDPOINT"] = serviceMap[ServicePrefix["SERVICE_ENDPOINT"]];
+        //     }
+        //
+        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ROUTING_KEYS"]))
+        //     {
+        //         service["SERVICE_ROUTING_KEYS"] = serviceMap[ServicePrefix["SERVICE_ROUTING_KEYS"]];
+        //     }
+        //
+        //     if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ACCEPT"]))
+        //     {
+        //         service["SERVICE_ACCEPT"] = serviceMap[ServicePrefix["SERVICE_ACCEPT"]];
+        //     }
+        //
+        //     return new OtherService(service);
+        // }).ToList().Select(p => (Service)p).ToList();
+
+        var otherServiceList2 = new List<Service>();
+        for (int i = 0; i < serviceMapList.Count; i++)
         {
-            if (!serviceMap.ContainsKey(ServicePrefix["SERVICE_TYPE"]))
+            var serviceMap = serviceMapList[i];
+            if (!serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_TYPE]))
             {
                 throw new ArgumentException("service doesn't contain a type");
             }
 
-            var f = serviceMap[ServicePrefix["SERVICE_TYPE"]];
+            var f = serviceMap[ServicePrefix[ServiceConstants.SERVICE_TYPE]];
             var s = f.ToString();
-            var serviceType = s.Replace(ServicePrefix["SERVICE_DIDCOMM_MESSAGING"], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
+            var serviceType = s.Replace(ServicePrefix[ServiceConstants.SERVICE_DIDCOMM_MESSAGING], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
             var service = new Dictionary<string, object>
             {
-                { "id", $"{peerDid}#{((string)serviceType).ToLower()}-{serviceNumber}" },
-                { "type", serviceType }
+                { ServiceConstants.SERVICE_ID, $"{peerDid.Value}#{((string)serviceType).ToLower()}-{i}" },
+                { ServiceConstants.SERVICE_TYPE, serviceType }
             };
 
-            if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ENDPOINT"]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]))
             {
-                service["SERVICE_ENDPOINT"] = serviceMap[ServicePrefix["SERVICE_ENDPOINT"]];
+                service[ServiceConstants.SERVICE_ENDPOINT] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]];
             }
 
-            if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ROUTING_KEYS"]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]))
             {
-                service["SERVICE_ROUTING_KEYS"] = serviceMap[ServicePrefix["SERVICE_ROUTING_KEYS"]];
+                service[ServiceConstants.SERVICE_ROUTING_KEYS] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
             }
 
-            if (serviceMap.ContainsKey(ServicePrefix["SERVICE_ACCEPT"]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ACCEPT]))
             {
-                service["SERVICE_ACCEPT"] = serviceMap[ServicePrefix["SERVICE_ACCEPT"]];
+                service[ServiceConstants.SERVICE_ACCEPT] = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
             }
-
-            return new OtherService(service);
-        }).ToList().Select(p => (Service)p).ToList();
-        return otherServiceList;
+            otherServiceList2.Add(new OtherService(service));
+        } 
+        
+        return otherServiceList2;
     }
 
     /// <summary>
@@ -229,7 +265,7 @@ public class PeerDidHelper
                             type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
                             value: JwkOkp.ToJwk(
                                 decodedEncnumbasisWithoutPrefix,
-                                VerificationMethodTypeAgreement.JSON_WEB_KEY_2020)
+                                VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020)
                         );
                         break;
                 }

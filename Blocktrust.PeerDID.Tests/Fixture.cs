@@ -12,7 +12,7 @@ public class Fixture
 
     public static string RemoveWhiteSpace(string input)
     {
-        return input.Replace(" ", "");
+        return input.Replace(" ", "").Replace("\n", "").Replace("\r", "");
     }
 
     public static readonly string PEER_DID_NUMALGO_0 = "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V";
@@ -311,8 +311,8 @@ public class Fixture
            "service": [
                {
                    "id": "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg.SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9#didcommmessaging-0",
-                   "serviceEndpoint": "https://example.com/endpoint",
-                   "type": "DIDCommMessaging"
+                   "type": "DIDCommMessaging",
+                   "serviceEndpoint": "https://example.com/endpoint"
                }
            ]
        }

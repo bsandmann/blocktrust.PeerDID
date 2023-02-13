@@ -11,11 +11,11 @@ public static class JwkOkp
     {
         string x = Base64Url.Encode(publicKey);
         string crv;
-        if (verMethodType.Value.Equals(VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value))
+        if (verMethodType is VerificationMethodTypeAuthentication)
         {
             crv = "Ed25519";
         }
-        else if (verMethodType.Value.Equals(VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value))
+        else if (verMethodType is VerificationMethodTypeAgreement)
         {
             crv = "X25519";
         }
