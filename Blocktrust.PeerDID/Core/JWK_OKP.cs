@@ -2,13 +2,14 @@ namespace Blocktrust.PeerDID.Core;
 
 using System.Buffers.Text;
 using System.Text.Json;
+using Common.Converter;
 using Types;
 
 public static class JwkOkp
 {
     internal static Dictionary<string, string> ToJwk(byte[] publicKey, VerificationMethodTypePeerDid verMethodType)
     {
-        string x = System.Convert.ToBase64String(publicKey);
+        string x = Base64Url.Encode(publicKey);
         string crv;
         if (verMethodType.Value.Equals(VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value))
         {

@@ -4,12 +4,19 @@ using Blocktrust.PeerDID.Exceptions;
 
 namespace Blocktrust.PeerDID.DIDDoc;
 
+using System.Text.Json.Serialization;
+using Common.Converter;
+
 public class DidDocPeerDid
 {
+    [JsonPropertyName("id")]
     public string Did { get; set; }
+    [JsonPropertyName("authentication")]
     public List<VerificationMethodPeerDid> Authentication { get; set; }
-    public List<VerificationMethodPeerDid> KeyAgreement { get; set; }
-    public List<Service> Service { get; set; }
+
+    [JsonPropertyName("keyAgreement")] public List<VerificationMethodPeerDid> KeyAgreement { get; set; } = new List<VerificationMethodPeerDid>();
+    [JsonPropertyName("service")]
+    public List<Service>? Service { get; set; }
 
 
     public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<Service> service)
@@ -109,6 +116,6 @@ public class DidDocPeerDid
     public string ToJson()
     {
         //TODO indenting?
-        return JsonSerializer.Serialize(this.ToDict()); //, Formatting.Indented);
+        return JsonSerializer.Serialize(this.ToDict(),SerializationOptions.DisplayIndented );
     }
 }

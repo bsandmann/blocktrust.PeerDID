@@ -11,28 +11,28 @@ public class ResolveNumalgo0
     public void TestResolvePositiveDefault()
     {
         var realValue = PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_0));
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_O_MULTIBASE), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_O_MULTIBASE), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveBase58()
     {
         var realValue = PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_0), VerificationMaterialFormatPeerDid.BASE58);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_O_BASE58), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_O_BASE58), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveMultibase()
     {
         var realValue = PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_0), VerificationMaterialFormatPeerDid.MULTIBASE);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_O_MULTIBASE), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_O_MULTIBASE), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
     public void TestResolvePositiveJWK()
     {
         var realValue = PeerDidResolver.ResolvePeerDid(new PeerDid(Fixture.PEER_DID_NUMALGO_0), VerificationMaterialFormatPeerDid.JWK);
-        Assert.Equal(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_O_JWK), Fixture.FromJson(realValue));
+        Assert.Equal(Fixture.RemoveWhiteSpace(Fixture.DID_DOC_NUMALGO_O_JWK), Fixture.RemoveWhiteSpace(realValue));
     }
 
     [Fact]
@@ -97,4 +97,5 @@ public class ResolveNumalgo0
         var ex = Assert.Throws<MalformedPeerDidException>(() => { PeerDidResolver.ResolvePeerDid(new PeerDid("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V&")); });
         Assert.Matches("Invalid peer DID provided.*Does not match peer DID regexp.*", ex.Message);
     }
+    
 }

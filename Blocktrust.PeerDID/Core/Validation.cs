@@ -17,6 +17,8 @@ public static class Validation
             throw new System.ArgumentException("Invalid verification material type: " + verificationMaterial.Type + " instead of VerificationMaterialAgreement");
     }
 
+    
+    //TODO move into Common / JsonUtils
     internal static void ValidateJson(string value)
     {
         try

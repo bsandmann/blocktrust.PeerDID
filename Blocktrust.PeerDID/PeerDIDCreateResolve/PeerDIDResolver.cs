@@ -99,19 +99,7 @@ public static class PeerDidResolver
         try
         {
             DecodedEncumbasis decodedEncumbasis = PeerDidHelper.DecodeMultibaseEncnumbasis(multibase, format);
-            //TODO correct? 
-            if (decodedEncumbasis.VerMaterial.Type is VerificationMethodTypeAgreement)
-            {
-                Validation.ValidateAuthenticationMaterialType(decodedEncumbasis.VerMaterial);
-            }
-            else if (decodedEncumbasis.VerMaterial.Type is VerificationMethodTypeAgreement)
-            {
-                Validation.ValidateAuthenticationMaterialType(decodedEncumbasis.VerMaterial);
-            }
-            else
-            {
-                throw new Exception();
-            }
+            Validation.ValidateAuthenticationMaterialType(decodedEncumbasis.VerMaterial);
 
             return decodedEncumbasis;
         }
