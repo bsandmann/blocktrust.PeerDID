@@ -1,8 +1,5 @@
 namespace Blocktrust.PeerDID.Types;
 
-using System.Text.Json;
-using Common.Converter;
-
 public class VerificationMaterialPeerDid<T> where T : VerificationMethodTypePeerDid
 {
     public VerificationMaterialFormatPeerDid Format { get; }
@@ -15,7 +12,8 @@ public class VerificationMaterialPeerDid<T> where T : VerificationMethodTypePeer
         Value = value;
         Type = type;
     }
-    
+
+
     public Dictionary<string,string> ValueAsDictionaryStringString()
     {
         //TODO DRY i used it somehwer else

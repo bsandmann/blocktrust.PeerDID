@@ -9,17 +9,10 @@ public static class Multicodec
    public static readonly MulticodecPoco X25519 = new MulticodecPoco(NameX25519, new byte[] { 0xEC }, 236);
    public static readonly MulticodecPoco Ed25519 = new MulticodecPoco(NameED25519, new byte[] { 0xED }, 237);
     
-    // public enum Codec
-    // {
-    //     X25519 = 0xEC,
-    //     ED25519 = 0xED
-    // }
-
     public static byte[] ToMulticodec(byte[] value, VerificationMethodTypePeerDid keyType)
     {
         int prefix = GetCodec(keyType).PrefixInt;
         var byteBuffer = new byte[2];
-        //TODO unclear if the implementation is correct
         MemoryStream stream = new MemoryStream(byteBuffer);
         VarInt.WriteVarInt(prefix, stream);
         return byteBuffer.Concat(value).ToArray();
@@ -30,7 +23,6 @@ public static class Multicodec
         int prefix = VarInt.ReadVarInt(new MemoryStream(value));
         MulticodecPoco codec = GetCodec(prefix);
         var byteBuffer = new byte[2];
-        //TODO unclear if the implementation is correct
         MemoryStream stream = new MemoryStream(byteBuffer);
         VarInt.WriteVarInt(prefix, stream);
         return new KeyValuePair<MulticodecPoco, byte[]>(codec, value.Skip(byteBuffer.Length).ToArray());

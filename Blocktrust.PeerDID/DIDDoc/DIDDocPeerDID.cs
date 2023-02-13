@@ -1,11 +1,12 @@
 using System.Text.Json;
-using System.Xml;
 using Blocktrust.PeerDID.Exceptions;
 
 namespace Blocktrust.PeerDID.DIDDoc;
 
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Common.Converter;
+using Core;
 
 public class DidDocPeerDid
 {
@@ -18,6 +19,11 @@ public class DidDocPeerDid
     [JsonPropertyName("service")]
     public List<Service>? Service { get; set; }
 
+    public DidDocPeerDid()
+    {
+        
+    }
+    
 
     public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<Service> service)
     {
@@ -44,11 +50,17 @@ public class DidDocPeerDid
     {
         try
         {
-            return JsonSerializer.Deserialize<DidDocPeerDid>(value);
+            // var serializerOptions = new JsonSerializerOptions();
+            // serializerOptions.Converters.Add(new VerificationMethodPeerDIDConverter());
+            var ff = JsonNode.Parse(value);
+            var obj = ff.AsObject();
+            var doc = DidDocHelper.DidDocFromJson(obj);
+            return doc;
+            // return JsonSerializer.Deserialize<DidDocPeerDid>(value, serializerOptions);
         }
         catch (System.Exception e)
         {
-            throw new MalformedPeerDidException(e.Message);
+            throw new  MalformedPeerDIDDocException(e);
         }
     }
 

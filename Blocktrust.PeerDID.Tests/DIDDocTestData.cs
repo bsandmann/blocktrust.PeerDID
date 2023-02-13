@@ -1,6 +1,5 @@
 namespace Blocktrust.PeerDID.Tests;
 
-using DIDDoc;
 using Types;
 
 public class DidDocTestData

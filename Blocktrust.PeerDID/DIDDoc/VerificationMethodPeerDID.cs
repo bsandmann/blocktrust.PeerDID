@@ -7,7 +7,8 @@ public class VerificationMethodPeerDid
 {
     [JsonPropertyName("id")] public string Id { get; set; }
     [JsonPropertyName("controller")] public string Controller { get; set; }
-    public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; set; }
+
+    public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; set; } 
 
     private string PublicKeyField()
     {

@@ -1,6 +1,5 @@
 namespace Blocktrust.PeerDID.Core;
 
-using System.Text.RegularExpressions;
 using SimpleBase;
 
 public class Multibase
@@ -12,10 +11,7 @@ public class Multibase
 
     public static string ToBase58Multibase(byte[] value)
     {
-        //TODO unclear if this simplification is correct
-        // return Multibase.Encode(Multibase.Base.Base58BTC, value);
-        var f = 'z' + Base58.Bitcoin.Encode(value);
-        return f;
+      return 'z' + Base58.Bitcoin.Encode(value);
     }
 
     public static string ToBase58(byte[] value)

@@ -1,6 +1,5 @@
 namespace Blocktrust.PeerDID.Core;
 
-using System.Buffers.Text;
 using System.Text.Json;
 using Common.Converter;
 using Types;

@@ -1,7 +1,5 @@
 namespace Blocktrust.PeerDID.Core;
 
-using System.Security.Cryptography;
-
 public class MulticodecPoco
 {
     public string Name {get; set;}
