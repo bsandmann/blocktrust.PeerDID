@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.Exceptions
 
 {
+    // ReSharper disable once InconsistentNaming
     public class MalformedPeerDIDDocException : PeerDidException
     {
         /// <summary>

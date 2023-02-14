@@ -48,7 +48,7 @@ public class PeerDidHelper
     /// <param name="peerDid">PeerDID which will be used as an ID</param>
     /// <returns>decoded service</returns>
     /// <exception cref="ArgumentException">if service is not correctly decoded</exception>
-    public static List<Service> DecodeService(string encodedService, PeerDid peerDid)
+    public static List<PeerDidService> DecodeService(string encodedService, PeerDid peerDid)
     {
         if (encodedService == "")
         {
@@ -77,7 +77,7 @@ public class PeerDidHelper
             }
         }
 
-        var otherServiceList2 = new List<Service>();
+        var otherServiceList2 = new List<PeerDidService>();
         for (int i = 0; i < serviceMapList.Count; i++)
         {
             var serviceMap = serviceMapList[i];
@@ -128,7 +128,7 @@ public class PeerDidHelper
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.EnumerateArray().Select(p => p.GetString());
+                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -153,7 +153,7 @@ public class PeerDidHelper
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.EnumerateArray().Select(p => p.GetString());
+                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -166,7 +166,7 @@ public class PeerDidHelper
                 }
             }
 
-            otherServiceList2.Add(new OtherService(service));
+            otherServiceList2.Add(PeerDidService.FromDictionary(service));
         }
 
         return otherServiceList2;

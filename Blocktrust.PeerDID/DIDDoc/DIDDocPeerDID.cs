@@ -10,30 +10,26 @@ using Core;
 
 public class DidDocPeerDid
 {
-    [JsonPropertyName("id")]
-    public string Did { get; set; }
-    [JsonPropertyName("authentication")]
-    public List<VerificationMethodPeerDid> Authentication { get; set; }
+    [JsonPropertyName("id")] public string Did { get; set; }
+    [JsonPropertyName("authentication")] public List<VerificationMethodPeerDid> Authentication { get; set; }
 
     [JsonPropertyName("keyAgreement")] public List<VerificationMethodPeerDid> KeyAgreement { get; set; } = new List<VerificationMethodPeerDid>();
-    [JsonPropertyName("service")]
-    public List<Service>? Service { get; set; }
+    [JsonPropertyName("service")] public List<PeerDidService>? Service { get; set; }
 
     public DidDocPeerDid()
     {
-        
     }
-    
 
-    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<Service> service)
+
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<PeerDidService> service)
     {
         this.Did = did;
         this.Authentication = authentication;
         this.KeyAgreement = keyAgreement;
         this.Service = service;
     }
-    
-    
+
+
     public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication)
     {
         this.Did = did;
@@ -60,7 +56,7 @@ public class DidDocPeerDid
         }
         catch (System.Exception e)
         {
-            throw new  MalformedPeerDIDDocException(e);
+            throw new MalformedPeerDIDDocException(e);
         }
     }
 
@@ -109,14 +105,7 @@ public class DidDocPeerDid
             List<object> serviceList = new List<object>();
             foreach (var item in Service)
             {
-                if (item is OtherService)
-                {
-                    serviceList.Add(((OtherService)item).Data);
-                }
-                else if (item is DidCommServicePeerDid)
-                {
-                    serviceList.Add(((DidCommServicePeerDid)item).ToDict());
-                }
+                serviceList.Add(item.ToDict());
             }
 
             res.Add("service", serviceList);
@@ -127,7 +116,8 @@ public class DidDocPeerDid
 
     public string ToJson()
     {
-        //TODO indenting?
-        return JsonSerializer.Serialize(this.ToDict(),SerializationOptions.DisplayIndented );
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.WriteIndented = true;
+        return JsonSerializer.Serialize(this.ToDict(), serializerOptions);
     }
 }

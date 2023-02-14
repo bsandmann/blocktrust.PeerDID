@@ -126,7 +126,7 @@ public static class PeerDidResolver
         }
     }
 
-    private static List<Service> DoDecodeService(string service, string peerDid)
+    private static List<PeerDidService> DoDecodeService(string service, string peerDid)
     {
         try
         {

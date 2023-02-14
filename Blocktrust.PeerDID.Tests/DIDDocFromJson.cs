@@ -18,7 +18,7 @@ public class DidDocFromJson
             VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
             PublicKeyFieldValues.BASE58
         ));
-        
+
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_O_MULTIBASE),
             VerificationMaterialFormatPeerDid.MULTIBASE,
@@ -136,7 +136,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.Kty, computedJwk.Kty);
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
-        
+
         var auth2 = didDoc.Authentication[1];
         var expectedAuthArray2 = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().Skip(1).First();
         var expectedAuth2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray2.GetRawText());
@@ -158,7 +158,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.Kty, computedJwk.Kty);
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
-        
+
         var agreem = didDoc.KeyAgreement[0];
         var expectedAgreemArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["keyAgreement"])).EnumerateArray().First();
         var expectedAgreem = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAgreemArray.GetRawText());
@@ -180,19 +180,19 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.Kty, computedJwk.Kty);
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
-        
+
         var service = didDoc.Service![0];
         var expectedServiceArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["service"])).EnumerateArray().First();
         var expectedService = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray.GetRawText());
-        var didCommService = (OtherService) service;
-        Assert.Equivalent(expectedService!["id"].ToString(), didCommService.Data["id"].ToString());
-        Assert.Equal(expectedService["serviceEndpoint"].ToString(), didCommService.Data["serviceEndpoint"].ToString());
-        Assert.Equal(expectedService["type"].ToString(), didCommService.Data["type"].ToString());
-        Assert.Equal(Fixture.RemoveWhiteSpace(expectedService!["routingKeys"].ToString()), Fixture.RemoveWhiteSpace(didCommService!.Data["routingKeys"].ToString()));
-        Assert.Equal(Fixture.RemoveWhiteSpace(expectedService!["accept"].ToString()),Fixture.RemoveWhiteSpace( didCommService!.Data["accept"].ToString()));
+        var didCommService = (PeerDidService)service;
+        Assert.Equivalent(expectedService!["id"].ToString(), didCommService.Id);
+        Assert.Equal(expectedService["serviceEndpoint"].ToString(), didCommService.ServiceEndpoint);
+        Assert.Equal(expectedService["type"].ToString(), didCommService.Type);
+        Assert.Equivalent(((JsonElement)expectedService!["routingKeys"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService!.RoutingKeys);
+        Assert.Equivalent(((JsonElement)expectedService!["accept"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService!.Accept);
         Assert.Equivalent(expectedAuth1["id"].ToString(), didDoc.AuthenticationKids[0]);
         Assert.Equivalent(expectedAuth2["id"].ToString(), didDoc.AuthenticationKids[1]);
-        Assert.Equivalent( expectedAgreem["id"].ToString(), didDoc.AgreementKids[0]);
+        Assert.Equivalent(expectedAgreem["id"].ToString(), didDoc.AgreementKids[0]);
     }
 
     [Fact]
@@ -206,19 +206,19 @@ public class DidDocFromJson
 
         var service1 = didDoc.Service[0];
         var expectedServiceArray1 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().First();
-        var expectedService1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray1.GetRawText()); 
-        var didCommService1 = (OtherService) service1;
-        Assert.Equal(expectedService1!["id"].ToString(), didCommService1.Data["id"].ToString());
-        Assert.Equal(expectedService1["serviceEndpoint"].ToString(),didCommService1.Data["serviceEndpoint"].ToString());
-        Assert.Equal(expectedService1["type"].ToString(),didCommService1.Data["type"].ToString());
-        Assert.Equal(Fixture.RemoveWhiteSpace(expectedService1!["routingKeys"].ToString()), Fixture.RemoveWhiteSpace(didCommService1!.Data["routingKeys"].ToString()));
-        Assert.False(didCommService1.Data.ContainsKey("accept"));
+        var expectedService1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray1.GetRawText());
+        var didCommService1 = (PeerDidService)service1;
+        Assert.Equal(expectedService1!["id"].ToString(), didCommService1.Id);
+        Assert.Equal(expectedService1["serviceEndpoint"].ToString(), didCommService1.ServiceEndpoint);
+        Assert.Equal(expectedService1["type"].ToString(), didCommService1.Type);
+        Assert.Equivalent(((JsonElement)expectedService1!["routingKeys"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService1!.RoutingKeys);
+        Assert.Empty(didCommService1.Accept);
 
         var service2 = didDoc.Service[1];
         var expectedServiceArray2 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().Skip(1).First();
-        var expectedService2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray2.GetRawText()); 
-        var didCommService2 = (OtherService) service2;
-        Assert.Equal(Fixture.RemoveWhiteSpace(expectedService2!["accept"].ToString()),Fixture.RemoveWhiteSpace( didCommService2!.Data["accept"].ToString()));
+        var expectedService2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray2.GetRawText());
+        var didCommService2 = (PeerDidService)service2;
+        Assert.Equivalent(((JsonElement)expectedService2!["accept"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService2!.Accept);
     }
 
     [Fact]
@@ -241,13 +241,13 @@ public class DidDocFromJson
         Assert.Single(didDoc.KeyAgreement);
 
         var service = didDoc.Service![0];
-        var didCommService = (OtherService)service;
+        var didCommService = (PeerDidService)service;
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg.SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9#didcommmessaging-0",
-            didCommService.Data["id"].ToString()
+            didCommService.Id
         );
-        Assert.Equal("https://example.com/endpoint", didCommService.Data["serviceEndpoint"].ToString());
-        Assert.Equal("DIDCommMessaging", didCommService.Data["type"].ToString());
+        Assert.Equal("https://example.com/endpoint", didCommService.ServiceEndpoint.ToString());
+        Assert.Equal("DIDCommMessaging", didCommService.Type.ToString());
     }
 
     [Fact]

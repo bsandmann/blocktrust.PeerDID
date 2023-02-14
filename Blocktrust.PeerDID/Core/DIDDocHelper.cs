@@ -3,7 +3,6 @@ namespace Blocktrust.PeerDID.Core;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using DIDDoc;
-using Tests;
 using Types;
 
 public static class DidDocHelper
@@ -60,7 +59,7 @@ public static class DidDocHelper
             keyAgreement = keyAgreementJsonNode?.AsArray().Select(p => VerificationMethodFromJson(p.AsObject())).ToList();
         }
 
-        List<Service>? service = null;
+        List<PeerDidService>? service = null;
         jsonObject.TryGetPropertyValue("service", out JsonNode? serviceJsonNode);
         if (serviceJsonNode is not null)
         {
@@ -137,7 +136,7 @@ public static class DidDocHelper
         };
     }
 
-    private static Service ServiceFromJson(JsonObject jsonObject)
+    private static PeerDidService ServiceFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
         string id = jsonObject[ServiceConstants.SERVICE_ID]?.ToString();
@@ -152,16 +151,16 @@ public static class DidDocHelper
             throw new System.ArgumentException("No 'type' field in service " + jsonObject.ToString());
         }
 
-        if (type != "SERVICE_DIDCOMM_MESSAGING")
+        if (type != ServiceConstants.SERVICE_DIDCOMM_MESSAGING)
         {
-            return new OtherService(serviceMap);
+            return PeerDidService.FromDictionary(serviceMap);
         }
 
         string endpoint = jsonObject[ServiceConstants.SERVICE_ENDPOINT]?.ToString();
         List<string> routingKeys = jsonObject[ServiceConstants.SERVICE_ROUTING_KEYS]?.AsArray()?.Select(x => x.ToString()).ToList();
         List<string> accept = jsonObject[ServiceConstants.SERVICE_ACCEPT]?.AsArray()?.Select(x => x.ToString()).ToList();
 
-        return new DidCommServicePeerDid(
+        return new PeerDidService(
             id: id,
             type: type,
             serviceEndpoint: endpoint ?? "",

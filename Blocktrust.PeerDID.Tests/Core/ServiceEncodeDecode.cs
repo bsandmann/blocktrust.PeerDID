@@ -27,10 +27,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeService()
     {
-        var expected = new List<OtherService>
+        var expected = new List<PeerDidService>
         {
-            new OtherService
-            (
+            PeerDidService.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -38,8 +37,7 @@ public class ServiceEncodeDecode
                     { "serviceEndpoint", "https://example.com/endpoint" },
                     { "routingKeys", new List<string> { "did:example:somemediator#somekey" } },
                     { "accept", new List<string> { "didcomm/v2", "didcomm/aip2;env=rfc587" } },
-                }
-            )
+                })
         };
         var service = PeerDidHelper.DecodeService(
             "eyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCIsInIiOlsiZGlkOmV4YW1wbGU6c29tZW1lZGlhdG9yI3NvbWVrZXkiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX0",
@@ -67,10 +65,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeServiceMinimalFields()
     {
-        var expected = new List<OtherService>
+        var expected = new List<PeerDidService>
         {
-            new OtherService
-            (
+            PeerDidService.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -114,10 +111,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeServiceMultipleEntries()
     {
-        var expected = new List<OtherService>
+        var expected = new List<PeerDidService>
         {
-            new OtherService
-            (
+            PeerDidService.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -127,8 +123,7 @@ public class ServiceEncodeDecode
                     { "accept", new List<string> { "didcomm/v2", "didcomm/aip2;env=rfc587" } },
                 }
             ),
-            new OtherService
-            (
+            PeerDidService.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-1" },

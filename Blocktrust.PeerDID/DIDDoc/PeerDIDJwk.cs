@@ -1,4 +1,4 @@
-namespace Blocktrust.PeerDID.Tests;
+namespace Blocktrust.PeerDID.DIDDoc;
 
 using System.Text.Json.Serialization;
 

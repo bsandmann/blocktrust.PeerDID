@@ -47,14 +47,14 @@ public static class PeerDidCreator
         List<VerificationMaterialAuthentication> signingKeys,
         string? service)
     {
-        encryptionKeys.ForEach(x => Validation.ValidateAgreementMaterialType(x));
-        signingKeys.ForEach(x => Validation.ValidateAuthenticationMaterialType(x));
+        encryptionKeys.ForEach(Validation.ValidateAgreementMaterialType);
+        signingKeys.ForEach(Validation.ValidateAuthenticationMaterialType);
 
         string encodedEncryptionKeysStr = string.Join("", encryptionKeys
-            .Select(x => PeerDidHelper.CreateMultibaseEncnumbasis(x))
+            .Select(PeerDidHelper.CreateMultibaseEncnumbasis)
             .Select(x => $".{Numalgo2Prefix.KEY_AGREEMENT}{x}"));
         string encodedSigningKeysStr = string.Join("", signingKeys
-            .Select(x => PeerDidHelper.CreateMultibaseEncnumbasis(x))
+            .Select(PeerDidHelper.CreateMultibaseEncnumbasis)
             .Select(x => $".{Numalgo2Prefix.AUTHENTICATION}{x}"));
         string encodedService = string.IsNullOrWhiteSpace(service) ? "" : PeerDidHelper.EncodeService(service);
 
