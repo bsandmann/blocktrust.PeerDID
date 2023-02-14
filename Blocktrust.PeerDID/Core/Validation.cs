@@ -19,7 +19,7 @@ public static class Validation
 
     
     //TODO move into Common / JsonUtils
-    internal static void ValidateJson(string value)
+    public static void ValidateJson(string value)
     {
         try
         {
@@ -29,8 +29,6 @@ public static class Validation
         {
             throw new System.ArgumentException("Invalid JSON " + value, ex);
         }
-
-        if (!value.Contains("{")) throw new System.ArgumentException("Invalid JSON " + value);
     }
 
     internal static void ValidateRawKeyLength(byte[] key)

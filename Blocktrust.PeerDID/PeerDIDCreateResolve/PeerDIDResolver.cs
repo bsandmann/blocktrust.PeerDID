@@ -15,7 +15,7 @@ public static class PeerDidResolver
     /// <returns>resolved [DIDDocPeerDID] as JSON string</returns>
     /// <exception cref="MalformedPeerDidException">if [peerDID] parameter does not match [peerDID] spec, if a valid DIDDoc cannot be produced from the [peerDID] </exception>
     /// <exception cref="ArgumentException"></exception>
-    public static string ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format = VerificationMaterialFormatPeerDid.MULTIBASE)
+    public static string ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
     {
         if (!PeerDidCreator.IsPeerDid(peerDid.Value))
         {

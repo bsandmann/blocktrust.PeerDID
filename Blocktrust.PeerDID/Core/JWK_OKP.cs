@@ -6,7 +6,7 @@ using Types;
 
 public static class JwkOkp
 {
-    internal static Dictionary<string, string> ToJwk(byte[] publicKey, VerificationMethodTypePeerDid verMethodType)
+    public static Dictionary<string, string> ToJwk(byte[] publicKey, VerificationMethodTypePeerDid verMethodType)
     {
         string x = Base64Url.Encode(publicKey);
         string crv;
@@ -32,7 +32,7 @@ public static class JwkOkp
         return jwk;
     }
 
-    internal static byte[] FromJwk(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial)
+    public static byte[] FromJwk(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial)
     {
         // This code could need improvement: it is not clear what is the expected input is. It could be a string, a dictionary (s,s) or a dictionary (s,o)
         var isDictionaryStringObject = verMaterial.Value is Dictionary<string, object>;

@@ -9,7 +9,7 @@ using Types;
 
 public class PeerDidHelper
 {
-    private static readonly Dictionary<string, string> ServicePrefix = new Dictionary<string, string>
+    private static readonly Dictionary<string, string> ServicePrefix = new()
     {
         { ServiceConstants.SERVICE_TYPE, "t" },
         { ServiceConstants.SERVICE_ENDPOINT, "s" },
@@ -179,7 +179,7 @@ public class PeerDidHelper
     /// <param name="key">public key</param>
     /// <returns>transform+encnumbasis</returns>
     /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
-    internal static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> key)
+    public static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> key)
     {
         byte[] decodedKey;
 
@@ -299,7 +299,7 @@ public class PeerDidHelper
         return new DecodedEncumbasis(encnumbasis, verMaterial);
     }
 
-    internal static VerificationMethodPeerDid GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
+    public static VerificationMethodPeerDid GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
     {
         return new VerificationMethodPeerDid
         {

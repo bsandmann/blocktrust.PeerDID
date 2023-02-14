@@ -6,8 +6,8 @@ public static class Multicodec
 {
    public const string NameX25519 = "X25519";
    public const string NameED25519 = "ED25519";
-   public static readonly MulticodecPoco X25519 = new MulticodecPoco(NameX25519, new byte[] { 0xEC }, 236);
-   public static readonly MulticodecPoco Ed25519 = new MulticodecPoco(NameED25519, new byte[] { 0xED }, 237);
+   private static readonly MulticodecPoco X25519 = new MulticodecPoco(NameX25519, new byte[] { 0xEC }, 236);
+   private static readonly MulticodecPoco Ed25519 = new MulticodecPoco(NameED25519, new byte[] { 0xED }, 237);
     
     public static byte[] ToMulticodec(byte[] value, VerificationMethodTypePeerDid keyType)
     {

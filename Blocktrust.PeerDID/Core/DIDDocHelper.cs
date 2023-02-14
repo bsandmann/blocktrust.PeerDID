@@ -8,35 +8,35 @@ using Types;
 
 public static class DidDocHelper
 {
-    private static readonly Dictionary<string, string> TypeAgreementVerTypeToField = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> TypeAgreementVerTypeToField = new()
     {
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, PublicKeyFieldValues.BASE58 },
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, PublicKeyFieldValues.MULTIBASE },
         { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, PublicKeyFieldValues.JWK },
     };
 
-    private static readonly Dictionary<string, string> TypeAuthenticationVerTypeToField = new Dictionary<string, string>()
+    private static readonly Dictionary<string, string> TypeAuthenticationVerTypeToField = new()
     {
         { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, PublicKeyFieldValues.BASE58 },
         { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, PublicKeyFieldValues.MULTIBASE },
         { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, PublicKeyFieldValues.JWK },
     };
 
-    private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAgreementVerTypeToFormat = new Dictionary<string, VerificationMaterialFormatPeerDid>()
+    private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAgreementVerTypeToFormat = new()
     {
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, VerificationMaterialFormatPeerDid.BASE58 },
         { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
         { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
     };
 
-    private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAuthenticationVerTypeToFormat = new Dictionary<string, VerificationMaterialFormatPeerDid>()
+    private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAuthenticationVerTypeToFormat = new()
     {
         { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, VerificationMaterialFormatPeerDid.BASE58 },
         { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
         { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
     };
 
-    internal static DidDocPeerDid DidDocFromJson(JsonObject jsonObject)
+    public static DidDocPeerDid DidDocFromJson(JsonObject jsonObject)
     {
         jsonObject.TryGetPropertyValue("id", out JsonNode? didJsonNode);
         var did = didJsonNode.AsValue().ToString();
@@ -71,7 +71,7 @@ public static class DidDocHelper
     }
 
 
-    internal static VerificationMethodPeerDid VerificationMethodFromJson(JsonObject jsonObject)
+    private static VerificationMethodPeerDid VerificationMethodFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
         string id = jsonObject[ServiceConstants.SERVICE_ID]?.ToString();
@@ -137,7 +137,7 @@ public static class DidDocHelper
         };
     }
 
-    internal static Service ServiceFromJson(JsonObject jsonObject)
+    private static Service ServiceFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
         string id = jsonObject[ServiceConstants.SERVICE_ID]?.ToString();

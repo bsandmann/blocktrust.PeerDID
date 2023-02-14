@@ -5,8 +5,9 @@ namespace Blocktrust.PeerDID.Tests;
 using DIDDoc;
 using PeerDIDCreateResolve;
 
-class Demo
+public class Demo
 {
+    [Fact]
     public void TestCreateResolvePeerDid()
     {
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement>()
@@ -41,21 +42,25 @@ class Demo
             encryptionKeys, signingKeys, service
         );
 
-        Console.WriteLine("PeerDID algo 0:" + peerDIDAlgo0);
-        Console.WriteLine("==================================");
-        Console.WriteLine("PeerDID algo 2:" + peerDIDAlgo2);
-        Console.WriteLine("==================================");
+        // Console.WriteLine("PeerDID algo 0:" + peerDIDAlgo0);
+        // Console.WriteLine("==================================");
+        // Console.WriteLine("PeerDID algo 2:" + peerDIDAlgo2);
+        // Console.WriteLine("==================================");
 
-        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0));
-        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2));
-        Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0Json);
-        Console.WriteLine("==================================");
-        Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2Json);
+        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.BASE58);
+        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.BASE58);
+        // Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0Json);
+        // Console.WriteLine("==================================");
+        // Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2Json);
 
         DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json);
         DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json);
-        Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0.ToDict());
-        Console.WriteLine("==================================");
-        Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2.ToDict());
+        // Console.WriteLine("DIDDoc algo 0:" + didDocAlgo0.ToDict());
+        // Console.WriteLine("==================================");
+        // Console.WriteLine("DIDDoc algo 2:" + didDocAlgo2.ToDict());
+
+        //TODO
+        var xx = "did:peer:2.Ez6LSrQFKeQ8VucRdMpfiQGb1d6FNStWHtvG53CXh2bzKmDHV.Vz6Mki4wPU12KKrjzskpqWkJ1PDFkSEG3H87cLhdnXnDkEbh7";
+        var d = PeerDidResolver.ResolvePeerDid(new PeerDid(xx), VerificationMaterialFormatPeerDid.JWK);
     }
 }

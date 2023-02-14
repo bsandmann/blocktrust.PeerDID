@@ -4,8 +4,8 @@ using Types;
 
 public class DecodedEncumbasis
 {
-    public string Encnumbasis { get; set; }
-    public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; set; } 
+    public string Encnumbasis { get; }
+    public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; } 
     
     public DecodedEncumbasis(string encnumbasis, VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial)
     {
