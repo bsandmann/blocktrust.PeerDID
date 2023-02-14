@@ -34,21 +34,7 @@ public static class JwkOkp
 
     public static byte[] FromJwk(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial)
     {
-        // This code could need improvement: it is not clear what is the expected input is. It could be a string, a dictionary (s,s) or a dictionary (s,o)
-        var isDictionaryStringObject = verMaterial.Value is Dictionary<string, object>;
-        var isDictionaryStringString = verMaterial.Value is Dictionary<string, string>;
-        Dictionary<string, string>? jwkDict = null;
-        if (isDictionaryStringObject)
-        {
-            jwkDict = ((Dictionary<string, object>)verMaterial.Value)
-                .Select(x => new KeyValuePair<string, string>(x.Key, (string)x.Value))
-                .ToDictionary(x => x.Key, x => x.Value);
-        }
-        else if (isDictionaryStringString)
-        {
-            jwkDict = ((Dictionary<string, string>)verMaterial.Value);
-        }
-
+        var jwkDict = verMaterial.ValueAsDictionaryStringString();
         if (jwkDict is null)
         {
             var jwk = JsonSerializer.Deserialize<Dictionary<string, string>>((string)verMaterial.Value);

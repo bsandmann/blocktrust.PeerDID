@@ -118,7 +118,7 @@ public class PeerDidHelper
 
             if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]))
             {
-                var obj =serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
                 if (obj is JsonElement)
                 {
                     var jsonElement = (JsonElement)obj;
@@ -133,7 +133,7 @@ public class PeerDidHelper
                     else
                     {
                         throw new ArgumentException("Unexpected value kind in JSON element");
-                    } 
+                    }
                 }
                 else
                 {
@@ -143,7 +143,7 @@ public class PeerDidHelper
 
             if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ACCEPT]))
             {
-                var obj =serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
                 if (obj is JsonElement)
                 {
                     var jsonElement = (JsonElement)obj;
@@ -158,7 +158,7 @@ public class PeerDidHelper
                     else
                     {
                         throw new ArgumentException("Unexpected value kind in JSON element");
-                    } 
+                    }
                 }
                 else
                 {
@@ -203,7 +203,7 @@ public class PeerDidHelper
         }
 
         Validation.ValidateRawKeyLength(decodedKey);
-        return Multibase.ToBase58Multibase(Multicodec.ToMulticodec(decodedKey, key.Type));
+        return Multibase.ToBase58Multibase(Multicodec.ToMulticodec(decodedKey, MulticodexExtension.GetCodec(key.Type).PrefixInt));
     }
 
     /// <summary>
@@ -252,7 +252,7 @@ public class PeerDidHelper
                             value: Multibase.ToBase58Multibase(
                                 Multicodec.ToMulticodec(
                                     decodedEncnumbasisWithoutPrefix,
-                                    VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020
+                                    MulticodexExtension.GetCodec(VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020).PrefixInt
                                 )
                             )
                         );
@@ -264,7 +264,7 @@ public class PeerDidHelper
                             value: Multibase.ToBase58Multibase(
                                 Multicodec.ToMulticodec(
                                     decodedEncnumbasisWithoutPrefix,
-                                    VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020
+                                    MulticodexExtension.GetCodec(VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020).PrefixInt
                                 )
                             )
                         );
