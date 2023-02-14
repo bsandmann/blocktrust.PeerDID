@@ -6,7 +6,6 @@ public class Fixture
 {
     public static Dictionary<string, object> FromJson(string json)
     {
-        //TODO the Kotlin implementation looks strange. Investigate!
         return JsonSerializer.Deserialize<Dictionary<string, object>>(json);
     }
 

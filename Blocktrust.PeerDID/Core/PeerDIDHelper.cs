@@ -27,7 +27,7 @@ public class PeerDidHelper
     /// <returns>encoded service</returns>
     public static string EncodeService(string service)
     {
-        ValidateJson(service);
+        Validation.ValidateJson(service);
         var serviceToEncode = Regex.Replace(service, "[\n\t\\s]*", "");
         foreach (var entry in ServicePrefix)
         {
@@ -189,11 +189,8 @@ public class PeerDidHelper
                 decodedKey = Multibase.FromBase58(key.Value.ToString());
                 break;
             case VerificationMaterialFormatPeerDid.MULTIBASE:
-                //TODO seconds??
-                // decodedKey = Multicodec.FromMulticodec(Multibase.FromBase58Multibase(key.Value.ToString()).Second).Second;
-                var x = Multibase.FromBase58Multibase(key.Value.ToString());
-
-                decodedKey = Multicodec.FromMulticodec(x.Item2).Value;
+                var multibase = Multibase.FromBase58Multibase(key.Value.ToString());
+                decodedKey = Multicodec.FromMulticodec(multibase.Item2).Value;
                 break;
             case VerificationMaterialFormatPeerDid.JWK:
                 decodedKey = JwkOkp.FromJwk(key);
@@ -307,17 +304,5 @@ public class PeerDidHelper
             Controller = did,
             VerMaterial = decodedEncumbasis.VerMaterial
         };
-    }
-
-    private static void ValidateJson(string service)
-    {
-        try
-        {
-            JsonDocument.Parse(service);
-        }
-        catch (JsonException e)
-        {
-            throw new ArgumentException("Invalid JSON");
-        }
     }
 }

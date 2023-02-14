@@ -1,5 +1,6 @@
 namespace Blocktrust.PeerDID.Core;
 
+using Common.Converter;
 using Types;
 
 public static class MulticodexExtension
