@@ -4,6 +4,11 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Copyright>Bjoern Sandmann / blocktrust</Copyright>
+        <PackageProjectUrl>blockrtust.dev</PackageProjectUrl>
+        <Authors>Bjoern Sandmann / blocktrust</Authors>
+        <Description>Port of the SICPA PeerDID implementation to .net</Description>
+        <RepositoryUrl>https://github.com/bsandmann/blocktrust.PeerDID</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
