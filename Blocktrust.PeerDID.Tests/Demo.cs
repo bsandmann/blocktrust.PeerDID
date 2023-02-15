@@ -13,8 +13,8 @@ public class Demo
         List<VerificationMaterialAgreement> encryptionKeys = new List<VerificationMaterialAgreement>()
         {
             new VerificationMaterialAgreement(
-                type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDid.BASE58,
+                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                format: VerificationMaterialFormatPeerDid.Base58,
                 value: "DmgBSHMqaZiYqwNMEJJuxWzsGGC8jUYADrfSdBrC6L8s"
             )
         };
@@ -22,8 +22,8 @@ public class Demo
         List<VerificationMaterialAuthentication> signingKeys = new List<VerificationMaterialAuthentication>()
         {
             new VerificationMaterialAuthentication(
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58,
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58,
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7"
             )
         };
@@ -42,8 +42,8 @@ public class Demo
             encryptionKeys, signingKeys, service
         );
 
-        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.BASE58);
-        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.BASE58);
+        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.Base58);
+        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.Base58);
 
         DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json);
         DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json);

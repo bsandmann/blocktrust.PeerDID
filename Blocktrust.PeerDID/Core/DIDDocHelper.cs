@@ -9,35 +9,35 @@ public static class DidDocHelper
 {
     private static readonly Dictionary<string, string> TypeAgreementVerTypeToField = new()
     {
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, PublicKeyFieldValues.BASE58 },
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, PublicKeyFieldValues.MULTIBASE },
-        { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, PublicKeyFieldValues.JWK },
+        { VerificationMethodTypeAgreement.X25519KeyAgreementKey2019.Value, PublicKeyFieldValues.Base58 },
+        { VerificationMethodTypeAgreement.X25519KeyAgreementKey2020.Value, PublicKeyFieldValues.Multibase },
+        { VerificationMethodTypeAgreement.JsonWebKey2020.Value, PublicKeyFieldValues.Jwk },
     };
 
     private static readonly Dictionary<string, string> TypeAuthenticationVerTypeToField = new()
     {
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, PublicKeyFieldValues.BASE58 },
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, PublicKeyFieldValues.MULTIBASE },
-        { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, PublicKeyFieldValues.JWK },
+        { VerificationMethodTypeAuthentication.Ed25519VerificationKey2018.Value, PublicKeyFieldValues.Base58 },
+        { VerificationMethodTypeAuthentication.Ed25519VerificationKey2020.Value, PublicKeyFieldValues.Multibase },
+        { VerificationMethodTypeAuthentication.JsonWebKey2020.Value, PublicKeyFieldValues.Jwk },
     };
 
     private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAgreementVerTypeToFormat = new()
     {
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value, VerificationMaterialFormatPeerDid.BASE58 },
-        { VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
-        { VerificationMethodTypeAgreement.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
+        { VerificationMethodTypeAgreement.X25519KeyAgreementKey2019.Value, VerificationMaterialFormatPeerDid.Base58 },
+        { VerificationMethodTypeAgreement.X25519KeyAgreementKey2020.Value, VerificationMaterialFormatPeerDid.Multibase },
+        { VerificationMethodTypeAgreement.JsonWebKey2020.Value, VerificationMaterialFormatPeerDid.Jwk },
     };
 
     private static readonly Dictionary<string, VerificationMaterialFormatPeerDid> TypeAuthenticationVerTypeToFormat = new()
     {
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value, VerificationMaterialFormatPeerDid.BASE58 },
-        { VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value, VerificationMaterialFormatPeerDid.MULTIBASE },
-        { VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value, VerificationMaterialFormatPeerDid.JWK },
+        { VerificationMethodTypeAuthentication.Ed25519VerificationKey2018.Value, VerificationMaterialFormatPeerDid.Base58 },
+        { VerificationMethodTypeAuthentication.Ed25519VerificationKey2020.Value, VerificationMaterialFormatPeerDid.Multibase },
+        { VerificationMethodTypeAuthentication.JsonWebKey2020.Value, VerificationMaterialFormatPeerDid.Jwk },
     };
 
     public static DidDocPeerDid DidDocFromJson(JsonObject jsonObject)
     {
-        jsonObject.TryGetPropertyValue("id", out JsonNode? didJsonNode);
+        jsonObject.TryGetPropertyValue(DidDocConstants.Id, out JsonNode? didJsonNode);
         var did = didJsonNode.AsValue().ToString();
 
         if (did == null)
@@ -46,13 +46,13 @@ public static class DidDocHelper
         }
 
         var authentication = new List<VerificationMethodPeerDid>();
-        jsonObject.TryGetPropertyValue("authentication", out JsonNode? authenticationJsonNode);
+        jsonObject.TryGetPropertyValue(DidDocConstants.Authentication, out JsonNode? authenticationJsonNode);
         if (authenticationJsonNode is not null)
         {
             authentication = authenticationJsonNode?.AsArray().Select(p => VerificationMethodFromJson(p.AsObject())).ToList();
         }
 
-        jsonObject.TryGetPropertyValue("keyAgreement", out JsonNode? keyAgreementJsonNode);
+        jsonObject.TryGetPropertyValue(DidDocConstants.KeyAgreement, out JsonNode? keyAgreementJsonNode);
         var keyAgreement = new List<VerificationMethodPeerDid>();
         if (keyAgreementJsonNode is not null)
         {
@@ -60,7 +60,7 @@ public static class DidDocHelper
         }
 
         List<PeerDidService>? service = null;
-        jsonObject.TryGetPropertyValue("service", out JsonNode? serviceJsonNode);
+        jsonObject.TryGetPropertyValue(DidDocConstants.Service, out JsonNode? serviceJsonNode);
         if (serviceJsonNode is not null)
         {
             service = serviceJsonNode?.AsArray().Select(p => ServiceFromJson(p.AsObject())).ToList();
@@ -73,14 +73,14 @@ public static class DidDocHelper
     private static VerificationMethodPeerDid VerificationMethodFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
-        string id = jsonObject[ServiceConstants.SERVICE_ID]?.ToString();
+        string id = jsonObject[ServiceConstants.ServiceId]?.ToString();
 
         if (id == null)
         {
             throw new System.Exception("No 'id' field in method " + jsonObject.ToString());
         }
 
-        string controller = jsonObject["controller"]?.ToString();
+        string controller = jsonObject[DidDocConstants.Controller]?.ToString();
         if (controller == null) throw new System.Exception("No 'controller' field in method " + jsonObject.ToString());
 
         VerificationMethodTypePeerDid verMaterialType = GetVerMethodType(jsonObject);
@@ -113,8 +113,8 @@ public static class DidDocHelper
         }
 
         object value = null;
-        if (verMaterialType == VerificationMethodTypeAgreement.JSON_WEB_KEY_2020 ||
-            verMaterialType == VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020)
+        if (verMaterialType == VerificationMethodTypeAgreement.JsonWebKey2020 ||
+            verMaterialType == VerificationMethodTypeAuthentication.JsonWebKey2020)
         {
             var jwkJson = JsonSerializer.Deserialize<PeerDidJwk>(jsonObject[field]);
             if (jwkJson == null) throw new System.Exception("No 'field' field in method " + jsonObject.ToString());
@@ -139,26 +139,26 @@ public static class DidDocHelper
     private static PeerDidService ServiceFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
-        string id = jsonObject[ServiceConstants.SERVICE_ID]?.ToString();
+        string id = jsonObject[ServiceConstants.ServiceId]?.ToString();
         if (id == null)
         {
             throw new System.ArgumentException("No 'id' field in service " + jsonObject.ToString());
         }
 
-        string type = jsonObject[ServiceConstants.SERVICE_TYPE]?.ToString();
+        string type = jsonObject[ServiceConstants.ServiceType]?.ToString();
         if (type == null)
         {
             throw new System.ArgumentException("No 'type' field in service " + jsonObject.ToString());
         }
 
-        if (type != ServiceConstants.SERVICE_DIDCOMM_MESSAGING)
+        if (type != ServiceConstants.ServiceDidcommMessaging)
         {
             return PeerDidService.FromDictionary(serviceMap);
         }
 
-        string endpoint = jsonObject[ServiceConstants.SERVICE_ENDPOINT]?.ToString();
-        List<string> routingKeys = jsonObject[ServiceConstants.SERVICE_ROUTING_KEYS]?.AsArray()?.Select(x => x.ToString()).ToList();
-        List<string> accept = jsonObject[ServiceConstants.SERVICE_ACCEPT]?.AsArray()?.Select(x => x.ToString()).ToList();
+        string endpoint = jsonObject[ServiceConstants.ServiceEndpoint]?.ToString();
+        List<string> routingKeys = jsonObject[ServiceConstants.ServiceRoutingKeys]?.AsArray()?.Select(x => x.ToString()).ToList();
+        List<string> accept = jsonObject[ServiceConstants.ServiceAccept]?.AsArray()?.Select(x => x.ToString()).ToList();
 
         return new PeerDidService(
             id: id,
@@ -171,40 +171,40 @@ public static class DidDocHelper
 
     private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)
     {
-        jsonObject.TryGetPropertyValue("type", out JsonNode? typeJsonNode);
+        jsonObject.TryGetPropertyValue(DidDocConstants.Type, out JsonNode? typeJsonNode);
         var type = typeJsonNode.AsValue().ToString();
 
-        if (type.Equals(VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019.Value))
+        if (type.Equals(VerificationMethodTypeAgreement.X25519KeyAgreementKey2019.Value))
         {
-            return VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019;
+            return VerificationMethodTypeAgreement.X25519KeyAgreementKey2019;
         }
 
-        else if (type.Equals(VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020.Value))
+        else if (type.Equals(VerificationMethodTypeAgreement.X25519KeyAgreementKey2020.Value))
         {
-            return VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020;
+            return VerificationMethodTypeAgreement.X25519KeyAgreementKey2020;
         }
 
-        else if (type.Equals(VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018.Value))
+        else if (type.Equals(VerificationMethodTypeAuthentication.Ed25519VerificationKey2018.Value))
         {
-            return VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018;
+            return VerificationMethodTypeAuthentication.Ed25519VerificationKey2018;
         }
 
-        else if (type.Equals(VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020.Value))
+        else if (type.Equals(VerificationMethodTypeAuthentication.Ed25519VerificationKey2020.Value))
         {
-            return VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020;
+            return VerificationMethodTypeAuthentication.Ed25519VerificationKey2020;
         }
 
-        else if (type.Equals(VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020.Value))
+        else if (type.Equals(VerificationMethodTypeAuthentication.JsonWebKey2020.Value))
         {
-            jsonObject.TryGetPropertyValue(PublicKeyFieldValues.JWK, out JsonNode? vJsonNode);
+            jsonObject.TryGetPropertyValue(PublicKeyFieldValues.Jwk, out JsonNode? vJsonNode);
             var crv = vJsonNode!["crv"].ToString();
             if (crv == "X25519")
             {
-                return VerificationMethodTypeAgreement.JSON_WEB_KEY_2020;
+                return VerificationMethodTypeAgreement.JsonWebKey2020;
             }
             else
             {
-                return VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020;
+                return VerificationMethodTypeAuthentication.JsonWebKey2020;
             }
         }
         else

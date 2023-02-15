@@ -10,15 +10,15 @@ public class CreateNumalgo2
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_BASE58 = new VerificationMaterialAgreement
     (
         value: "JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr",
-        type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-        format: VerificationMaterialFormatPeerDid.BASE58
+        type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+        format: VerificationMaterialFormatPeerDid.Base58
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_MULTIBASE = new VerificationMaterialAgreement
     (
         value: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-        type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.MULTIBASE
+        type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
+        format: VerificationMaterialFormatPeerDid.Multibase
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_JWK_DICT = new VerificationMaterialAgreement
@@ -29,8 +29,8 @@ public class CreateNumalgo2
             { "crv", "X25519" },
             { "x", "BIiFcQEn3dfvB2pjlhOQQour6jXy9d5s2FKEJNTOJik" },
         },
-        type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.JWK
+        type: VerificationMethodTypeAgreement.JsonWebKey2020,
+        format: VerificationMaterialFormatPeerDid.Jwk
     );
 
     public static readonly VerificationMaterialAgreement VALID_X25519_KEY_JWK_JSON = new VerificationMaterialAgreement
@@ -43,22 +43,22 @@ public class CreateNumalgo2
                 { "x", "BIiFcQEn3dfvB2pjlhOQQour6jXy9d5s2FKEJNTOJik" },
             }
         ),
-        type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.JWK
+        type: VerificationMethodTypeAgreement.JsonWebKey2020,
+        format: VerificationMaterialFormatPeerDid.Jwk
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_BASE58 = new VerificationMaterialAuthentication
     (
         value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
-        type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-        format: VerificationMaterialFormatPeerDid.BASE58
+        type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+        format: VerificationMaterialFormatPeerDid.Base58
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_MULTIBASE = new VerificationMaterialAuthentication
     (
         value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-        type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.MULTIBASE
+        type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+        format: VerificationMaterialFormatPeerDid.Multibase
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_1_JWK = new VerificationMaterialAuthentication
@@ -69,22 +69,22 @@ public class CreateNumalgo2
             { "crv", "Ed25519" },
             { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
         },
-        type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.JWK
+        type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+        format: VerificationMaterialFormatPeerDid.Jwk
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_BASE58 = new VerificationMaterialAuthentication
     (
         value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
-        type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-        format: VerificationMaterialFormatPeerDid.BASE58
+        type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+        format: VerificationMaterialFormatPeerDid.Base58
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_MULTIBASE = new VerificationMaterialAuthentication
     (
         value: "z6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg",
-        type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.MULTIBASE
+        type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+        format: VerificationMaterialFormatPeerDid.Multibase
     );
 
     public static readonly VerificationMaterialAuthentication VALID_ED25519_KEY_2_JWK = new VerificationMaterialAuthentication
@@ -95,8 +95,8 @@ public class CreateNumalgo2
             { "crv", "Ed25519" },
             { "x", "Itv8B__b1-Jos3LCpUe8EdTFGTCa_Dza6_3848P3R70" },
         },
-        type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-        format: VerificationMaterialFormatPeerDid.JWK
+        type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+        format: VerificationMaterialFormatPeerDid.Jwk
     );
 
     public const string VALID_SERVICE = """
@@ -314,8 +314,8 @@ public class CreateNumalgo2
             new VerificationMaterialAgreement
             (
                 value: "...",
-                type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -340,14 +340,14 @@ public class CreateNumalgo2
             new VerificationMaterialAuthentication
             (
                 value: "....",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var service = VALID_SERVICE;
@@ -471,8 +471,8 @@ public class CreateNumalgo2
             new VerificationMaterialAgreement
             (
                 value: "JhNWeSVLMYcc0k7iopQW4guaSJTojqpMEELgSLhKwRr",
-                type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -498,14 +498,14 @@ public class CreateNumalgo2
             new VerificationMaterialAuthentication
             (
                 value: "ByHnpUCFb1vA0h9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var service = VALID_SERVICE;
@@ -527,8 +527,8 @@ public class CreateNumalgo2
             new VerificationMaterialAgreement
             (
                 value: "JhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWe",
-                type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -553,8 +553,8 @@ public class CreateNumalgo2
             new VerificationMaterialAgreement
             (
                 value: "JhNWeSV",
-                type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var signingKeys = new List<VerificationMaterialAuthentication> { VALID_ED25519_KEY_1_MULTIBASE, VALID_ED25519_KEY_2_MULTIBASE };
@@ -573,14 +573,14 @@ public class CreateNumalgo2
             new VerificationMaterialAuthentication
             (
                 value: "JhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWeSVJhNWe",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var service = VALID_SERVICE;
@@ -598,14 +598,14 @@ public class CreateNumalgo2
             new VerificationMaterialAuthentication
             (
                 value: "JhNWeSV",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "3M5RCDjPTWPkKSN3sxUmmMqHbmRPegYP1tjcKyrDbt9J",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             )
         };
         var service = "VALID_SERVICE";

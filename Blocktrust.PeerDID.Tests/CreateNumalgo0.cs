@@ -15,14 +15,14 @@ public class CreateNumalgo0
             new VerificationMaterialAuthentication
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.MULTIBASE
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                format: VerificationMaterialFormatPeerDid.Multibase
             ),
             new VerificationMaterialAuthentication
             (
@@ -32,8 +32,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
                 },
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             ),
             new VerificationMaterialAuthentication
             (
@@ -43,8 +43,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA" },
                 }),
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             )
         };
         return list.Select(p => new object[] { p });
@@ -57,14 +57,14 @@ public class CreateNumalgo0
             new VerificationMaterialAuthentication
             (
                 value: "x8xB2pv7cw8q1Pd0DacS",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "zx8xB2pv7cw8q1Pd0DacS",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.MULTIBASE
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                format: VerificationMaterialFormatPeerDid.Multibase
             ),
         };
         return list.Select(p => new object[] { p });
@@ -77,14 +77,14 @@ public class CreateNumalgo0
             new VerificationMaterialAuthentication
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.MULTIBASE
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                format: VerificationMaterialFormatPeerDid.Multibase
             ),
             new VerificationMaterialAuthentication
             (
@@ -94,8 +94,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_Ygm" },
                 },
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             ),
             new VerificationMaterialAuthentication
             (
@@ -105,8 +105,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_Ygm" },
                 }),
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             )
         };
         return list.Select(p => new object[] { p });
@@ -119,14 +119,14 @@ public class CreateNumalgo0
             new VerificationMaterialAuthentication
             (
                 value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L77",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication
             (
                 value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7VVV",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.MULTIBASE
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                format: VerificationMaterialFormatPeerDid.Multibase
             ),
             new VerificationMaterialAuthentication
             (
@@ -136,8 +136,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA7" },
                 },
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             ),
             new VerificationMaterialAuthentication
             (
@@ -147,8 +147,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "owBhCbktDjkfS6PdQddT0D3yjSitaSysP3YimJ_YgmA7" },
                 }),
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             )
         };
         return list.Select(p => new object[] { p });
@@ -161,13 +161,13 @@ public class CreateNumalgo0
         {
             new VerificationMaterialAuthentication(
                 value: "",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-                format: VerificationMaterialFormatPeerDid.BASE58
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                format: VerificationMaterialFormatPeerDid.Base58
             ),
             new VerificationMaterialAuthentication(
                 value: "",
-                type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.MULTIBASE
+                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                format: VerificationMaterialFormatPeerDid.Multibase
             ),
             new VerificationMaterialAuthentication(
                 value: new Dictionary<string, object>()
@@ -176,8 +176,8 @@ public class CreateNumalgo0
                     { "crv", "Ed25519" },
                     { "x", "" },
                 },
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             ),
             new VerificationMaterialAuthentication(
                 value: JsonSerializer.Serialize(
@@ -188,8 +188,8 @@ public class CreateNumalgo0
                         { "x", "" }
                     }
                 ),
-                type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-                format: VerificationMaterialFormatPeerDid.JWK
+                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                format: VerificationMaterialFormatPeerDid.Jwk
             )
         };
         return list.Select(p => new object[] { p });
@@ -236,13 +236,13 @@ public class CreateNumalgo0
         string expectedError;
         switch (key.Format)
         {
-            case VerificationMaterialFormatPeerDid.BASE58:
+            case VerificationMaterialFormatPeerDid.Base58:
                 expectedError = "Invalid key: Invalid base58 encoding.*";
                 break;
-            case VerificationMaterialFormatPeerDid.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.Multibase:
                 expectedError = "Invalid key: No transform part in multibase encoding.*";
                 break;
-            case VerificationMaterialFormatPeerDid.JWK:
+            case VerificationMaterialFormatPeerDid.Jwk:
                 expectedError = "Invalid key.*";
                 break;
             default:
@@ -259,8 +259,8 @@ public class CreateNumalgo0
         var key = new VerificationMaterialAuthentication
         (
             value: "z78kqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-            type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-            format: VerificationMaterialFormatPeerDid.MULTIBASE
+            type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+            format: VerificationMaterialFormatPeerDid.Multibase
         );
         var ex = Assert.Throws<System.ArgumentException>(() => PeerDidCreator.CreatePeerDidNumalgo0(key));
         Assert.Matches("Invalid key: Prefix 1 not supported", ex.Message);

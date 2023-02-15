@@ -13,26 +13,26 @@ public class DidDocFromJson
         var list = new List<DidDocTestData>();
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_O_BASE58),
-            VerificationMaterialFormatPeerDid.BASE58,
-            VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-            VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-            PublicKeyFieldValues.BASE58
+            VerificationMaterialFormatPeerDid.Base58,
+            VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+            VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+            PublicKeyFieldValues.Base58
         ));
 
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_O_MULTIBASE),
-            VerificationMaterialFormatPeerDid.MULTIBASE,
-            VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-            VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
-            PublicKeyFieldValues.MULTIBASE
+            VerificationMaterialFormatPeerDid.Multibase,
+            VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+            VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
+            PublicKeyFieldValues.Multibase
         ));
 
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_O_JWK),
-            VerificationMaterialFormatPeerDid.JWK,
-            VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-            VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-            PublicKeyFieldValues.JWK
+            VerificationMaterialFormatPeerDid.Jwk,
+            VerificationMethodTypeAuthentication.JsonWebKey2020,
+            VerificationMethodTypeAgreement.JsonWebKey2020,
+            PublicKeyFieldValues.Jwk
         ));
         return list.Select(x => new object[] { x });
     }
@@ -42,24 +42,24 @@ public class DidDocFromJson
         var list = new List<DidDocTestData>();
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_2_BASE58),
-            VerificationMaterialFormatPeerDid.BASE58,
-            VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
-            VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
-            PublicKeyFieldValues.BASE58
+            VerificationMaterialFormatPeerDid.Base58,
+            VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+            VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+            PublicKeyFieldValues.Base58
         ));
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_2_MULTIBASE),
-            VerificationMaterialFormatPeerDid.MULTIBASE,
-            VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
-            VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
-            PublicKeyFieldValues.MULTIBASE
+            VerificationMaterialFormatPeerDid.Multibase,
+            VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+            VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
+            PublicKeyFieldValues.Multibase
         ));
         list.Add(new DidDocTestData(
             new Json(Fixture.DID_DOC_NUMALGO_2_JWK),
-            VerificationMaterialFormatPeerDid.JWK,
-            VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
-            VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-            PublicKeyFieldValues.JWK
+            VerificationMaterialFormatPeerDid.Jwk,
+            VerificationMethodTypeAuthentication.JsonWebKey2020,
+            VerificationMethodTypeAgreement.JsonWebKey2020,
+            PublicKeyFieldValues.Jwk
         ));
         return list.Select(x => new object[] { x });
     }

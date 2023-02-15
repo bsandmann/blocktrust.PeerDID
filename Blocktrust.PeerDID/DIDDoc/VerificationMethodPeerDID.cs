@@ -5,8 +5,8 @@ using Types;
 
 public class VerificationMethodPeerDid
 {
-    [JsonPropertyName("id")] public string Id { get; set; }
-    [JsonPropertyName("controller")] public string Controller { get; set; }
+    [JsonPropertyName(DidDocConstants.Id)] public string Id { get; set; }
+    [JsonPropertyName(DidDocConstants.Controller)] public string Controller { get; set; }
 
     public VerificationMaterialPeerDid<VerificationMethodTypePeerDid> VerMaterial { get; set; } 
 
@@ -14,12 +14,12 @@ public class VerificationMethodPeerDid
     {
         switch (VerMaterial.Format)
         {
-            case VerificationMaterialFormatPeerDid.BASE58:
-                return PublicKeyFieldValues.BASE58;
-            case VerificationMaterialFormatPeerDid.JWK:
-                return PublicKeyFieldValues.JWK;
-            case VerificationMaterialFormatPeerDid.MULTIBASE:
-                return PublicKeyFieldValues.MULTIBASE;
+            case VerificationMaterialFormatPeerDid.Base58:
+                return PublicKeyFieldValues.Base58;
+            case VerificationMaterialFormatPeerDid.Jwk:
+                return PublicKeyFieldValues.Jwk;
+            case VerificationMaterialFormatPeerDid.Multibase:
+                return PublicKeyFieldValues.Multibase;
         }
 
         return null;
@@ -28,14 +28,14 @@ public class VerificationMethodPeerDid
     public Dictionary<string, object> ToDict()
     {
         var dict = new Dictionary<string, object>();
-        dict.Add("id", Id);
-        dict.Add("type", VerMaterial.Type.Value);
-        dict.Add("controller", Controller);
-        if (VerMaterial.Format == VerificationMaterialFormatPeerDid.JWK)
+        dict.Add(DidDocConstants.Id, Id);
+        dict.Add(DidDocConstants.Type, VerMaterial.Type.Value);
+        dict.Add(DidDocConstants.Controller, Controller);
+        if (VerMaterial.Format == VerificationMaterialFormatPeerDid.Jwk)
         {
             dict.Add(PublicKeyField(), VerMaterial.ValueAsDictionaryStringString());
         }
-        else if (VerMaterial.Format == VerificationMaterialFormatPeerDid.BASE58 || VerMaterial.Format == VerificationMaterialFormatPeerDid.MULTIBASE)
+        else if (VerMaterial.Format == VerificationMaterialFormatPeerDid.Base58 || VerMaterial.Format == VerificationMaterialFormatPeerDid.Multibase)
         {
             dict.Add(PublicKeyField(), (string)VerMaterial.Value);
         }

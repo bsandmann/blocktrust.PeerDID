@@ -10,15 +10,11 @@ using Core;
 
 public class DidDocPeerDid
 {
-    [JsonPropertyName("id")] public string Did { get; set; }
-    [JsonPropertyName("authentication")] public List<VerificationMethodPeerDid> Authentication { get; set; }
+    [JsonPropertyName(DidDocConstants.Id)] public string Did { get; set; }
+    [JsonPropertyName(DidDocConstants.Authentication)] public List<VerificationMethodPeerDid> Authentication { get; set; }
 
-    [JsonPropertyName("keyAgreement")] public List<VerificationMethodPeerDid> KeyAgreement { get; set; } = new List<VerificationMethodPeerDid>();
-    [JsonPropertyName("service")] public List<PeerDidService>? Service { get; set; }
-
-    public DidDocPeerDid()
-    {
-    }
+    [JsonPropertyName(DidDocConstants.KeyAgreement)] public List<VerificationMethodPeerDid> KeyAgreement { get; set; } = new List<VerificationMethodPeerDid>();
+    [JsonPropertyName(DidDocConstants.Service)] public List<PeerDidService>? Service { get; set; }
 
 
     public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<PeerDidService> service)
@@ -92,12 +88,12 @@ public class DidDocPeerDid
     {
         Dictionary<string, object> res = new Dictionary<string, object>()
         {
-            { "id", Did },
-            { "authentication", Authentication.Select(item => item.ToDict()) }
+            { DidDocConstants.Id, Did },
+            { DidDocConstants.Authentication, Authentication.Select(item => item.ToDict()) }
         };
         if (KeyAgreement.Count > 0)
         {
-            res.Add("keyAgreement", KeyAgreement.Select(item => item.ToDict()));
+            res.Add(DidDocConstants.KeyAgreement, KeyAgreement.Select(item => item.ToDict()));
         }
 
         if (Service != null)
@@ -108,7 +104,7 @@ public class DidDocPeerDid
                 serviceList.Add(item.ToDict());
             }
 
-            res.Add("service", serviceList);
+            res.Add(DidDocConstants.Service, serviceList);
         }
 
         return res;

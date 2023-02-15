@@ -2,8 +2,8 @@
 {
     public enum VerificationMaterialFormatPeerDid
     {
-        JWK,
-        BASE58,
-        MULTIBASE
+        Jwk,
+        Base58,
+        Multibase
     }
 }

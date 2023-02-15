@@ -10,7 +10,7 @@ public class PeerDidService
     public string ServiceEndpoint;
     public List<string>? RoutingKeys;
     public List<string>? Accept;
-
+    
     public PeerDidService(string id, string type, string serviceEndpoint, List<string> routingKeys, List<string> accept)
     {
         this.Id = id;
@@ -24,18 +24,18 @@ public class PeerDidService
     {
         var res = new Dictionary<string, object>
         {
-            { "id", Id },
-            { "type", Type }
+            { ServiceConstants.ServiceId, Id },
+            { ServiceConstants.ServiceType, Type }
         };
-        res.Add("serviceEndpoint", ServiceEndpoint);
+        res.Add(ServiceConstants.ServiceEndpoint, ServiceEndpoint);
         if (RoutingKeys is not null)
         {
-            res.Add("routingKeys", RoutingKeys);
+            res.Add(ServiceConstants.ServiceRoutingKeys, RoutingKeys);
         }
 
         if (Accept is not null)
         {
-            res.Add("accept", Accept);
+            res.Add(ServiceConstants.ServiceAccept, Accept);
         }
 
         return res;
@@ -49,31 +49,31 @@ public class PeerDidService
         var serviceEndpoint = string.Empty;
         List<string>? routingKeys = null;
         List<string>? accept = null;
-        if (dict.ContainsKey("id"))
+        if (dict.ContainsKey(ServiceConstants.ServiceId))
         {
-            id = dict["id"].ToString();
+            id = dict[ServiceConstants.ServiceId].ToString();
         }
 
-        if (dict.ContainsKey("type"))
+        if (dict.ContainsKey(ServiceConstants.ServiceType))
         {
-            type = dict["type"].ToString();
+            type = dict[ServiceConstants.ServiceType].ToString();
         }
 
-        if (dict.ContainsKey("serviceEndpoint"))
+        if (dict.ContainsKey(ServiceConstants.ServiceEndpoint))
         {
-            serviceEndpoint = dict["serviceEndpoint"].ToString();
+            serviceEndpoint = dict[ServiceConstants.ServiceEndpoint].ToString();
         }
 
-        if (dict.ContainsKey("routingKeys"))
+        if (dict.ContainsKey(ServiceConstants.ServiceRoutingKeys))
         {
-            if (dict["routingKeys"] is JsonElement)
+            if (dict[ServiceConstants.ServiceRoutingKeys] is JsonElement)
             {
-                var routingKeysJsonElement = (JsonElement)dict["routingKeys"];
+                var routingKeysJsonElement = (JsonElement)dict[ServiceConstants.ServiceRoutingKeys];
                 routingKeys = routingKeysJsonElement!.EnumerateArray().Select(p => p.GetString()).ToList();
             }
-            else if (dict["routingKeys"] is List<string>)
+            else if (dict[ServiceConstants.ServiceRoutingKeys] is List<string>)
             {
-                routingKeys = dict["routingKeys"] as List<string>;
+                routingKeys = dict[ServiceConstants.ServiceRoutingKeys] as List<string>;
             }
             else
             {
@@ -81,16 +81,16 @@ public class PeerDidService
             }
         }
 
-        if (dict.ContainsKey("accept"))
+        if (dict.ContainsKey(ServiceConstants.ServiceAccept))
         {
-            if (dict["accept"] is JsonElement)
+            if (dict[ServiceConstants.ServiceAccept] is JsonElement)
             {
-                var acceptJsonElement = (JsonElement)dict["accept"];
+                var acceptJsonElement = (JsonElement)dict[ServiceConstants.ServiceAccept];
                 accept = acceptJsonElement!.EnumerateArray().Select(p => p.GetString()).ToList();
             }
-            else if (dict["accept"] is List<string>)
+            else if (dict[ServiceConstants.ServiceAccept] is List<string>)
             {
-                accept = dict["accept"] as List<string>;
+                accept = dict[ServiceConstants.ServiceAccept] as List<string>;
             }
             else
             {

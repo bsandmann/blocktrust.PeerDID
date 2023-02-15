@@ -11,11 +11,11 @@ public class PeerDidHelper
 {
     private static readonly Dictionary<string, string> ServicePrefix = new()
     {
-        { ServiceConstants.SERVICE_TYPE, "t" },
-        { ServiceConstants.SERVICE_ENDPOINT, "s" },
-        { ServiceConstants.SERVICE_DIDCOMM_MESSAGING, "dm" },
-        { ServiceConstants.SERVICE_ROUTING_KEYS, "r" },
-        { ServiceConstants.SERVICE_ACCEPT, "a" }
+        { ServiceConstants.ServiceType, "t" },
+        { ServiceConstants.ServiceEndpoint, "s" },
+        { ServiceConstants.ServiceDidcommMessaging, "dm" },
+        { ServiceConstants.ServiceRoutingKeys, "r" },
+        { ServiceConstants.ServiceAccept, "a" }
     };
 
     /// <summary>
@@ -81,29 +81,29 @@ public class PeerDidHelper
         for (int i = 0; i < serviceMapList.Count; i++)
         {
             var serviceMap = serviceMapList[i];
-            if (!serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_TYPE]))
+            if (!serviceMap.ContainsKey(ServicePrefix[ServiceConstants.ServiceType]))
             {
                 throw new ArgumentException("service doesn't contain a type");
             }
 
-            var f = serviceMap[ServicePrefix[ServiceConstants.SERVICE_TYPE]];
+            var f = serviceMap[ServicePrefix[ServiceConstants.ServiceType]];
             var s = f.ToString();
-            var serviceType = s.Replace(ServicePrefix[ServiceConstants.SERVICE_DIDCOMM_MESSAGING], ServiceConstants.SERVICE_DIDCOMM_MESSAGING);
+            var serviceType = s.Replace(ServicePrefix[ServiceConstants.ServiceDidcommMessaging], ServiceConstants.ServiceDidcommMessaging);
             var service = new Dictionary<string, object>
             {
-                { ServiceConstants.SERVICE_ID, $"{peerDid.Value}#{((string)serviceType).ToLower()}-{i}" },
-                { ServiceConstants.SERVICE_TYPE, serviceType }
+                { ServiceConstants.ServiceId, $"{peerDid.Value}#{((string)serviceType).ToLower()}-{i}" },
+                { ServiceConstants.ServiceType, serviceType }
             };
 
-            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.ServiceEndpoint]))
             {
-                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ENDPOINT]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.ServiceEndpoint]];
                 if (obj is JsonElement)
                 {
                     var jsonElement = (JsonElement)obj;
                     if (jsonElement.ValueKind == JsonValueKind.String)
                     {
-                        service[ServiceConstants.SERVICE_ENDPOINT] = jsonElement.GetString() ?? string.Empty;
+                        service[ServiceConstants.ServiceEndpoint] = jsonElement.GetString() ?? string.Empty;
                     }
                     else
                     {
@@ -112,23 +112,23 @@ public class PeerDidHelper
                 }
                 else
                 {
-                    service[ServiceConstants.SERVICE_ENDPOINT] = obj;
+                    service[ServiceConstants.ServiceEndpoint] = obj;
                 }
             }
 
-            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.ServiceRoutingKeys]))
             {
-                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ROUTING_KEYS]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.ServiceRoutingKeys]];
                 if (obj is JsonElement)
                 {
                     var jsonElement = (JsonElement)obj;
                     if (jsonElement.ValueKind == JsonValueKind.String)
                     {
-                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.GetString() ?? string.Empty;
+                        service[ServiceConstants.ServiceRoutingKeys] = jsonElement.GetString() ?? string.Empty;
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.SERVICE_ROUTING_KEYS] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
+                        service[ServiceConstants.ServiceRoutingKeys] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -137,23 +137,23 @@ public class PeerDidHelper
                 }
                 else
                 {
-                    service[ServiceConstants.SERVICE_ROUTING_KEYS] = obj;
+                    service[ServiceConstants.ServiceRoutingKeys] = obj;
                 }
             }
 
-            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.SERVICE_ACCEPT]))
+            if (serviceMap.ContainsKey(ServicePrefix[ServiceConstants.ServiceAccept]))
             {
-                var obj = serviceMap[ServicePrefix[ServiceConstants.SERVICE_ACCEPT]];
+                var obj = serviceMap[ServicePrefix[ServiceConstants.ServiceAccept]];
                 if (obj is JsonElement)
                 {
                     var jsonElement = (JsonElement)obj;
                     if (jsonElement.ValueKind == JsonValueKind.String)
                     {
-                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.GetString() ?? string.Empty;
+                        service[ServiceConstants.ServiceAccept] = jsonElement.GetString() ?? string.Empty;
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.SERVICE_ACCEPT] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
+                        service[ServiceConstants.ServiceAccept] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -162,7 +162,7 @@ public class PeerDidHelper
                 }
                 else
                 {
-                    service[ServiceConstants.SERVICE_ACCEPT] = obj;
+                    service[ServiceConstants.ServiceAccept] = obj;
                 }
             }
 
@@ -185,14 +185,14 @@ public class PeerDidHelper
 
         switch (key.Format)
         {
-            case VerificationMaterialFormatPeerDid.BASE58:
+            case VerificationMaterialFormatPeerDid.Base58:
                 decodedKey = Multibase.FromBase58(key.Value.ToString());
                 break;
-            case VerificationMaterialFormatPeerDid.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.Multibase:
                 var multibase = Multibase.FromBase58Multibase(key.Value.ToString());
                 decodedKey = Multicodec.FromMulticodec(multibase.Item2).Value;
                 break;
-            case VerificationMaterialFormatPeerDid.JWK:
+            case VerificationMaterialFormatPeerDid.Jwk:
                 decodedKey = JwkOkp.FromJwk(key);
                 break;
             default:
@@ -219,37 +219,37 @@ public class PeerDidHelper
         VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial = null;
         switch (format)
         {
-            case VerificationMaterialFormatPeerDid.BASE58:
+            case VerificationMaterialFormatPeerDid.Base58:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
                         verMaterial = new VerificationMaterialAgreement(
                             format: format,
-                            type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
+                            type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
                             value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
                         );
                         break;
                     case Multicodec.NameED25519:
                         verMaterial = new VerificationMaterialAuthentication(
                             format: format,
-                            type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
+                            type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
                             value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
                         );
                         break;
                 }
 
                 break;
-            case VerificationMaterialFormatPeerDid.MULTIBASE:
+            case VerificationMaterialFormatPeerDid.Multibase:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
                         verMaterial = new VerificationMaterialAgreement(
                             format: format,
-                            type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
+                            type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
                             value: Multibase.ToBase58Multibase(
                                 Multicodec.ToMulticodec(
                                     decodedEncnumbasisWithoutPrefix,
-                                    MulticodexExtension.GetCodec(VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020).PrefixInt
+                                    MulticodexExtension.GetCodec(VerificationMethodTypeAgreement.X25519KeyAgreementKey2020).PrefixInt
                                 )
                             )
                         );
@@ -257,11 +257,11 @@ public class PeerDidHelper
                     case Multicodec.NameED25519:
                         verMaterial = new VerificationMaterialAuthentication(
                             format: format,
-                            type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
+                            type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
                             value: Multibase.ToBase58Multibase(
                                 Multicodec.ToMulticodec(
                                     decodedEncnumbasisWithoutPrefix,
-                                    MulticodexExtension.GetCodec(VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020).PrefixInt
+                                    MulticodexExtension.GetCodec(VerificationMethodTypeAuthentication.Ed25519VerificationKey2020).PrefixInt
                                 )
                             )
                         );
@@ -269,23 +269,23 @@ public class PeerDidHelper
                 }
 
                 break;
-            case VerificationMaterialFormatPeerDid.JWK:
+            case VerificationMaterialFormatPeerDid.Jwk:
                 switch (codec.Name)
                 {
                     case Multicodec.NameX25519:
                         verMaterial = new VerificationMaterialAgreement(
                             format: format,
-                            type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
-                            value: JwkOkp.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JSON_WEB_KEY_2020)
+                            type: VerificationMethodTypeAgreement.JsonWebKey2020,
+                            value: JwkOkp.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JsonWebKey2020)
                         );
                         break;
                     case Multicodec.NameED25519:
                         verMaterial = new VerificationMaterialAuthentication(
                             format: format,
-                            type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
+                            type: VerificationMethodTypeAuthentication.JsonWebKey2020,
                             value: JwkOkp.ToJwk(
                                 decodedEncnumbasisWithoutPrefix,
-                                VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020)
+                                VerificationMethodTypeAuthentication.JsonWebKey2020)
                         );
                         break;
                 }

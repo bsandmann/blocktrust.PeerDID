@@ -11,51 +11,51 @@ public class EncumbasisEncodeDecode
         {
             new DecodeEncumbasisTestData(
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDid.BASE58,
+                format: VerificationMaterialFormatPeerDid.Base58,
                 expected: new VerificationMaterialAuthentication
                 (
-                    format: VerificationMaterialFormatPeerDid.BASE58,
-                    type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2018,
+                    format: VerificationMaterialFormatPeerDid.Base58,
+                    type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
                     value: "ByHnpUCFb1vAfh9CFZ8ZkmUZguURW8nSw889hy6rD8L7"
                 )),
             new DecodeEncumbasisTestData(
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDid.BASE58,
+                format: VerificationMaterialFormatPeerDid.Base58,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDid.BASE58,
-                    type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2019,
+                    format: VerificationMaterialFormatPeerDid.Base58,
+                    type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
                     value: "JhNWeSVLMYccCk7iopQW4guaSJTojqpMEELgSLhKwRr"
                 )),
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDid.MULTIBASE,
+                format: VerificationMaterialFormatPeerDid.Multibase,
                 expected: new VerificationMaterialAuthentication
                 (
-                    format: VerificationMaterialFormatPeerDid.MULTIBASE,
-                    type: VerificationMethodTypeAuthentication.ED25519_VERIFICATION_KEY_2020,
+                    format: VerificationMaterialFormatPeerDid.Multibase,
+                    type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
                     value: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V"
                 )
             ),
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDid.MULTIBASE,
+                format: VerificationMaterialFormatPeerDid.Multibase,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDid.MULTIBASE,
-                    type: VerificationMethodTypeAgreement.X25519_KEY_AGREEMENT_KEY_2020,
+                    format: VerificationMaterialFormatPeerDid.Multibase,
+                    type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
                     value: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc"
                 )
             ),
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
-                format: VerificationMaterialFormatPeerDid.JWK,
+                format: VerificationMaterialFormatPeerDid.Jwk,
                 expected: new VerificationMaterialAuthentication(
-                    format: VerificationMaterialFormatPeerDid.JWK,
-                    type: VerificationMethodTypeAuthentication.JSON_WEB_KEY_2020,
+                    format: VerificationMaterialFormatPeerDid.Jwk,
+                    type: VerificationMethodTypeAuthentication.JsonWebKey2020,
                     value: new Dictionary<string, object>
                     {
                         { "kty", "OKP" },
@@ -66,11 +66,11 @@ public class EncumbasisEncodeDecode
             new DecodeEncumbasisTestData
             (
                 inputMultibase: "z6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc",
-                format: VerificationMaterialFormatPeerDid.JWK,
+                format: VerificationMaterialFormatPeerDid.Jwk,
                 expected: new VerificationMaterialAgreement
                 (
-                    format: VerificationMaterialFormatPeerDid.JWK,
-                    type: VerificationMethodTypeAgreement.JSON_WEB_KEY_2020,
+                    format: VerificationMaterialFormatPeerDid.Jwk,
+                    type: VerificationMethodTypeAgreement.JsonWebKey2020,
                     value: new Dictionary<string, object>
                     {
                         { "kty", "OKP" },
