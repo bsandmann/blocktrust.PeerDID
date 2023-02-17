@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.PeerDIDCreateResolve;
 
 using Core;
+using DIDDoc;
 using Types;
 
 public static class PeerDidCreator

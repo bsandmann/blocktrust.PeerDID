@@ -13,8 +13,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Blocktrust.Common" Version="0.0.6" />
       <PackageReference Include="SimpleBase" Version="4.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj" />
     </ItemGroup>
 
 </Project>

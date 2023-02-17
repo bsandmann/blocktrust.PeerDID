@@ -157,7 +157,7 @@ public static class DidDocHelper
         }
 
         string endpoint = jsonObject[ServiceConstants.ServiceEndpoint]?.ToString();
-        List<string> routingKeys = jsonObject[ServiceConstants.ServiceRoutingKeys]?.AsArray()?.Select(x => x.ToString()).ToList();
+        List<string>? routingKeys = jsonObject[ServiceConstants.ServiceRoutingKeys]?.AsArray()?.Select(x => x.ToString()).ToList();
         List<string> accept = jsonObject[ServiceConstants.ServiceAccept]?.AsArray()?.Select(x => x.ToString()).ToList();
 
         return new PeerDidService(

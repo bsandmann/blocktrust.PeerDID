@@ -11,7 +11,7 @@ public class PeerDidService
     public List<string>? RoutingKeys;
     public List<string>? Accept;
     
-    public PeerDidService(string id, string type, string serviceEndpoint, List<string> routingKeys, List<string> accept)
+    public PeerDidService(string id, string type, string serviceEndpoint, List<string>? routingKeys, List<string> accept)
     {
         this.Id = id;
         this.Type = type;
