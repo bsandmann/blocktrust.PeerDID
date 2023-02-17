@@ -1,5 +1,6 @@
 namespace Blocktrust.PeerDID.Tests.Core;
 
+using Common.Models.DidDoc;
 using DIDDoc;
 using PeerDID.Core;
 using Types;
@@ -27,9 +28,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeService()
     {
-        var expected = new List<PeerDidService>
+        var expected = new List<Service>
         {
-            PeerDidService.FromDictionary(
+            Service.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -65,9 +66,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeServiceMinimalFields()
     {
-        var expected = new List<PeerDidService>
+        var expected = new List<Service>
         {
-            PeerDidService.FromDictionary(
+            Service.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -111,9 +112,9 @@ public class ServiceEncodeDecode
     [Fact]
     public void TestDecodeServiceMultipleEntries()
     {
-        var expected = new List<PeerDidService>
+        var expected = new List<Service>
         {
-            PeerDidService.FromDictionary(
+            Service.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-0" },
@@ -123,7 +124,7 @@ public class ServiceEncodeDecode
                     { "accept", new List<string> { "didcomm/v2", "didcomm/aip2;env=rfc587" } },
                 }
             ),
-            PeerDidService.FromDictionary(
+            Service.FromDictionary(
                 new Dictionary<string, object>
                 {
                     { "id", $"{Fixture.PEER_DID_NUMALGO_2}#didcommmessaging-1" },

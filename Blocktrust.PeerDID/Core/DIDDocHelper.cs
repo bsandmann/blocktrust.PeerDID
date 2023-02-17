@@ -2,6 +2,7 @@ namespace Blocktrust.PeerDID.Core;
 
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Common.Models.DidDoc;
 using DIDDoc;
 using Types;
 
@@ -59,7 +60,7 @@ public static class DidDocHelper
             keyAgreement = keyAgreementJsonNode?.AsArray().Select(p => VerificationMethodFromJson(p.AsObject())).ToList();
         }
 
-        List<PeerDidService>? service = null;
+        List<Service>? service = null;
         jsonObject.TryGetPropertyValue(DidDocConstants.Service, out JsonNode? serviceJsonNode);
         if (serviceJsonNode is not null)
         {
@@ -136,7 +137,7 @@ public static class DidDocHelper
         };
     }
 
-    private static PeerDidService ServiceFromJson(JsonObject jsonObject)
+    private static Service ServiceFromJson(JsonObject jsonObject)
     {
         Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
         string id = jsonObject[ServiceConstants.ServiceId]?.ToString();
@@ -153,20 +154,18 @@ public static class DidDocHelper
 
         if (type != ServiceConstants.ServiceDidcommMessaging)
         {
-            return PeerDidService.FromDictionary(serviceMap);
+            return Service.FromDictionary(serviceMap);
         }
 
         string endpoint = jsonObject[ServiceConstants.ServiceEndpoint]?.ToString();
         List<string>? routingKeys = jsonObject[ServiceConstants.ServiceRoutingKeys]?.AsArray()?.Select(x => x.ToString()).ToList();
         List<string> accept = jsonObject[ServiceConstants.ServiceAccept]?.AsArray()?.Select(x => x.ToString()).ToList();
 
-        return new PeerDidService(
+        return new Service(
             id: id,
-            type: type,
             serviceEndpoint: endpoint ?? "",
             routingKeys: routingKeys ?? new List<string>(),
-            accept: accept ?? new List<string>()
-        );
+            accept: accept ?? new List<string>(), type: type);
     }
 
     private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)

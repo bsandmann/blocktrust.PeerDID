@@ -6,30 +6,31 @@ namespace Blocktrust.PeerDID.DIDDoc;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Common.Converter;
+using Common.Models.DidDoc;
 using Core;
 
 public class DidDocPeerDid
 {
     [JsonPropertyName(DidDocConstants.Id)] public string Did { get; set; }
-    [JsonPropertyName(DidDocConstants.Authentication)] public List<VerificationMethodPeerDid> Authentication { get; set; }
+    [JsonPropertyName(DidDocConstants.Authentication)] public List<VerificationMethodPeerDid> Authentications { get; set; }
 
-    [JsonPropertyName(DidDocConstants.KeyAgreement)] public List<VerificationMethodPeerDid> KeyAgreement { get; set; } = new List<VerificationMethodPeerDid>();
-    [JsonPropertyName(DidDocConstants.Service)] public List<PeerDidService>? Service { get; set; }
+    [JsonPropertyName(DidDocConstants.KeyAgreement)] public List<VerificationMethodPeerDid> KeyAgreements { get; set; } = new List<VerificationMethodPeerDid>();
+    [JsonPropertyName(DidDocConstants.Service)] public List<Service>? Services { get; set; }
 
 
-    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication, List<VerificationMethodPeerDid> keyAgreement, List<PeerDidService> service)
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentications, List<VerificationMethodPeerDid> keyAgreements, List<Service> services)
     {
         this.Did = did;
-        this.Authentication = authentication;
-        this.KeyAgreement = keyAgreement;
-        this.Service = service;
+        this.Authentications = authentications;
+        this.KeyAgreements = keyAgreements;
+        this.Services = services;
     }
 
 
-    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentication)
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentications)
     {
         this.Did = did;
-        this.Authentication = authentication;
+        this.Authentications = authentications;
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ public class DidDocPeerDid
         get
         {
             List<string> res = new List<string>();
-            foreach (var item in Authentication)
+            foreach (var item in Authentications)
             {
                 res.Add(item.Id);
             }
@@ -75,7 +76,7 @@ public class DidDocPeerDid
         get
         {
             List<string> res = new List<string>();
-            foreach (var item in KeyAgreement)
+            foreach (var item in KeyAgreements)
             {
                 res.Add(item.Id);
             }
@@ -89,17 +90,17 @@ public class DidDocPeerDid
         Dictionary<string, object> res = new Dictionary<string, object>()
         {
             { DidDocConstants.Id, Did },
-            { DidDocConstants.Authentication, Authentication.Select(item => item.ToDict()) }
+            { DidDocConstants.Authentication, Authentications.Select(item => item.ToDict()) }
         };
-        if (KeyAgreement.Count > 0)
+        if (KeyAgreements.Count > 0)
         {
-            res.Add(DidDocConstants.KeyAgreement, KeyAgreement.Select(item => item.ToDict()));
+            res.Add(DidDocConstants.KeyAgreement, KeyAgreements.Select(item => item.ToDict()));
         }
 
-        if (Service != null)
+        if (Services != null)
         {
             List<object> serviceList = new List<object>();
-            foreach (var item in Service)
+            foreach (var item in Services)
             {
                 serviceList.Add(item.ToDict());
             }

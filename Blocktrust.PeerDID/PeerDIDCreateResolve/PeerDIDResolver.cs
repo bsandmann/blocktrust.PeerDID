@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.PeerDIDCreateResolve;
 
 using Blocktrust.PeerDID.Exceptions;
+using Common.Models.DidDoc;
 using Core;
 using DIDDoc;
 using Types;
@@ -45,7 +46,7 @@ public static class PeerDidResolver
         var decodedEncumbasis = DecodeMultibaseEncnumbasisAuth(inceptionKey, format);
         return new DidDocPeerDid(
             did: peerDid.Value,
-            authentication: new List<VerificationMethodPeerDid> { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
+            authentications: new List<VerificationMethodPeerDid> { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
     }
 
     private static DidDocPeerDid BuildDidDocNumalgo2(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
@@ -85,9 +86,9 @@ public static class PeerDidResolver
 
         return new DidDocPeerDid(
             did: peerDid.Value,
-            authentication: authentications,
-            keyAgreement: keyAgreement,
-            service: decodedService
+            authentications: authentications,
+            keyAgreements: keyAgreement,
+            services: decodedService
         );
     }
 
@@ -126,7 +127,7 @@ public static class PeerDidResolver
         }
     }
 
-    private static List<PeerDidService> DoDecodeService(string service, string peerDid)
+    private static List<Service> DoDecodeService(string service, string peerDid)
     {
         try
         {

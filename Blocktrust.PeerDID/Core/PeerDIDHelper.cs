@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using Common.Converter;
+using Common.Models.DidDoc;
 using DIDDoc;
 using Types;
 
@@ -48,7 +49,7 @@ public class PeerDidHelper
     /// <param name="peerDid">PeerDID which will be used as an ID</param>
     /// <returns>decoded service</returns>
     /// <exception cref="ArgumentException">if service is not correctly decoded</exception>
-    public static List<PeerDidService> DecodeService(string encodedService, PeerDid peerDid)
+    public static List<Service> DecodeService(string encodedService, PeerDid peerDid)
     {
         if (encodedService == "")
         {
@@ -77,7 +78,7 @@ public class PeerDidHelper
             }
         }
 
-        var otherServiceList2 = new List<PeerDidService>();
+        var otherServiceList2 = new List<Service>();
         for (int i = 0; i < serviceMapList.Count; i++)
         {
             var serviceMap = serviceMapList[i];
@@ -166,7 +167,7 @@ public class PeerDidHelper
                 }
             }
 
-            otherServiceList2.Add(PeerDidService.FromDictionary(service));
+            otherServiceList2.Add(Service.FromDictionary(service));
         }
 
         return otherServiceList2;

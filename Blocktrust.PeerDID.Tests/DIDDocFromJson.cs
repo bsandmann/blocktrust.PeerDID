@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.Tests;
 
 using System.Text.Json;
+using Common.Models.DidDoc;
 using DIDDoc;
 using Exceptions;
 using Types;
@@ -72,11 +73,11 @@ public class DidDocFromJson
         var didDoc = DidDocPeerDid.FromJson(testData.DidDoc.Value);
         Assert.Equal(Fixture.PEER_DID_NUMALGO_0, didDoc.Did);
 
-        Assert.True(didDoc.KeyAgreement.Count == 0);
-        Assert.Null(didDoc.Service);
-        Assert.Single(didDoc.Authentication);
+        Assert.True(didDoc.KeyAgreements.Count == 0);
+        Assert.Null(didDoc.Services);
+        Assert.Single(didDoc.Authentications);
 
-        var auth = didDoc.Authentication[0];
+        var auth = didDoc.Authentications[0];
         var expectedAuthArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().First();
         var expectedAuth = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray.GetRawText());
         var expectedAuthId = ((JsonElement)expectedAuth["id"]).GetString();
@@ -110,12 +111,12 @@ public class DidDocFromJson
 
         Assert.Equal(Fixture.PEER_DID_NUMALGO_2, didDoc.Did);
 
-        Assert.Equal(2, didDoc.Authentication.Count);
-        Assert.Single(didDoc.KeyAgreement);
-        Assert.NotNull(didDoc.Service);
-        Assert.Equal(1, didDoc.Service?.Count);
+        Assert.Equal(2, didDoc.Authentications.Count);
+        Assert.Single(didDoc.KeyAgreements);
+        Assert.NotNull(didDoc.Services);
+        Assert.Equal(1, didDoc.Services?.Count);
 
-        var auth1 = didDoc.Authentication[0];
+        var auth1 = didDoc.Authentications[0];
         var expectedAuthArray1 = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().First();
         var expectedAuth1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray1.GetRawText());
         var expectedAuth1Id = ((JsonElement)expectedAuth1["id"]).GetString();
@@ -137,7 +138,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var auth2 = didDoc.Authentication[1];
+        var auth2 = didDoc.Authentications[1];
         var expectedAuthArray2 = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().Skip(1).First();
         var expectedAuth2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray2.GetRawText());
         var expectedAuth2Id = ((JsonElement)expectedAuth2!["id"]).GetString();
@@ -159,7 +160,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var agreem = didDoc.KeyAgreement[0];
+        var agreem = didDoc.KeyAgreements[0];
         var expectedAgreemArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["keyAgreement"])).EnumerateArray().First();
         var expectedAgreem = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAgreemArray.GetRawText());
         var expectedAgreemId = ((JsonElement)expectedAgreem!["id"]).GetString();
@@ -181,10 +182,10 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var service = didDoc.Service![0];
+        var service = didDoc.Services![0];
         var expectedServiceArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["service"])).EnumerateArray().First();
         var expectedService = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray.GetRawText());
-        var didCommService = (PeerDidService)service;
+        var didCommService = (Service)service;
         Assert.Equivalent(expectedService!["id"].ToString(), didCommService.Id);
         Assert.Equal(expectedService["serviceEndpoint"].ToString(), didCommService.ServiceEndpoint);
         Assert.Equal(expectedService["type"].ToString(), didCommService.Type);
@@ -201,23 +202,23 @@ public class DidDocFromJson
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES);
         Assert.Equal(Fixture.PEER_DID_NUMALGO_2_2_SERVICES, didDoc.Did);
 
-        Assert.NotNull(didDoc.Service);
-        Assert.Equal(2, didDoc.Service.Count);
+        Assert.NotNull(didDoc.Services);
+        Assert.Equal(2, didDoc.Services.Count);
 
-        var service1 = didDoc.Service[0];
+        var service1 = didDoc.Services[0];
         var expectedServiceArray1 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().First();
         var expectedService1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray1.GetRawText());
-        var didCommService1 = (PeerDidService)service1;
+        var didCommService1 = (Service)service1;
         Assert.Equal(expectedService1!["id"].ToString(), didCommService1.Id);
         Assert.Equal(expectedService1["serviceEndpoint"].ToString(), didCommService1.ServiceEndpoint);
         Assert.Equal(expectedService1["type"].ToString(), didCommService1.Type);
         Assert.Equivalent(((JsonElement)expectedService1!["routingKeys"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService1!.RoutingKeys);
         Assert.Empty(didCommService1.Accept);
 
-        var service2 = didDoc.Service[1];
+        var service2 = didDoc.Services[1];
         var expectedServiceArray2 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().Skip(1).First();
         var expectedService2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray2.GetRawText());
-        var didCommService2 = (PeerDidService)service2;
+        var didCommService2 = (Service)service2;
         Assert.Equivalent(((JsonElement)expectedService2!["accept"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService2!.Accept);
     }
 
@@ -226,9 +227,9 @@ public class DidDocFromJson
     {
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_NO_SERVICES);
         Assert.Equal(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES, didDoc.Did);
-        Assert.Null(didDoc.Service);
-        Assert.Single(didDoc.Authentication);
-        Assert.Single(didDoc.KeyAgreement);
+        Assert.Null(didDoc.Services);
+        Assert.Single(didDoc.Authentications);
+        Assert.Single(didDoc.KeyAgreements);
     }
 
     [Fact]
@@ -237,11 +238,11 @@ public class DidDocFromJson
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_MINIMAL_SERVICES);
         Assert.Equal(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES, didDoc.Did);
 
-        Assert.Equal(2, didDoc.Authentication.Count);
-        Assert.Single(didDoc.KeyAgreement);
+        Assert.Equal(2, didDoc.Authentications.Count);
+        Assert.Single(didDoc.KeyAgreements);
 
-        var service = didDoc.Service![0];
-        var didCommService = (PeerDidService)service;
+        var service = didDoc.Services![0];
+        var didCommService = (Service)service;
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg.SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9#didcommmessaging-0",
             didCommService.Id
