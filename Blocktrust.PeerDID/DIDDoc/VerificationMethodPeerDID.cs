@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.DIDDoc;
 
 using System.Text.Json.Serialization;
+using Common.Models.DidDoc;
 using Types;
 
 public class VerificationMethodPeerDid

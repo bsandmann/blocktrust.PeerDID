@@ -1,6 +1,7 @@
 namespace Blocktrust.PeerDID.Types;
 
 using System.Text.Json;
+using DIDDoc;
 
 public class VerificationMaterialPeerDid<T> where T : VerificationMethodTypePeerDid
 {
