@@ -4,6 +4,7 @@ using Blocktrust.PeerDID.Exceptions;
 using Common.Models.DidDoc;
 using Core;
 using DIDDoc;
+using FluentResults;
 using Types;
 
 public static class PeerDidResolver
@@ -16,28 +17,42 @@ public static class PeerDidResolver
     /// <returns>resolved [DIDDocPeerDID] as JSON string</returns>
     /// <exception cref="MalformedPeerDidException">if [peerDID] parameter does not match [peerDID] spec, if a valid DIDDoc cannot be produced from the [peerDID] </exception>
     /// <exception cref="ArgumentException"></exception>
-    public static string ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
+    public static Result<string> ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
     {
         if (!PeerDidCreator.IsPeerDid(peerDid.Value))
         {
-            throw new MalformedPeerDidException($"Does not match peer DID regexp: {peerDid}");
+            return Result.Fail($"Does not match peer DID regexp: {peerDid}");
         }
 
         var didDoc = default(DidDocPeerDid);
         if (peerDid.Value[9] == '0')
         {
-            didDoc = BuildDidDocNumalgo0(peerDid, format);
+            try
+            {
+                didDoc = BuildDidDocNumalgo0(peerDid, format);
+            }
+            catch (System.Exception e)
+            {
+                return Result.Fail("Error resolving Peer DID: " + e.Message);
+            }
         }
         else if (peerDid.Value[9] == '2')
         {
-            didDoc = BuildDidDocNumalgo2(peerDid, format);
+            try
+            {
+                didDoc = BuildDidDocNumalgo2(peerDid, format);
+            }
+            catch (System.Exception e)
+            {
+                return Result.Fail("Error resolving Peer DID: " + e.Message);
+            }
         }
         else
         {
-            throw new System.ArgumentException($"Invalid numalgo of Peer DID: {peerDid}");
+            return Result.Fail($"Invalid numalgo of Peer DID: {peerDid}");
         }
 
-        return didDoc.ToJson();
+        return Result.Ok(didDoc.ToJson());
     }
 
     private static DidDocPeerDid BuildDidDocNumalgo0(PeerDid peerDid, VerificationMaterialFormatPeerDid format)

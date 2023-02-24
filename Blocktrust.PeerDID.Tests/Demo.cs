@@ -42,11 +42,11 @@ public class Demo
             encryptionKeys, signingKeys, service
         );
 
-        string didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.Base58);
-        string didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.Base58);
+        var didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.Base58);
+        var didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.Base58);
 
-        DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json);
-        DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json);
+        DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json.Value);
+        DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json.Value);
         
         //This 'test' features no assertions, but it does show how to use the library.
 
