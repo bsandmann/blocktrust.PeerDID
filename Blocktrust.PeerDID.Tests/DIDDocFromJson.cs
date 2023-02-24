@@ -71,13 +71,13 @@ public class DidDocFromJson
     public void TestDidDocFromJsonNumalgo0(DidDocTestData testData)
     {
         var didDoc = DidDocPeerDid.FromJson(testData.DidDoc.Value);
-        Assert.Equal(Fixture.PEER_DID_NUMALGO_0, didDoc.Did);
+        Assert.Equal(Fixture.PEER_DID_NUMALGO_0, didDoc.Value.Did);
 
-        Assert.True(didDoc.KeyAgreements.Count == 0);
-        Assert.Null(didDoc.Services);
-        Assert.Single(didDoc.Authentications);
+        Assert.True(didDoc.Value.KeyAgreements.Count == 0);
+        Assert.Null(didDoc.Value.Services);
+        Assert.Single(didDoc.Value.Authentications);
 
-        var auth = didDoc.Authentications[0];
+        var auth = didDoc.Value.Authentications[0];
         var expectedAuthArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().First();
         var expectedAuth = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray.GetRawText());
         var expectedAuthId = ((JsonElement)expectedAuth["id"]).GetString();
@@ -99,8 +99,8 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        Assert.Equal(new List<object> { expectedAuthId }, didDoc.AuthenticationKids);
-        Assert.True(didDoc.AgreementKids.Count == 0);
+        Assert.Equal(new List<object> { expectedAuthId }, didDoc.Value.AuthenticationKids);
+        Assert.True(didDoc.Value.AgreementKids.Count == 0);
     }
 
     [Theory]
@@ -109,14 +109,14 @@ public class DidDocFromJson
     {
         var didDoc = DidDocPeerDid.FromJson(testData.DidDoc.Value);
 
-        Assert.Equal(Fixture.PEER_DID_NUMALGO_2, didDoc.Did);
+        Assert.Equal(Fixture.PEER_DID_NUMALGO_2, didDoc.Value.Did);
 
-        Assert.Equal(2, didDoc.Authentications.Count);
-        Assert.Single(didDoc.KeyAgreements);
-        Assert.NotNull(didDoc.Services);
-        Assert.Equal(1, didDoc.Services?.Count);
+        Assert.Equal(2, didDoc.Value.Authentications.Count);
+        Assert.Single(didDoc.Value.KeyAgreements);
+        Assert.NotNull(didDoc.Value.Services);
+        Assert.Equal(1, didDoc.Value.Services?.Count);
 
-        var auth1 = didDoc.Authentications[0];
+        var auth1 = didDoc.Value.Authentications[0];
         var expectedAuthArray1 = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().First();
         var expectedAuth1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray1.GetRawText());
         var expectedAuth1Id = ((JsonElement)expectedAuth1["id"]).GetString();
@@ -138,7 +138,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var auth2 = didDoc.Authentications[1];
+        var auth2 = didDoc.Value.Authentications[1];
         var expectedAuthArray2 = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["authentication"])).EnumerateArray().Skip(1).First();
         var expectedAuth2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAuthArray2.GetRawText());
         var expectedAuth2Id = ((JsonElement)expectedAuth2!["id"]).GetString();
@@ -160,7 +160,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var agreem = didDoc.KeyAgreements[0];
+        var agreem = didDoc.Value.KeyAgreements[0];
         var expectedAgreemArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["keyAgreement"])).EnumerateArray().First();
         var expectedAgreem = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedAgreemArray.GetRawText());
         var expectedAgreemId = ((JsonElement)expectedAgreem!["id"]).GetString();
@@ -182,7 +182,7 @@ public class DidDocFromJson
             Assert.Equal(exptectedJwk.X, computedJwk.X);
         }
 
-        var service = didDoc.Services![0];
+        var service = didDoc.Value.Services![0];
         var expectedServiceArray = ((JsonElement)(Fixture.FromJson(testData.DidDoc.Value)["service"])).EnumerateArray().First();
         var expectedService = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray.GetRawText());
         var didCommService = (Service)service;
@@ -191,21 +191,21 @@ public class DidDocFromJson
         Assert.Equal(expectedService["type"].ToString(), didCommService.Type);
         Assert.Equivalent(((JsonElement)expectedService!["routingKeys"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService!.RoutingKeys);
         Assert.Equivalent(((JsonElement)expectedService!["accept"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService!.Accept);
-        Assert.Equivalent(expectedAuth1["id"].ToString(), didDoc.AuthenticationKids[0]);
-        Assert.Equivalent(expectedAuth2["id"].ToString(), didDoc.AuthenticationKids[1]);
-        Assert.Equivalent(expectedAgreem["id"].ToString(), didDoc.AgreementKids[0]);
+        Assert.Equivalent(expectedAuth1["id"].ToString(), didDoc.Value.AuthenticationKids[0]);
+        Assert.Equivalent(expectedAuth2["id"].ToString(), didDoc.Value.AuthenticationKids[1]);
+        Assert.Equivalent(expectedAgreem["id"].ToString(), didDoc.Value.AgreementKids[0]);
     }
 
     [Fact]
     public void TestDidDocFromJsonNumalgo2Service2Elements()
     {
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES);
-        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_2_SERVICES, didDoc.Did);
+        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_2_SERVICES, didDoc.Value.Did);
 
-        Assert.NotNull(didDoc.Services);
-        Assert.Equal(2, didDoc.Services.Count);
+        Assert.NotNull(didDoc.Value.Services);
+        Assert.Equal(2, didDoc.Value.Services.Count);
 
-        var service1 = didDoc.Services[0];
+        var service1 = didDoc.Value.Services[0];
         var expectedServiceArray1 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().First();
         var expectedService1 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray1.GetRawText());
         var didCommService1 = (Service)service1;
@@ -215,7 +215,7 @@ public class DidDocFromJson
         Assert.Equivalent(((JsonElement)expectedService1!["routingKeys"]).EnumerateArray().Select(p => p.GetString()).ToList(), didCommService1!.RoutingKeys);
         Assert.Empty(didCommService1.Accept);
 
-        var service2 = didDoc.Services[1];
+        var service2 = didDoc.Value.Services[1];
         var expectedServiceArray2 = ((JsonElement)(Fixture.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_2_SERVICES)["service"])).EnumerateArray().Skip(1).First();
         var expectedService2 = JsonSerializer.Deserialize<Dictionary<string, object>>(expectedServiceArray2.GetRawText());
         var didCommService2 = (Service)service2;
@@ -226,22 +226,22 @@ public class DidDocFromJson
     public void TestDidDocFromJsonNumalgo2NoService()
     {
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_NO_SERVICES);
-        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES, didDoc.Did);
-        Assert.Null(didDoc.Services);
-        Assert.Single(didDoc.Authentications);
-        Assert.Single(didDoc.KeyAgreements);
+        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_NO_SERVICES, didDoc.Value.Did);
+        Assert.Null(didDoc.Value.Services);
+        Assert.Single(didDoc.Value.Authentications);
+        Assert.Single(didDoc.Value.KeyAgreements);
     }
 
     [Fact]
     public void TestDidDocFromJsonNumalgo2MinimalService()
     {
         var didDoc = DidDocPeerDid.FromJson(Fixture.DID_DOC_NUMALGO_2_MULTIBASE_MINIMAL_SERVICES);
-        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES, didDoc.Did);
+        Assert.Equal(Fixture.PEER_DID_NUMALGO_2_MINIMAL_SERVICES, didDoc.Value.Did);
 
-        Assert.Equal(2, didDoc.Authentications.Count);
-        Assert.Single(didDoc.KeyAgreements);
+        Assert.Equal(2, didDoc.Value.Authentications.Count);
+        Assert.Single(didDoc.Value.KeyAgreements);
 
-        var service = didDoc.Services![0];
+        var service = didDoc.Value.Services![0];
         var didCommService = (Service)service;
         Assert.Equal(
             "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.Vz6MkgoLTnTypo3tDRwCkZXSccTPHRLhF4ZnjhueYAFpEX6vg.SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9#didcommmessaging-0",
@@ -254,7 +254,8 @@ public class DidDocFromJson
     [Fact]
     public void TestDidDocFromJsonInvalidJson()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() => DidDocPeerDid.FromJson("sdfasdfsf{sdfsdfasdf..."));
+        var result =DidDocPeerDid.FromJson("sdfasdfsf{sdfsdfasdf...");
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
@@ -265,14 +266,13 @@ public class DidDocFromJson
         {
             ""id"": ""did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V""
         }");
-        Assert.Equal("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V", didDoc.Did);
+        Assert.Equal("did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V", didDoc.Value.Did);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonNoId()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "authentication": [
@@ -285,14 +285,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodNoId()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -305,14 +304,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodNoType()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -325,14 +323,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodNoController()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -345,14 +342,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodNoValue()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -365,14 +361,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodInvalidType()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -386,14 +381,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodInvalidField()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -407,14 +401,13 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess);
     }
 
     [Fact]
     public void TestDidDocInvalidJsonVerMethodInvalidValueJwk()
     {
-        Assert.Throws<MalformedPeerDIDDocException>(() =>
-        {
+        var result =
             DidDocPeerDid.FromJson("""
                    {
                        "id": "did:peer:0z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V",
@@ -428,6 +421,6 @@ public class DidDocFromJson
                        ]
                    }
             """);
-        });
+        Assert.False(result.IsSuccess); 
     }
 }

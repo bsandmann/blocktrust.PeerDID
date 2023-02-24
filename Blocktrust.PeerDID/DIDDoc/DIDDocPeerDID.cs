@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using Common.Converter;
 using Common.Models.DidDoc;
 using Core;
+using FluentResults;
 
 public class DidDocPeerDid
 {
@@ -39,21 +40,17 @@ public class DidDocPeerDid
     /// <param name="value">value DID Doc JSON</param>
     /// <returns>DIDDoc PeerDID instance</returns>
     /// <exception cref="MalformedPeerDidException">MalformedPeerDIDDOcException if the input DID Doc JSON is not a valid peerdid DID Doc</exception>
-    public static DidDocPeerDid FromJson(string value)
+    public static Result<DidDocPeerDid> FromJson(string value)
     {
         try
         {
-            // var serializerOptions = new JsonSerializerOptions();
-            // serializerOptions.Converters.Add(new VerificationMethodPeerDIDConverter());
-            var ff = JsonNode.Parse(value);
-            var obj = ff.AsObject();
-            var doc = DidDocHelper.DidDocFromJson(obj);
-            return doc;
-            // return JsonSerializer.Deserialize<DidDocPeerDid>(value, serializerOptions);
+            var jsonNode = JsonNode.Parse(value);
+            var doc = DidDocHelper.DidDocFromJson(jsonNode.AsObject());
+            return Result.Ok(doc);
         }
         catch (System.Exception e)
         {
-            throw new MalformedPeerDIDDocException(e);
+            return Result.Fail("DIDDoc could not be parsed from JSON: " + e.Message);
         }
     }
 

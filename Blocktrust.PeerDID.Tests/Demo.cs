@@ -45,8 +45,8 @@ public class Demo
         var didDocAlgo0Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo0), VerificationMaterialFormatPeerDid.Base58);
         var didDocAlgo2Json = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDIDAlgo2), VerificationMaterialFormatPeerDid.Base58);
 
-        DidDocPeerDid didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json.Value);
-        DidDocPeerDid didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json.Value);
+        var didDocAlgo0 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo0Json.Value);
+        var didDocAlgo2 = DIDDoc.DidDocPeerDid.FromJson(didDocAlgo2Json.Value);
         
         //This 'test' features no assertions, but it does show how to use the library.
 
