@@ -9,7 +9,7 @@
         <Authors>Bjoern Sandmann / blocktrust</Authors>
         <Description>Port of the SICPA PeerDID implementation to .net</Description>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.PeerDID</RepositoryUrl>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
