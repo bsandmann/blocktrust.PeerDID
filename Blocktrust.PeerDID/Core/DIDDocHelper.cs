@@ -2,7 +2,7 @@ namespace Blocktrust.PeerDID.Core;
 
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Common.Models.DidDoc;
+using Blocktrust.Common.Models.DidDoc;
 using DIDDoc;
 using Types;
 
