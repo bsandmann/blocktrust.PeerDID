@@ -5,15 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Copyright>Bjoern Sandmann / blocktrust</Copyright>
-        <PackageProjectUrl>blockrtust.dev</PackageProjectUrl>
+        <PackageProjectUrl>blocktrust.dev</PackageProjectUrl>
         <Authors>Bjoern Sandmann / blocktrust</Authors>
         <Description>Port of the SICPA PeerDID implementation to .net</Description>
         <RepositoryUrl>https://github.com/bsandmann/blocktrust.PeerDID</RepositoryUrl>
-        <Version>1.0.4</Version>
+        <Version>1.0.5</Version>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Blocktrust.Common" Version="0.0.7" />
+      <PackageReference Include="Blocktrust.Common" Version="0.1.0" />
       <PackageReference Include="FluentResults" Version="3.15.2" />
       <PackageReference Include="SimpleBase" Version="4.0.0" />
     </ItemGroup>
