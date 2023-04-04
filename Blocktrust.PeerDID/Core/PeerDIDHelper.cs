@@ -113,7 +113,10 @@ public class PeerDidHelper
                 }
                 else
                 {
-                    service[ServiceConstants.ServiceEndpoint] = obj;
+                    if (obj is not null)
+                    {
+                        service[ServiceConstants.ServiceEndpoint] = obj;
+                    }
                 }
             }
 

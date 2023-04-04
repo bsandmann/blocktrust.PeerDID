@@ -11,6 +11,7 @@ using Types;
 
 public class ResolveNumalgo2
 {
+    
     [Fact]
     public void TestResolvePositiveDefault()
     {
