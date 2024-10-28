@@ -86,14 +86,19 @@ public class DidDocPeerDid
     {
         Dictionary<string, object> res = new Dictionary<string, object>()
         {
+            { "@context", new[] {
+                "https://www.w3.org/ns/did/v1",
+                "https://w3id.org/security/multikey/v1"
+            }},
             { DidDocConstants.Id, Did },
             { DidDocConstants.Authentication, Authentications.Select(item => item.ToDict()) }
         };
+
         if (KeyAgreements.Count > 0)
         {
             res.Add(DidDocConstants.KeyAgreement, KeyAgreements.Select(item => item.ToDict()));
         }
-
+        
         if (Services != null)
         {
             List<object> serviceList = new List<object>();
@@ -101,13 +106,11 @@ public class DidDocPeerDid
             {
                 serviceList.Add(item.ToDict());
             }
-
             res.Add(DidDocConstants.Service, serviceList);
         }
-
+        
         return res;
     }
-
     public string ToJson()
     {
         var serializerOptions = new JsonSerializerOptions();

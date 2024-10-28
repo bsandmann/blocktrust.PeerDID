@@ -15,7 +15,7 @@ public static class PeerDidCreator
     public static bool IsPeerDid(string peerDid)
     {
         string pattern = @"^did:peer:(([0](z)([1-9a-km-zA-HJ-NP-Z]{46,47}))" +
-                         "|(2((.[AEVID](z)([1-9a-km-zA-HJ-NP-Z]{46,47}))+(.(S)[0-9a-zA-Z=]*)?)))$";
+                         "|(2((.[AEVID](z)([1-9a-km-zA-HJ-NP-Z]{46,47}))+(.(S)[0-9a-zA-Z=]*)*)))$";
         return System.Text.RegularExpressions.Regex.IsMatch(peerDid, pattern);
     }
 
