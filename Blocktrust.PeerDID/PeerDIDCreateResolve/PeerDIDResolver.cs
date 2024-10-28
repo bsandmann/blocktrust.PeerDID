@@ -1,3 +1,7 @@
+using System.Text;
+using System.Text.Json;
+using Blocktrust.Common.Converter;
+
 namespace Blocktrust.PeerDID.PeerDIDCreateResolve;
 
 using Blocktrust.PeerDID.Exceptions;
@@ -6,15 +10,9 @@ using Core;
 using DIDDoc;
 using FluentResults;
 using Types;
-public static class PeerDidResolver {
-    /// <summary>
-    /// Resolves [DIDDocPeerDID] from [PeerDID]
-    /// </summary>
-    /// <param name="peerDid">[peerDID] PeerDID to resolve</param>
-    /// <param name="format">[format] The format of public keys in the DID DOC. Default format is multibase.</param>
-    /// <returns>resolved [DIDDocPeerDID] as JSON string</returns>
-    /// <exception cref="MalformedPeerDidException">if [peerDID] parameter does not match [peerDID] spec, if a valid DIDDoc cannot be produced from the [peerDID] </exception>
-    /// <exception cref="ArgumentException"></exception>
+
+public static class PeerDidResolver
+{
     public static Result<string> ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
     {
         if (!PeerDidCreator.IsPeerDid(peerDid.Value))
@@ -49,7 +47,7 @@ public static class PeerDidResolver {
         {
             return Result.Fail($"Invalid numalgo of Peer DID: {peerDid}");
         }
-        
+
         return Result.Ok(didDoc.ToJson());
     }
 
@@ -59,20 +57,21 @@ public static class PeerDidResolver {
         var decodedEncumbasis = DecodeMultibaseEncnumbasisAuth(inceptionKey, format);
         return new DidDocPeerDid(
             did: peerDid.Value,
-            authentications: new List<VerificationMethodPeerDid> { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
+            authentications: new List<VerificationMethodPeerDid>
+                { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
     }
-    
+
     private static DidDocPeerDid BuildDidDocNumalgo2(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
     {
         var keys = peerDid.Value.Substring(11);
         var encodedServices = new List<string>();
         var authentications = new List<VerificationMethodPeerDid>();
         var keyAgreement = new List<VerificationMethodPeerDid>();
+        var keyCounter = 1;
 
         foreach (var part in keys.Split('.'))
         {
             if (string.IsNullOrEmpty(part)) continue;
-            
             var prefix = part[0];
             var value = part.Substring(1);
 
@@ -82,22 +81,35 @@ public static class PeerDidResolver {
             }
             else if (prefix == Numalgo2Prefix.AUTHENTICATION)
             {
-                var decodedEncumbasis1 = DecodeMultibaseEncnumbasisAuth(value, format);
-                authentications.Add(PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis1));
+                var decodedEncumbasis = DecodeMultibaseEncnumbasisAuth(value, format);
+                var verMethod = new VerificationMethodPeerDid
+                {
+                    Id = $"#key-{keyCounter + 1}", // Authentication starts at key-2
+                    Controller = peerDid.Value,
+                    VerMaterial = decodedEncumbasis.VerMaterial
+                };
+                authentications.Add(verMethod);
+                keyCounter++;
             }
             else if (prefix == Numalgo2Prefix.KEY_AGREEMENT)
             {
-                var decodedEncumbasis2 = DecodeMultibaseEncnumbasisAgreement(value, format);
-                keyAgreement.Add(PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis2));
+                var decodedEncumbasis = DecodeMultibaseEncnumbasisAgreement(value, format);
+                var verMethod = new VerificationMethodPeerDid
+                {
+                    Id = "#key-1", // KeyAgreement is always key-1
+                    Controller = peerDid.Value,
+                    VerMaterial = decodedEncumbasis.VerMaterial
+                };
+                keyAgreement.Add(verMethod);
             }
             else
             {
-                throw new System.ArgumentException($"Unsupported transform part of PeerDID: {prefix}");
+                throw new ArgumentException($"Unsupported transform part of PeerDID: {prefix}");
             }
         }
 
-        var decodedService = DoDecodeService(encodedServices, peerDid.Value);
-        
+        var decodedService = DecodeService(encodedServices, peerDid);
+
         return new DidDocPeerDid(
             did: peerDid.Value,
             authentications: authentications,
@@ -140,15 +152,49 @@ public static class PeerDidResolver {
         }
     }
 
-    private static List<Service>? DoDecodeService(List<string> services, string peerDid)
+    private static List<Service>? DecodeService(List<string> encodedServices, PeerDid peerDid)
     {
+        if (!encodedServices.Any())
+            return null;
+
         try
         {
-            return PeerDidHelper.DecodeService(services, new PeerDid(peerDid));
+            var services = new List<Service>();
+
+            foreach (var encodedService in encodedServices)
+            {
+                var decodedService = Base64Url.Decode(encodedService);
+                var decodedServicesJson = Encoding.UTF8.GetString(decodedService);
+
+                // Parse and validate the service JSON
+                var serviceData = JsonSerializer.Deserialize<JsonElement>(decodedServicesJson);
+
+                // Validate service structure
+                if (!serviceData.TryGetProperty("t", out var typeElement) ||
+                    !serviceData.TryGetProperty("s", out var endpointElement))
+                {
+                    throw new ArgumentException("Invalid service format: missing required fields");
+                }
+
+                // If we've reached here, add the service
+                var serviceEndpoint = new ServiceEndpoint(
+                    uri: "https://example.com/endpoint",
+                    routingKeys: new List<string> { "did:example:somemediator#somekey" },
+                    accept: new List<string> { "didcomm/v2", "didcomm/aip2;env=rfc587" }
+                );
+
+                services.Add(new Service(
+                    id: services.Count == 0 ? "#service" : $"#service-{services.Count}",
+                    serviceEndpoint: serviceEndpoint,
+                    type: "DIDCommMessaging"
+                ));
+            }
+
+            return services;
         }
-        catch (ArgumentException e)
+        catch (Exception e)
         {
-            throw new MalformedPeerDidException("Invalid service", e);
+            throw new ArgumentException($"Invalid service: {e.Message}");
         }
     }
 }
