@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Blocktrust.Common.Models.DidDoc;
 using Blocktrust.PeerDID.DIDDoc;
 using Blocktrust.PeerDID.Types;
