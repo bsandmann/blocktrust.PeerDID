@@ -8,4 +8,7 @@ public class ServiceConstants
     public const string ServiceDidcommMessaging = "DIDCommMessaging";
     public const string ServiceRoutingKeys = "routingKeys";
     public const string ServiceAccept = "accept";
+    
+    public const string ServiceUri = "uri";
+
 }

@@ -49,32 +49,41 @@ public class PeerDidHelper
     /// <param name="peerDid">PeerDID which will be used as an ID</param>
     /// <returns>decoded service</returns>
     /// <exception cref="ArgumentException">if service is not correctly decoded</exception>
-    public static List<Service> DecodeService(string encodedService, PeerDid peerDid)
+    public static List<Service>? DecodeService(List<string> encodedServices, PeerDid peerDid)
     {
-        if (encodedService == "")
-        {
+        if (!encodedServices.Any())
             return null;
-        }
 
-        var decodedService = Base64Url.Decode(encodedService);
+        string decodedServicesJson;
+        if (encodedServices.Count == 1)
+        {
+            var decodedService = Base64Url.Decode(encodedServices[0]);
+            decodedServicesJson = Encoding.UTF8.GetString(decodedService);
+        }
+        else
+        {
+            var decodedServices = encodedServices.Select(service =>
+            {
+                var decoded = Base64Url.Decode(service);
+                return Encoding.UTF8.GetString(decoded);
+            });
+            decodedServicesJson = $"[{string.Join(",", decodedServices)}]";
+        }
 
         List<Dictionary<string, object>> serviceMapList;
         try
         {
-            serviceMapList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(decodedService);
+            serviceMapList = Utils.FromJsonToList(decodedServicesJson);
         }
-        catch (JsonException ex)
+        catch (Exception)
         {
             try
             {
-                serviceMapList = new List<Dictionary<string, object>>
-                {
-                    JsonSerializer.Deserialize<Dictionary<string, object>>(decodedService)
-                };
+                serviceMapList = new List<Dictionary<string, object>> { Utils.FromJsonToMap(decodedServicesJson) };
             }
-            catch (JsonException e)
+            catch (Exception)
             {
-                throw new ArgumentException("Invalid JSON " + decodedService);
+                throw new ArgumentException($"Invalid JSON {decodedServicesJson}");
             }
         }
 
@@ -89,7 +98,8 @@ public class PeerDidHelper
 
             var f = serviceMap[ServicePrefix[ServiceConstants.ServiceType]];
             var s = f.ToString();
-            var serviceType = s.Replace(ServicePrefix[ServiceConstants.ServiceDidcommMessaging], ServiceConstants.ServiceDidcommMessaging);
+            var serviceType = s.Replace(ServicePrefix[ServiceConstants.ServiceDidcommMessaging],
+                ServiceConstants.ServiceDidcommMessaging);
             var service = new Dictionary<string, object>
             {
                 { ServiceConstants.ServiceId, $"{peerDid.Value}#{((string)serviceType).ToLower()}-{i}" },
@@ -132,7 +142,8 @@ public class PeerDidHelper
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.ServiceRoutingKeys] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
+                        service[ServiceConstants.ServiceRoutingKeys] =
+                            jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -157,7 +168,8 @@ public class PeerDidHelper
                     }
                     else if (jsonElement.ValueKind == JsonValueKind.Array)
                     {
-                        service[ServiceConstants.ServiceAccept] = jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
+                        service[ServiceConstants.ServiceAccept] =
+                            jsonElement.EnumerateArray().Select(p => p.GetString()).ToList();
                     }
                     else
                     {
@@ -177,136 +189,136 @@ public class PeerDidHelper
     }
 
     /// <summary>
-    /// Creates multibased encnumbasis according to PeerDID spec
-    /// <a href="https://identity.foundation/peer-did-method-spec/index.html#method-specific-identifier">Specification</a>
-    /// </summary>
-    /// <param name="key">public key</param>
-    /// <returns>transform+encnumbasis</returns>
-    /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
-    public static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> key)
-    {
-        byte[] decodedKey;
-
-        switch (key.Format)
+        /// Creates multibased encnumbasis according to PeerDID spec
+        /// <a href="https://identity.foundation/peer-did-method-spec/index.html#method-specific-identifier">Specification</a>
+        /// </summary>
+        /// <param name="key">public key</param>
+        /// <returns>transform+encnumbasis</returns>
+        /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
+        public static string CreateMultibaseEncnumbasis(VerificationMaterialPeerDid<VerificationMethodTypePeerDid> key)
         {
-            case VerificationMaterialFormatPeerDid.Base58:
-                decodedKey = Multibase.FromBase58(key.Value.ToString());
-                break;
-            case VerificationMaterialFormatPeerDid.Multibase:
-                var multibase = Multibase.FromBase58Multibase(key.Value.ToString());
-                decodedKey = Multicodec.FromMulticodec(multibase.Item2).Value;
-                break;
-            case VerificationMaterialFormatPeerDid.Jwk:
-                decodedKey = JwkOkp.FromJwk(key);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            byte[] decodedKey;
+
+            switch (key.Format)
+            {
+                case VerificationMaterialFormatPeerDid.Base58:
+                    decodedKey = Multibase.FromBase58(key.Value.ToString());
+                    break;
+                case VerificationMaterialFormatPeerDid.Multibase:
+                    var multibase = Multibase.FromBase58Multibase(key.Value.ToString());
+                    decodedKey = Multicodec.FromMulticodec(multibase.Item2).Value;
+                    break;
+                case VerificationMaterialFormatPeerDid.Jwk:
+                    decodedKey = JwkOkp.FromJwk(key);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            Validation.ValidateRawKeyLength(decodedKey);
+            return Multibase.ToBase58Multibase(Multicodec.ToMulticodec(decodedKey, MulticodexExtension.GetCodec(key.Type).PrefixInt));
         }
 
-        Validation.ValidateRawKeyLength(decodedKey);
-        return Multibase.ToBase58Multibase(Multicodec.ToMulticodec(decodedKey, MulticodexExtension.GetCodec(key.Type).PrefixInt));
-    }
-
-    /// <summary>
-    /// Decodes multibased encnumbasis to a verification material for DID DOC
-    /// </summary>
-    /// <param name="multibase">transform+encnumbasis to decode</param>
-    /// <param name="format">the format of public keys in the DID DOC</param>
-    /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
-    /// <returns>decoded encnumbasis as verification material for DID DOC</returns>
-    public static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDid format)
-    {
-        var (encnumbasis, decodedEncnumbasis) = Multibase.FromBase58Multibase(multibase);
-        var (codec, decodedEncnumbasisWithoutPrefix) = Multicodec.FromMulticodec(decodedEncnumbasis);
-        Validation.ValidateRawKeyLength(decodedEncnumbasisWithoutPrefix);
-
-        VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial = null;
-        switch (format)
+        /// <summary>
+        /// Decodes multibased encnumbasis to a verification material for DID DOC
+        /// </summary>
+        /// <param name="multibase">transform+encnumbasis to decode</param>
+        /// <param name="format">the format of public keys in the DID DOC</param>
+        /// <exception cref="ArgumentOutOfRangeException">if key is invalid</exception>
+        /// <returns>decoded encnumbasis as verification material for DID DOC</returns>
+        public static DecodedEncumbasis DecodeMultibaseEncnumbasis(string multibase, VerificationMaterialFormatPeerDid format)
         {
-            case VerificationMaterialFormatPeerDid.Base58:
-                switch (codec.Name)
-                {
-                    case Multicodec.NameX25519:
-                        verMaterial = new VerificationMaterialAgreement(
-                            format: format,
-                            type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
-                            value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
-                        );
-                        break;
-                    case Multicodec.NameED25519:
-                        verMaterial = new VerificationMaterialAuthentication(
-                            format: format,
-                            type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
-                            value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
-                        );
-                        break;
-                }
+            var (encnumbasis, decodedEncnumbasis) = Multibase.FromBase58Multibase(multibase);
+            var (codec, decodedEncnumbasisWithoutPrefix) = Multicodec.FromMulticodec(decodedEncnumbasis);
+            Validation.ValidateRawKeyLength(decodedEncnumbasisWithoutPrefix);
 
-                break;
-            case VerificationMaterialFormatPeerDid.Multibase:
-                switch (codec.Name)
-                {
-                    case Multicodec.NameX25519:
-                        verMaterial = new VerificationMaterialAgreement(
-                            format: format,
-                            type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
-                            value: Multibase.ToBase58Multibase(
-                                Multicodec.ToMulticodec(
-                                    decodedEncnumbasisWithoutPrefix,
-                                    MulticodexExtension.GetCodec(VerificationMethodTypeAgreement.X25519KeyAgreementKey2020).PrefixInt
+            VerificationMaterialPeerDid<VerificationMethodTypePeerDid> verMaterial = null;
+            switch (format)
+            {
+                case VerificationMaterialFormatPeerDid.Base58:
+                    switch (codec.Name)
+                    {
+                        case Multicodec.NameX25519:
+                            verMaterial = new VerificationMaterialAgreement(
+                                format: format,
+                                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2019,
+                                value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
+                            );
+                            break;
+                        case Multicodec.NameED25519:
+                            verMaterial = new VerificationMaterialAuthentication(
+                                format: format,
+                                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2018,
+                                value: Multibase.ToBase58(decodedEncnumbasisWithoutPrefix)
+                            );
+                            break;
+                    }
+
+                    break;
+                case VerificationMaterialFormatPeerDid.Multibase:
+                    switch (codec.Name)
+                    {
+                        case Multicodec.NameX25519:
+                            verMaterial = new VerificationMaterialAgreement(
+                                format: format,
+                                type: VerificationMethodTypeAgreement.X25519KeyAgreementKey2020,
+                                value: Multibase.ToBase58Multibase(
+                                    Multicodec.ToMulticodec(
+                                        decodedEncnumbasisWithoutPrefix,
+                                        MulticodexExtension.GetCodec(VerificationMethodTypeAgreement.X25519KeyAgreementKey2020).PrefixInt
+                                    )
                                 )
-                            )
-                        );
-                        break;
-                    case Multicodec.NameED25519:
-                        verMaterial = new VerificationMaterialAuthentication(
-                            format: format,
-                            type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
-                            value: Multibase.ToBase58Multibase(
-                                Multicodec.ToMulticodec(
-                                    decodedEncnumbasisWithoutPrefix,
-                                    MulticodexExtension.GetCodec(VerificationMethodTypeAuthentication.Ed25519VerificationKey2020).PrefixInt
+                            );
+                            break;
+                        case Multicodec.NameED25519:
+                            verMaterial = new VerificationMaterialAuthentication(
+                                format: format,
+                                type: VerificationMethodTypeAuthentication.Ed25519VerificationKey2020,
+                                value: Multibase.ToBase58Multibase(
+                                    Multicodec.ToMulticodec(
+                                        decodedEncnumbasisWithoutPrefix,
+                                        MulticodexExtension.GetCodec(VerificationMethodTypeAuthentication.Ed25519VerificationKey2020).PrefixInt
+                                    )
                                 )
-                            )
-                        );
-                        break;
-                }
+                            );
+                            break;
+                    }
 
-                break;
-            case VerificationMaterialFormatPeerDid.Jwk:
-                switch (codec.Name)
-                {
-                    case Multicodec.NameX25519:
-                        verMaterial = new VerificationMaterialAgreement(
-                            format: format,
-                            type: VerificationMethodTypeAgreement.JsonWebKey2020,
-                            value: JwkOkp.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JsonWebKey2020)
-                        );
-                        break;
-                    case Multicodec.NameED25519:
-                        verMaterial = new VerificationMaterialAuthentication(
-                            format: format,
-                            type: VerificationMethodTypeAuthentication.JsonWebKey2020,
-                            value: JwkOkp.ToJwk(
-                                decodedEncnumbasisWithoutPrefix,
-                                VerificationMethodTypeAuthentication.JsonWebKey2020)
-                        );
-                        break;
-                }
+                    break;
+                case VerificationMaterialFormatPeerDid.Jwk:
+                    switch (codec.Name)
+                    {
+                        case Multicodec.NameX25519:
+                            verMaterial = new VerificationMaterialAgreement(
+                                format: format,
+                                type: VerificationMethodTypeAgreement.JsonWebKey2020,
+                                value: JwkOkp.ToJwk(decodedEncnumbasisWithoutPrefix, VerificationMethodTypeAgreement.JsonWebKey2020)
+                            );
+                            break;
+                        case Multicodec.NameED25519:
+                            verMaterial = new VerificationMaterialAuthentication(
+                                format: format,
+                                type: VerificationMethodTypeAuthentication.JsonWebKey2020,
+                                value: JwkOkp.ToJwk(
+                                    decodedEncnumbasisWithoutPrefix,
+                                    VerificationMethodTypeAuthentication.JsonWebKey2020)
+                            );
+                            break;
+                    }
 
-                break;
+                    break;
+            }
+
+            return new DecodedEncumbasis(encnumbasis, verMaterial);
         }
 
-        return new DecodedEncumbasis(encnumbasis, verMaterial);
-    }
-
-    public static VerificationMethodPeerDid GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
-    {
-        return new VerificationMethodPeerDid
+        public static VerificationMethodPeerDid GetVerificationMethod(string did, DecodedEncumbasis decodedEncumbasis)
         {
-            Id = $"{did}#{decodedEncumbasis.Encnumbasis}",
-            Controller = did,
-            VerMaterial = decodedEncumbasis.VerMaterial
-        };
-    }
+            return new VerificationMethodPeerDid
+            {
+                Id = $"{did}#{decodedEncumbasis.Encnumbasis}",
+                Controller = did,
+                VerMaterial = decodedEncumbasis.VerMaterial
+            };
+        }
 }

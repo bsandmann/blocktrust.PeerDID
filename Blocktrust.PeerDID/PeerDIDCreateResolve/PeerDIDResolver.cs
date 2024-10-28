@@ -6,9 +6,7 @@ using Core;
 using DIDDoc;
 using FluentResults;
 using Types;
-
-public static class PeerDidResolver
-{
+public static class PeerDidResolver {
     /// <summary>
     /// Resolves [DIDDocPeerDID] from [PeerDID]
     /// </summary>
@@ -24,7 +22,7 @@ public static class PeerDidResolver
             return Result.Fail($"Does not match peer DID regexp: {peerDid}");
         }
 
-        var didDoc = default(DidDocPeerDid);
+        DidDocPeerDid didDoc;
         if (peerDid.Value[9] == '0')
         {
             try
@@ -51,7 +49,7 @@ public static class PeerDidResolver
         {
             return Result.Fail($"Invalid numalgo of Peer DID: {peerDid}");
         }
-
+        
         return Result.Ok(didDoc.ToJson());
     }
 
@@ -63,30 +61,31 @@ public static class PeerDidResolver
             did: peerDid.Value,
             authentications: new List<VerificationMethodPeerDid> { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
     }
-
+    
     private static DidDocPeerDid BuildDidDocNumalgo2(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
     {
         var keys = peerDid.Value.Substring(11);
-
-        var service = "";
+        var encodedServices = new List<string>();
         var authentications = new List<VerificationMethodPeerDid>();
         var keyAgreement = new List<VerificationMethodPeerDid>();
 
         foreach (var part in keys.Split('.'))
         {
+            if (string.IsNullOrEmpty(part)) continue;
+            
             var prefix = part[0];
             var value = part.Substring(1);
 
-            if (prefix.Equals(Numalgo2Prefix.SERVICE))
+            if (prefix == Numalgo2Prefix.SERVICE)
             {
-                service = value;
+                encodedServices.Add(value);
             }
-            else if (prefix.Equals(Numalgo2Prefix.AUTHENTICATION))
+            else if (prefix == Numalgo2Prefix.AUTHENTICATION)
             {
                 var decodedEncumbasis1 = DecodeMultibaseEncnumbasisAuth(value, format);
                 authentications.Add(PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis1));
             }
-            else if (prefix.Equals(Numalgo2Prefix.KEY_AGREEMENT))
+            else if (prefix == Numalgo2Prefix.KEY_AGREEMENT)
             {
                 var decodedEncumbasis2 = DecodeMultibaseEncnumbasisAgreement(value, format);
                 keyAgreement.Add(PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis2));
@@ -97,8 +96,8 @@ public static class PeerDidResolver
             }
         }
 
-        var decodedService = DoDecodeService(service, peerDid.Value);
-
+        var decodedService = DoDecodeService(encodedServices, peerDid.Value);
+        
         return new DidDocPeerDid(
             did: peerDid.Value,
             authentications: authentications,
@@ -116,7 +115,6 @@ public static class PeerDidResolver
         {
             DecodedEncumbasis decodedEncumbasis = PeerDidHelper.DecodeMultibaseEncnumbasis(multibase, format);
             Validation.ValidateAuthenticationMaterialType(decodedEncumbasis.VerMaterial);
-
             return decodedEncumbasis;
         }
         catch (ArgumentException e)
@@ -142,11 +140,11 @@ public static class PeerDidResolver
         }
     }
 
-    private static List<Service> DoDecodeService(string service, string peerDid)
+    private static List<Service>? DoDecodeService(List<string> services, string peerDid)
     {
         try
         {
-            return PeerDidHelper.DecodeService(service, new PeerDid(peerDid));
+            return PeerDidHelper.DecodeService(services, new PeerDid(peerDid));
         }
         catch (ArgumentException e)
         {
