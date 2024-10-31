@@ -1,4 +1,6 @@
-﻿namespace Blocktrust.Common.Models.DidDoc;
+﻿using System.Text.Json.Serialization;
+
+namespace Blocktrust.Common.Models.DidDoc;
 
 public class ServiceEndpoint
 {
@@ -18,6 +20,8 @@ public class Service
 {
     public string Id { get; }
     public string Type { get; }
+    
+    [JsonConverter(typeof(ServiceEndpointConverter))]
     public ServiceEndpoint ServiceEndpoint { get; }
 
     public Service(string id, ServiceEndpoint serviceEndpoint, string type = ServiceConstants.ServiceDidcommMessaging)

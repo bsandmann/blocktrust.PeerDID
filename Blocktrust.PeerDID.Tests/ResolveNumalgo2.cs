@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Blocktrust.PeerDID.PeerDIDCreateResolve;
 using Blocktrust.PeerDID.Types;
@@ -8,13 +10,38 @@ namespace Blocktrust.PeerDID.Tests
 {
     public class ResolveNumalgo2
     {
-        // Enhanced normalization: sorts properties and returns a standardized JSON string
+        
         private static string NormalizeJson(string json)
         {
-            var parsedJson = JObject.Parse(json);
+            // First normalize to remove whitespace
+            var normalizedJson = JsonNormalizer.Normalize(json);
+    
+            // Then parse and sort consistently
+            var parsedJson = JObject.Parse(normalizedJson);
             var sortedJson = SortProperties(parsedJson);
             return JsonConvert.SerializeObject(sortedJson, Formatting.None);
         }
+
+// Add JsonNormalizer class
+        public static class JsonNormalizer 
+        {
+            public static string Normalize(string json)
+            {
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = false
+                };
+
+                using var document = JsonDocument.Parse(json);
+                using var stream = new MemoryStream();
+                using var writer = new Utf8JsonWriter(stream);
+                document.WriteTo(writer);
+                writer.Flush();
+
+                return Encoding.UTF8.GetString(stream.ToArray());
+            }
+        }
+        
 
         // Helper to sort properties of JObject recursively
         private static JObject SortProperties(JObject original)
@@ -99,24 +126,32 @@ namespace Blocktrust.PeerDID.Tests
             ), VerificationMaterialFormatPeerDid.Multibase);
             // Assert.Matches(new Regex("Invalid key.*"), result.Errors.First().Message);
         }
+        [Fact]
+        public void TestResolveMalformedService()
+        {
+            var result = PeerDidResolver.ResolvePeerDid(
+                new PeerDid(
+                    "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
+                    ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" + 
+                    ".SW3sidCI6ImRtIiwicyI6Imh0dHA="
+                ), 
+                VerificationMaterialFormatPeerDid.Multibase
+            );
+            Assert.True(result.Errors.Any(e => e.Message.Contains("Invalid service")));
+        }
 
         [Fact]
         public void TestResolveInvalidServiceEndpoint()
         {
-            var result = PeerDidResolver.ResolvePeerDid(new PeerDid(
-                "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9"
-            ), VerificationMaterialFormatPeerDid.Multibase);
-            var err = result.Errors.First().Message;
-            Assert.Matches(new Regex("Invalid service.*"), result.Errors.First().Message);
-        }
-
-        [Fact]
-        public void TestResolveMalformedService()
-        {
-            var result = PeerDidResolver.ResolvePeerDid(new PeerDid(
-                "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SW3sidCI6ImRtIiwicyI6Imh0dHA="
-            ), VerificationMaterialFormatPeerDid.Multibase);
-            Assert.Matches(new Regex("Invalid service.*"), result.Errors.First().Message);
+            var result = PeerDidResolver.ResolvePeerDid(
+                new PeerDid(
+                    "did:peer:2.Ez6LSbysY2xFMRpGMhb7tFTLMpeuPRaqaWM1yECx2AtzE3KCc" +
+                    ".Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
+                    ".SeyJ0IjoiZG0iLCJzIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9lbmRwb2ludCJ9"
+                ),
+                VerificationMaterialFormatPeerDid.Multibase
+            );
+            Assert.True(result.Errors.Any(e => e.Message.Contains("Invalid service")));
         }
 
         [Fact]

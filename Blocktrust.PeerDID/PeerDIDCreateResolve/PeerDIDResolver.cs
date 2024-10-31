@@ -1,11 +1,6 @@
-using System.Text;
-using System.Text.Json;
-using Blocktrust.Common.Converter;
-
 namespace Blocktrust.PeerDID.PeerDIDCreateResolve;
 
-using Blocktrust.PeerDID.Exceptions;
-using Common.Models.DidDoc;
+using Exceptions;
 using Core;
 using DIDDoc;
 using FluentResults;
@@ -13,7 +8,7 @@ using Types;
 
 public static class PeerDidResolver
 {
-    public static Result<string> ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
+    public static Result<string> ResolvePeerDid(PeerDid peerDid, VerificationMaterialFormatPeerDid format = VerificationMaterialFormatPeerDid.Multibase)
     {
         if (!PeerDidCreator.IsPeerDid(peerDid.Value))
         {
@@ -21,31 +16,18 @@ public static class PeerDidResolver
         }
 
         DidDocPeerDid didDoc;
-        if (peerDid.Value[9] == '0')
+        try 
         {
-            try
+            didDoc = peerDid.Value[9] switch 
             {
-                didDoc = BuildDidDocNumalgo0(peerDid, format);
-            }
-            catch (System.Exception e)
-            {
-                return Result.Fail("Error resolving Peer DID: " + e.Message);
-            }
+                '0' => BuildDidDocNumalgo0(peerDid, format),
+                '2' => BuildDidDocNumalgo2(peerDid, format),
+                _ => throw new ArgumentException($"Invalid numalgo of Peer DID: {peerDid}")
+            };
         }
-        else if (peerDid.Value[9] == '2')
+        catch (Exception e)
         {
-            try
-            {
-                didDoc = BuildDidDocNumalgo2(peerDid, format);
-            }
-            catch (System.Exception e)
-            {
-                return Result.Fail("Error resolving Peer DID: " + e.Message);
-            }
-        }
-        else
-        {
-            return Result.Fail($"Invalid numalgo of Peer DID: {peerDid}");
+            return Result.Fail($"Error resolving Peer DID: {e.Message}");
         }
 
         return Result.Ok(didDoc.ToJson());
@@ -55,10 +37,13 @@ public static class PeerDidResolver
     {
         var inceptionKey = peerDid.Value.Substring(10);
         var decodedEncumbasis = DecodeMultibaseEncnumbasisAuth(inceptionKey, format);
+        
         return new DidDocPeerDid(
             did: peerDid.Value,
             authentications: new List<VerificationMethodPeerDid>
-                { PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis) });
+            {
+                PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis)
+            });
     }
 
     private static DidDocPeerDid BuildDidDocNumalgo2(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
@@ -72,35 +57,36 @@ public static class PeerDidResolver
         foreach (var part in keys.Split('.'))
         {
             if (string.IsNullOrEmpty(part)) continue;
+        
             var prefix = part[0];
             var value = part.Substring(1);
 
-            if (prefix == Numalgo2Prefix.SERVICE)
+            // Convert the character to the corresponding enum value
+            if (prefix == 'S')  // SERVICE
             {
                 encodedServices.Add(value);
             }
-            else if (prefix == Numalgo2Prefix.AUTHENTICATION)
+            else if (prefix == 'V')  // AUTHENTICATION
             {
-                var decodedEncumbasis = DecodeMultibaseEncnumbasisAuth(value, format);
+                var decodedAuthEncumbasis = DecodeMultibaseEncnumbasisAuth(value, format);
                 var verMethod = new VerificationMethodPeerDid
                 {
-                    Id = $"#key-{keyCounter + 1}", // Authentication starts at key-2
+                    Id = $"#key-{keyCounter + 1}",
                     Controller = peerDid.Value,
-                    VerMaterial = decodedEncumbasis.VerMaterial
+                    VerMaterial = decodedAuthEncumbasis.VerMaterial
                 };
                 authentications.Add(verMethod);
                 keyCounter++;
             }
-            else if (prefix == Numalgo2Prefix.KEY_AGREEMENT)
+            else if (prefix == 'E')  // KEY_AGREEMENT
             {
-                var decodedEncumbasis = DecodeMultibaseEncnumbasisAgreement(value, format);
-                var verMethod = new VerificationMethodPeerDid
+                var decodedAgreemEncumbasis = DecodeMultibaseEncnumbasisAgreement(value, format);
+                keyAgreement.Add(new VerificationMethodPeerDid
                 {
-                    Id = "#key-1", // KeyAgreement is always key-1
+                    Id = "#key-1",
                     Controller = peerDid.Value,
-                    VerMaterial = decodedEncumbasis.VerMaterial
-                };
-                keyAgreement.Add(verMethod);
+                    VerMaterial = decodedAgreemEncumbasis.VerMaterial
+                });
             }
             else
             {
@@ -108,8 +94,7 @@ public static class PeerDidResolver
             }
         }
 
-        var decodedService = DecodeService(encodedServices, peerDid);
-
+        var decodedService = PeerDidHelper.DecodeService(encodedServices, peerDid);
         return new DidDocPeerDid(
             did: peerDid.Value,
             authentications: authentications,
@@ -117,7 +102,6 @@ public static class PeerDidResolver
             services: decodedService
         );
     }
-
     private static DecodedEncumbasis DecodeMultibaseEncnumbasisAuth(
         string multibase,
         VerificationMaterialFormatPeerDid format
@@ -131,7 +115,7 @@ public static class PeerDidResolver
         }
         catch (ArgumentException e)
         {
-            throw new MalformedPeerDidException("Invalid key " + multibase, e);
+            throw new MalformedPeerDidException($"Invalid key {multibase}", e);
         }
     }
 
@@ -148,53 +132,7 @@ public static class PeerDidResolver
         }
         catch (ArgumentException e)
         {
-            throw new MalformedPeerDidException("Invalid key " + multibase, e);
-        }
-    }
-
-    private static List<Service>? DecodeService(List<string> encodedServices, PeerDid peerDid)
-    {
-        if (!encodedServices.Any())
-            return null;
-
-        try
-        {
-            var services = new List<Service>();
-
-            foreach (var encodedService in encodedServices)
-            {
-                var decodedService = Base64Url.Decode(encodedService);
-                var decodedServicesJson = Encoding.UTF8.GetString(decodedService);
-
-                // Parse and validate the service JSON
-                var serviceData = JsonSerializer.Deserialize<JsonElement>(decodedServicesJson);
-
-                // Validate service structure
-                if (!serviceData.TryGetProperty("t", out var typeElement) ||
-                    !serviceData.TryGetProperty("s", out var endpointElement))
-                {
-                    throw new ArgumentException("Invalid service format: missing required fields");
-                }
-
-                // If we've reached here, add the service
-                var serviceEndpoint = new ServiceEndpoint(
-                    uri: "https://example.com/endpoint",
-                    routingKeys: new List<string> { "did:example:somemediator#somekey" },
-                    accept: new List<string> { "didcomm/v2", "didcomm/aip2;env=rfc587" }
-                );
-
-                services.Add(new Service(
-                    id: services.Count == 0 ? "#service" : $"#service-{services.Count}",
-                    serviceEndpoint: serviceEndpoint,
-                    type: "DIDCommMessaging"
-                ));
-            }
-
-            return services;
-        }
-        catch (Exception e)
-        {
-            throw new ArgumentException($"Invalid service: {e.Message}");
+            throw new MalformedPeerDidException($"Invalid key {multibase}", e);
         }
     }
 }

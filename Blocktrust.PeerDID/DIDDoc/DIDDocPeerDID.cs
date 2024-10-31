@@ -1,120 +1,113 @@
 using System.Text.Json;
-using Blocktrust.PeerDID.Exceptions;
 
 namespace Blocktrust.PeerDID.DIDDoc;
 
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Common.Converter;
 using Common.Models.DidDoc;
 using Core;
 using FluentResults;
 
 public class DidDocPeerDid
 {
-    [JsonPropertyName(DidDocConstants.Id)] public string Did { get; set; }
-    [JsonPropertyName(DidDocConstants.Authentication)] public List<VerificationMethodPeerDid> Authentications { get; set; }
+    [JsonPropertyName(DidDocConstants.Id)] 
+    public string Did { get; set; }
+    
+    [JsonPropertyName(DidDocConstants.Authentication)] 
+    public List<VerificationMethodPeerDid> Authentications { get; set; }
 
-    [JsonPropertyName(DidDocConstants.KeyAgreement)] public List<VerificationMethodPeerDid> KeyAgreements { get; set; } = new List<VerificationMethodPeerDid>();
-    [JsonPropertyName(DidDocConstants.Service)] public List<Service>? Services { get; set; }
+    [JsonPropertyName(DidDocConstants.KeyAgreement)] 
+    public List<VerificationMethodPeerDid> KeyAgreements { get; set; } = new List<VerificationMethodPeerDid>();
+    
+    [JsonPropertyName(DidDocConstants.Service)] 
+    public List<Service>? Services { get; set; }
 
-
-    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentications, List<VerificationMethodPeerDid> keyAgreements, List<Service> services)
+    // Updated context per newer spec
+    private static readonly string[] DefaultContext = new[]
     {
-        this.Did = did;
-        this.Authentications = authentications;
-        this.KeyAgreements = keyAgreements;
-        this.Services = services;
-    }
+        "https://www.w3.org/ns/did/v1",
+        "https://w3id.org/security/suites/ed25519-2020/v1",
+        "https://w3id.org/security/suites/x25519-2020/v1"
+    };
 
+    public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentications, List<VerificationMethodPeerDid> keyAgreements, List<Service>? services)
+    {
+        Did = did;
+        Authentications = authentications;
+        KeyAgreements = keyAgreements;
+        Services = services;
+    }
 
     public DidDocPeerDid(string did, List<VerificationMethodPeerDid> authentications)
     {
-        this.Did = did;
-        this.Authentications = authentications;
+        Did = did;
+        Authentications = authentications;
+        KeyAgreements = new List<VerificationMethodPeerDid>();
+        Services = null;
     }
 
-    /// <summary>
-    /// Creates a new instance of DIDDocPeerDID from the given DID Doc JSON.
-    /// </summary>
-    /// <param name="value">value DID Doc JSON</param>
-    /// <returns>DIDDoc PeerDID instance</returns>
-    /// <exception cref="MalformedPeerDidException">MalformedPeerDIDDOcException if the input DID Doc JSON is not a valid peerdid DID Doc</exception>
     public static Result<DidDocPeerDid> FromJson(string value)
     {
         try
         {
             var jsonNode = JsonNode.Parse(value);
-            var doc = DidDocHelper.DidDocFromJson(jsonNode.AsObject());
+            if (jsonNode == null || jsonNode is not JsonObject jsonObject)
+            {
+                return Result.Fail("Invalid JSON input: Root element must be an object.");
+            }
+
+            // Ensure 'id' is present and of expected type
+            if (!jsonObject.ContainsKey(DidDocConstants.Id) || jsonObject[DidDocConstants.Id] is not JsonValue)
+            {
+                return Result.Fail("Missing or invalid 'id' field: Expected a JSON string.");
+            }
+
+            var doc = DidDocHelper.DidDocFromJson(jsonObject);
             return Result.Ok(doc);
         }
-        catch (System.Exception e)
+        catch (InvalidOperationException e) when (e.Message.Contains("JsonObject"))
         {
-            return Result.Fail("DIDDoc could not be parsed from JSON: " + e.Message);
+            return Result.Fail("DIDDoc could not be parsed from JSON: Expected JSON object but received another type.");
+        }
+        catch (Exception e)
+        {
+            return Result.Fail($"DIDDoc could not be parsed from JSON: {e.Message}");
         }
     }
 
-    public List<string> AuthenticationKids
-    {
-        get
-        {
-            List<string> res = new List<string>();
-            foreach (var item in Authentications)
-            {
-                res.Add(item.Id);
-            }
+    public List<string> AuthenticationKids => Authentications.Select(item => item.Id).ToList();
 
-            return res;
-        }
-    }
-
-    public List<string> AgreementKids
-    {
-        get
-        {
-            List<string> res = new List<string>();
-            foreach (var item in KeyAgreements)
-            {
-                res.Add(item.Id);
-            }
-
-            return res;
-        }
-    }
+    public List<string> AgreementKids => KeyAgreements.Select(item => $"{Did}#{item.Id}").ToList();
 
     public Dictionary<string, object> ToDict()
     {
-        Dictionary<string, object> res = new Dictionary<string, object>()
+        var res = new Dictionary<string, object>
         {
-            { "@context", new[] {
-                "https://www.w3.org/ns/did/v1",
-                "https://w3id.org/security/multikey/v1"
-            }},
+            { "@context", DefaultContext },
             { DidDocConstants.Id, Did },
-            { DidDocConstants.Authentication, Authentications.Select(item => item.ToDict()) }
+            { DidDocConstants.Authentication, Authentications.Select(item => item.ToDict()).ToList() }
         };
 
-        if (KeyAgreements.Count > 0)
+        if (KeyAgreements.Any())
         {
-            res.Add(DidDocConstants.KeyAgreement, KeyAgreements.Select(item => item.ToDict()));
+            res.Add(DidDocConstants.KeyAgreement, KeyAgreements.Select(item => item.ToDict()).ToList());
         }
         
-        if (Services != null)
+        if (Services?.Any() == true)
         {
-            List<object> serviceList = new List<object>();
-            foreach (var item in Services)
-            {
-                serviceList.Add(item.ToDict());
-            }
-            res.Add(DidDocConstants.Service, serviceList);
+            res.Add(DidDocConstants.Service, Services.Select(item => item.ToDict()).ToList());
         }
         
         return res;
     }
+
     public string ToJson()
     {
-        var serializerOptions = new JsonSerializerOptions();
-        serializerOptions.WriteIndented = true;
-        return JsonSerializer.Serialize(this.ToDict(), serializerOptions);
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        return JsonSerializer.Serialize(ToDict(), options);
     }
 }
