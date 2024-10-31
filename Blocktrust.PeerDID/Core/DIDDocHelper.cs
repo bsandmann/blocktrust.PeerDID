@@ -85,60 +85,59 @@ public static class DidDocHelper
         }
         return new DidDocPeerDid(did, authentication, keyAgreement, services);
     }
+private static VerificationMethodPeerDid ProcessVerificationMethod(JsonObject jsonObject, string did, int keyIndex)
+{
+    // Verify all required fields exist before processing
+    if (!jsonObject.ContainsKey(DidDocConstants.Controller))
+        throw new ArgumentException($"No 'controller' field in method {jsonObject}");
+    
+    var controller = jsonObject[DidDocConstants.Controller]?.ToString() ??
+        throw new ArgumentException($"No 'controller' field in method {jsonObject}");
 
-    private static VerificationMethodPeerDid ProcessVerificationMethod(JsonObject jsonObject, string did, int keyIndex)
+    // Get verification type and validate it exists
+    var verMaterialType = GetVerMethodType(jsonObject);
+    if (verMaterialType == null)
+        throw new ArgumentException($"Invalid or missing verification method type in {jsonObject}");
+    
+    var field = verMaterialType is VerificationMethodTypeAgreement ? 
+        TypeAgreementVerTypeToField[verMaterialType.Value] :
+        TypeAuthenticationVerTypeToField[verMaterialType.Value];
+    
+    var format = verMaterialType is VerificationMethodTypeAgreement ?
+        TypeAgreementVerTypeToFormat[verMaterialType.Value] :
+        TypeAuthenticationVerTypeToFormat[verMaterialType.Value];
+
+    if (!jsonObject.ContainsKey(field))
+        throw new ArgumentException($"No '{field}' field in method {jsonObject}");
+
+    object value;
+    if (verMaterialType == VerificationMethodTypeAgreement.JsonWebKey2020 ||
+        verMaterialType == VerificationMethodTypeAuthentication.JsonWebKey2020)
     {
-        // Validate required fields
-        if (!jsonObject.ContainsKey(DidDocConstants.Controller))
-            throw new ArgumentException($"No 'controller' field in method {jsonObject}");
-        
-        // Get and validate verification method type
-        var verMaterialType = GetVerMethodType(jsonObject);
-        if (verMaterialType == null)
-            throw new ArgumentException($"Invalid or missing verification method type in {jsonObject}");
-        
-        // Determine field and format based on verification type
-        var field = verMaterialType is VerificationMethodTypeAgreement ? 
-            TypeAgreementVerTypeToField[verMaterialType.Value] :
-            TypeAuthenticationVerTypeToField[verMaterialType.Value];
-        
-        var format = verMaterialType is VerificationMethodTypeAgreement ?
-            TypeAgreementVerTypeToFormat[verMaterialType.Value] :
-            TypeAuthenticationVerTypeToFormat[verMaterialType.Value];
-
-        // Validate and extract the verification material
-        if (!jsonObject.ContainsKey(field))
-            throw new ArgumentException($"No '{field}' field in method {jsonObject}");
-
-        object value;
-        if (verMaterialType == VerificationMethodTypeAgreement.JsonWebKey2020 ||
-            verMaterialType == VerificationMethodTypeAuthentication.JsonWebKey2020)
-        {
-            var jwkJson = JsonSerializer.Deserialize<PeerDidJwk>(jsonObject[field]);
-            if (jwkJson == null) 
-                throw new ArgumentException($"Invalid JWK in method {jsonObject}");
-            value = jwkJson;
-        }
-        else
-        {
-            if (jsonObject[field] == null)
-                throw new ArgumentException($"Missing value for field '{field}' in method {jsonObject}");
-                
-            value = jsonObject[field].GetValue<string>();
-        }
-
-        // Create verification method with consistent key ID format
-        return new VerificationMethodPeerDid
-        {
-            Id = $"{did}#key-{keyIndex}", // Absolute ID including DID
-            Controller = did,
-            VerMaterial = new VerificationMaterialPeerDid<VerificationMethodTypePeerDid>(
-                format: format,
-                type: verMaterialType,
-                value: value)
-        };
-        
+        var jwkJson = JsonSerializer.Deserialize<PeerDidJwk>(jsonObject[field]);
+        if (jwkJson == null) 
+            throw new ArgumentException($"Invalid JWK in method {jsonObject}");
+        value = jwkJson;
     }
+    else
+    {
+        if (jsonObject[field] == null)
+            throw new ArgumentException($"Missing value for field '{field}' in method {jsonObject}");
+            
+        value = jsonObject[field].GetValue<string>();
+    }
+
+    // Use spec-compliant #key-N format for all DID methods
+    return new VerificationMethodPeerDid
+    {
+        Id = $"{did}#key-{keyIndex}",
+        Controller = controller,
+        VerMaterial = new VerificationMaterialPeerDid<VerificationMethodTypePeerDid>(
+            format: format,
+            type: verMaterialType,
+            value: value)
+    };
+}
 private static Service ProcessService(JsonObject jsonObject, string did, int serviceIndex)
 {
     if (jsonObject == null || !jsonObject.ContainsKey(ServiceConstants.ServiceType))

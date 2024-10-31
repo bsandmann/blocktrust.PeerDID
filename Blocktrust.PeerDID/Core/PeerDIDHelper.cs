@@ -316,7 +316,7 @@ public class PeerDidHelper
         {
             return new VerificationMethodPeerDid
             {
-                Id = $"{did}#{decodedEncumbasis.Encnumbasis}",
+                Id = $"{did}#key-1", // Always use key-1 for did:peer:0 as it only has one key
                 Controller = did,
                 VerMaterial = decodedEncumbasis.VerMaterial
             };
