@@ -36,18 +36,40 @@ public class Service
         var res = new Dictionary<string, object>
         {
             { ServiceConstants.ServiceId, Id },
-            { ServiceConstants.ServiceType, Type },
-            { ServiceConstants.ServiceEndpoint, new Dictionary<string, object>
-                {
-                    { "uri", ServiceEndpoint.Uri },
-                    { "routingKeys", ServiceEndpoint.RoutingKeys ?? new List<string>() },
-                    { "accept", ServiceEndpoint.Accept ?? new List<string>() }
-                }
-            }
+            { ServiceConstants.ServiceType, Type }
         };
+
+        // For minimal service endpoint, just include uri
+        if (ServiceEndpoint.RoutingKeys == null && ServiceEndpoint.Accept == null)
+        {
+            res[ServiceConstants.ServiceEndpoint] = new Dictionary<string, object>
+            {
+                { "uri", ServiceEndpoint.Uri }
+            };
+        }
+        else 
+        {
+            // For full service endpoint, include non-null arrays
+            var endpointDict = new Dictionary<string, object>
+            {
+                { "uri", ServiceEndpoint.Uri }
+            };
+        
+            if (ServiceEndpoint.RoutingKeys != null)
+            {
+                endpointDict["routingKeys"] = ServiceEndpoint.RoutingKeys;
+            }
+        
+            if (ServiceEndpoint.Accept != null)
+            {
+                endpointDict["accept"] = ServiceEndpoint.Accept;
+            }
+        
+            res[ServiceConstants.ServiceEndpoint] = endpointDict;
+        }
+
         return res;
     }
-
     public static Service FromDictionary(Dictionary<string, object> dict)
     {
         var id = string.Empty;
