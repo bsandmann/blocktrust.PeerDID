@@ -188,33 +188,7 @@ public class ServiceEncodeDecode
         Assert.Equivalent(expected, service);
     }
     
-    // [Fact]
-    // public void TestResolveFullPeerDidWithMultipleServices()
-    // {
-    //     // A complete peer DID with individually encoded services
-    //     var peerDid = "did:peer:2" + 
-    //                   ".Vz6Mkj3PUd1WjvaDhNZhhhXQdz5UnZXmS7ehtx8bsPpD47kKc" +
-    //                   ".Ez6LSg8zQom395jKLrGiBNruB9MM6V8PWuf2FpEy4uRFiqQBR" +
-    //                   ".SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHA6Ly9leGFtcGxlLmNvbS9kaWRjb21tIiwiYSI6WyJkaWRjb21tL3YyIl0sInIiOlsiZGlkOmV4YW1wbGU6MTIzNDU2Nzg5YWJjZGVmZ2hpI2tleS0xIl19fQ" +
-    //                   ".SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHA6Ly9leGFtcGxlLmNvbS9hbm90aGVyIiwiYSI6WyJkaWRjb21tL3YyIl0sInIiOlsiZGlkOmV4YW1wbGU6MTIzNDU2Nzg5YWJjZGVmZ2hpI2tleS0yIl19fQ";
-    //
-    //     var result = PeerDidResolver.ResolvePeerDid(new PeerDid(peerDid), VerificationMaterialFormatPeerDid.Multibase);
-    //
-    //     Assert.True(result.IsSuccess);
-    //     var didDoc = DidDocPeerDid.FromJson(result.Value);
-    //     Assert.NotNull(didDoc?.Value?.Services);
-    //     Assert.Equal(2, didDoc.Value.Services.Count);
-    //
-    //     // Verify first service
-    //     var firstService = didDoc.Value.Services[0];
-    //     Assert.Equal("DIDCommMessaging", firstService.Type);
-    //     Assert.Equal("http://example.com/didcomm", firstService.ServiceEndpoint);
-    //     Assert.Contains("did:example:123456789abcdefghi#key-1", firstService.RoutingKeys);
-    //
-    //     // Verify second service
-    //     var secondService = didDoc.Value.Services[1];
-    //     Assert.Equal("DIDCommMessaging", secondService.Type);
-    //     Assert.Equal("http://example.com/another", secondService.ServiceEndpoint);
-    //     Assert.Contains("did:example:123456789abcdefghi#key-2", secondService.RoutingKeys);
-    // }
+    
+    
+    
 }

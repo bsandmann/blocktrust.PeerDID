@@ -1,12 +1,12 @@
-namespace Blocktrust.PeerDID.Core;
-
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Blocktrust.Common.Models.DidDoc;
-using DIDDoc;
-using Types;
+using Blocktrust.PeerDID.DIDDoc;
+using Blocktrust.PeerDID.Types;
 
-public static class DidDocHelper
+namespace Blocktrust.PeerDID.Core;
+
+public static class DidDocHelper 
 {
     private static readonly Dictionary<string, string> TypeAgreementVerTypeToField = new()
     {
@@ -38,178 +38,260 @@ public static class DidDocHelper
 
     public static DidDocPeerDid DidDocFromJson(JsonObject jsonObject)
     {
+        // Validate and extract DID
         jsonObject.TryGetPropertyValue(DidDocConstants.Id, out JsonNode? didJsonNode);
-        var did = didJsonNode.AsValue().ToString();
-
-        if (did == null)
-        {
+        var did = didJsonNode?.AsValue().ToString() ?? 
             throw new ArgumentException("No 'id' field");
-        }
 
-        var authentication = new List<VerificationMethodPeerDid>();
-        jsonObject.TryGetPropertyValue(DidDocConstants.Authentication, out JsonNode? authenticationJsonNode);
-        if (authenticationJsonNode is not null)
-        {
-            authentication = authenticationJsonNode?.AsArray()
-                .Select((p, index) => VerificationMethodFromJson(p.AsObject(), index + 1))
-                .ToList();
-        }
-
+        var keyIndex = 1; // Initialize key index counter
+        var verificationMethods = new List<VerificationMethodPeerDid>();
+        
+        // Process keyAgreement first to maintain consistent key ordering
         jsonObject.TryGetPropertyValue(DidDocConstants.KeyAgreement, out JsonNode? keyAgreementJsonNode);
         var keyAgreement = new List<VerificationMethodPeerDid>();
         if (keyAgreementJsonNode is not null)
         {
-            keyAgreement = keyAgreementJsonNode?.AsArray()
-                .Select((p, index) => VerificationMethodFromJson(p.AsObject(), index + 1))
+            keyAgreement = keyAgreementJsonNode.AsArray()
+                .Select(p => ProcessVerificationMethod(p.AsObject(), did, keyIndex++))
                 .ToList();
+            verificationMethods.AddRange(keyAgreement);
         }
 
-        List<Service>? service = null;
+        // Process authentication methods next
+        var authentication = new List<VerificationMethodPeerDid>();
+        jsonObject.TryGetPropertyValue(DidDocConstants.Authentication, out JsonNode? authenticationJsonNode);
+        if (authenticationJsonNode is not null)
+        {
+            authentication = authenticationJsonNode.AsArray()
+                .Select(p => ProcessVerificationMethod(p.AsObject(), did, keyIndex++))
+                .ToList();
+            verificationMethods.AddRange(authentication);
+        }
+
+        List<Service>? services = null;
         jsonObject.TryGetPropertyValue(DidDocConstants.Service, out JsonNode? serviceJsonNode);
         if (serviceJsonNode is not null)
         {
-            service = serviceJsonNode?.AsArray()
-                .Select((p, index) => ServiceFromJson(p.AsObject(), index))
-                .ToList();
+            if (serviceJsonNode is JsonArray serviceArray)
+            {
+                services = serviceArray
+                    .Select((p, index) => ProcessService(p.AsObject(), did, index))
+                    .ToList();
+            }
+            else if (serviceJsonNode is JsonObject singleService)
+            {
+                services = new List<Service> { ProcessService(singleService, did, 0) };
+            }
         }
-
-        return new DidDocPeerDid(did, authentication, keyAgreement, service);
+        return new DidDocPeerDid(did, authentication, keyAgreement, services);
     }
+private static VerificationMethodPeerDid ProcessVerificationMethod(JsonObject jsonObject, string did, int keyIndex)
+{
+    // Verify all required fields exist before processing
+    if (!jsonObject.ContainsKey(DidDocConstants.Controller))
+        throw new ArgumentException($"No 'controller' field in method {jsonObject}");
+    
+    var controller = jsonObject[DidDocConstants.Controller]?.ToString() ??
+        throw new ArgumentException($"No 'controller' field in method {jsonObject}");
 
-    private static VerificationMethodPeerDid VerificationMethodFromJson(JsonObject jsonObject, int keyIndex)
+    // Get verification type and validate it exists
+    var verMaterialType = GetVerMethodType(jsonObject);
+    if (verMaterialType == null)
+        throw new ArgumentException($"Invalid or missing verification method type in {jsonObject}");
+    
+    var field = verMaterialType is VerificationMethodTypeAgreement ? 
+        TypeAgreementVerTypeToField[verMaterialType.Value] :
+        TypeAuthenticationVerTypeToField[verMaterialType.Value];
+    
+    var format = verMaterialType is VerificationMethodTypeAgreement ?
+        TypeAgreementVerTypeToFormat[verMaterialType.Value] :
+        TypeAuthenticationVerTypeToFormat[verMaterialType.Value];
+
+    if (!jsonObject.ContainsKey(field))
+        throw new ArgumentException($"No '{field}' field in method {jsonObject}");
+
+    object value;
+    if (verMaterialType == VerificationMethodTypeAgreement.JsonWebKey2020 ||
+        verMaterialType == VerificationMethodTypeAuthentication.JsonWebKey2020)
     {
-        Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
-        string controller = jsonObject[DidDocConstants.Controller]?.ToString();
-        if (controller == null) throw new System.Exception("No 'controller' field in method " + jsonObject.ToString());
-
-        VerificationMethodTypePeerDid verMaterialType = GetVerMethodType(jsonObject);
-        var field = String.Empty;
-        if (verMaterialType is VerificationMethodTypeAgreement)
-        {
-            field = TypeAgreementVerTypeToField[verMaterialType.Value];
-        }
-        else if (verMaterialType is VerificationMethodTypeAuthentication)
-        {
-            field = TypeAuthenticationVerTypeToField[verMaterialType.Value];
-        }
-        else
-        {
-            throw new Exception("Unknown verification method type: " + verMaterialType.Value);
-        }
-
-        VerificationMaterialFormatPeerDid format;
-        if (verMaterialType is VerificationMethodTypeAgreement)
-        {
-            format = TypeAgreementVerTypeToFormat[verMaterialType.Value];
-        }
-        else if (verMaterialType is VerificationMethodTypeAuthentication)
-        {
-            format = TypeAuthenticationVerTypeToFormat[verMaterialType.Value];
-        }
-        else
-        {
-            throw new Exception("Unknown verification method type: " + verMaterialType.Value);
-        }
-
-        object value = null;
-        if (verMaterialType == VerificationMethodTypeAgreement.JsonWebKey2020 ||
-            verMaterialType == VerificationMethodTypeAuthentication.JsonWebKey2020)
-        {
-            var jwkJson = JsonSerializer.Deserialize<PeerDidJwk>(jsonObject[field]);
-            if (jwkJson == null) throw new System.Exception("No 'field' field in method " + jsonObject.ToString());
-            value = jwkJson;
-        }
-        else
-        {
-            value = jsonObject[field].GetValue<string>();
-        }
-
-        return new VerificationMethodPeerDid()
-        {
-            Id = $"#key-{keyIndex}",
-            Controller = controller,
-            VerMaterial = new VerificationMaterialPeerDid<VerificationMethodTypePeerDid>(
-                format: format,
-                type: verMaterialType,
-                value: value)
-        };
+        var jwkJson = JsonSerializer.Deserialize<PeerDidJwk>(jsonObject[field]);
+        if (jwkJson == null) 
+            throw new ArgumentException($"Invalid JWK in method {jsonObject}");
+        value = jwkJson;
     }
-
-    private static Service ServiceFromJson(JsonObject jsonObject, int serviceIndex)
+    else
     {
-        Dictionary<string, object> serviceMap = Utils.FromJsonToMap(jsonObject.ToString());
-        string type = jsonObject[ServiceConstants.ServiceType]?.ToString();
-        if (type == null)
-        {
-            throw new System.ArgumentException("No 'type' field in service " + jsonObject.ToString());
-        }
-
-        if (type != ServiceConstants.ServiceDidcommMessaging)
-        {
-            return Service.FromDictionary(serviceMap);
-        }
-
-        var serviceEndpointObj = jsonObject[ServiceConstants.ServiceEndpoint]?.AsObject();
-        if (serviceEndpointObj == null)
-        {
-            throw new System.ArgumentException("No 'serviceEndpoint' field in service " + jsonObject.ToString());
-        }
-
-        string uri = serviceEndpointObj["uri"]?.GetValue<string>() ?? "";
-        List<string>? routingKeys = serviceEndpointObj["routingKeys"]?.AsArray()?.Select(x => x.GetValue<string>()).ToList();
-        List<string>? accept = serviceEndpointObj["accept"]?.AsArray()?.Select(x => x.GetValue<string>()).ToList();
-
-        var serviceId = serviceIndex == 0 ? "#service" : $"#service-{serviceIndex}";
-
-        var serviceEndpoint = new ServiceEndpoint(
-            uri: uri,
-            routingKeys: routingKeys,
-            accept: accept
-        );
-
-        return new Service(
-            id: serviceId,
-            serviceEndpoint: serviceEndpoint,
-            type: type);
+        if (jsonObject[field] == null)
+            throw new ArgumentException($"Missing value for field '{field}' in method {jsonObject}");
+            
+        value = jsonObject[field].GetValue<string>();
     }
 
+    // Use spec-compliant #key-N format for all DID methods
+    return new VerificationMethodPeerDid
+    {
+        Id = $"{did}#key-{keyIndex}",
+        Controller = controller,
+        VerMaterial = new VerificationMaterialPeerDid<VerificationMethodTypePeerDid>(
+            format: format,
+            type: verMaterialType,
+            value: value)
+    };
+}
+private static Service ProcessService(JsonObject jsonObject, string did, int serviceIndex)
+{
+    if (jsonObject == null || !jsonObject.ContainsKey(ServiceConstants.ServiceType))
+    {
+        throw new ArgumentException($"Invalid or missing fields in service JSON: {jsonObject}");
+    }
+
+    var type = jsonObject[ServiceConstants.ServiceType]?.ToString() ??
+               throw new ArgumentException($"No 'type' field in service {jsonObject}");
+
+    // Initialize with empty collections
+    var routingKeys = new List<string>();
+    var accept = new List<string>();
+    string? uri = null;
+
+    // Extract metadata from the DID string for did:peer:2
+    if (did.StartsWith("did:peer:2"))
+    {
+        var parts = did.Split('.');
+        if (parts.Length > 3)
+        {
+            var encodedMetadata = parts[^1];
+            if (encodedMetadata.StartsWith("S"))
+            {
+                try
+                {
+                    // Remove the 'S' prefix and decode
+                    var base64 = encodedMetadata[1..].Replace('-', '+').Replace('_', '/');
+                    while (base64.Length % 4 != 0) base64 += '=';
+                    var decodedBytes = Convert.FromBase64String(base64);
+                    var decodedJson = System.Text.Encoding.UTF8.GetString(decodedBytes);
+                    
+                    // Handle both single object and array formats
+                    var parsedNode = JsonNode.Parse(decodedJson);
+                    JsonObject serviceMetadata;
+                    
+                    if (parsedNode is JsonArray serviceArray && serviceIndex < serviceArray.Count)
+                    {
+                        serviceMetadata = serviceArray[serviceIndex].AsObject();
+                    }
+                    else if (parsedNode is JsonObject singleService)
+                    {
+                        serviceMetadata = singleService;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Invalid service metadata format");
+                    }
+
+                    // Extract service data
+                    if (serviceMetadata.ContainsKey("s")) // service endpoint
+                    {
+                        uri = serviceMetadata["s"].GetValue<string>();
+                    }
+                    if (serviceMetadata.ContainsKey("r")) // routing keys
+                    {
+                        routingKeys.AddRange(serviceMetadata["r"].AsArray().Select(x => x.GetValue<string>()));
+                    }
+                    if (serviceMetadata.ContainsKey("a")) // accept
+                    {
+                        accept.AddRange(serviceMetadata["a"].AsArray().Select(x => x.GetValue<string>()));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex is ArgumentException)
+                        throw;
+                    throw new ArgumentException($"Failed to decode service metadata from DID: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    // Process serviceEndpoint from the DID Document
+    var endpointNode = jsonObject[ServiceConstants.ServiceEndpoint];
+    if (endpointNode is JsonValue) // Legacy format with direct URI
+    {
+        uri = endpointNode.GetValue<string>();
+    }
+    else if (endpointNode?.AsObject() is JsonObject serviceEndpointObj)
+    {
+        // New format
+        uri = serviceEndpointObj["uri"]?.GetValue<string>();
+        
+        if (serviceEndpointObj.ContainsKey("routingKeys") && serviceEndpointObj["routingKeys"]?.AsArray() is JsonArray rKeys)
+        {
+            routingKeys.AddRange(rKeys.Select(x => x.GetValue<string>()));
+        }
+        
+        if (serviceEndpointObj.ContainsKey("accept") && serviceEndpointObj["accept"]?.AsArray() is JsonArray acc)
+        {
+            accept.AddRange(acc.Select(x => x.GetValue<string>()));
+        }
+    }
+
+    if (string.IsNullOrEmpty(uri))
+    {
+        throw new ArgumentException($"No valid URI found in service endpoint {jsonObject}");
+    }
+    var serviceEndpoint = new ServiceEndpoint(
+        uri: uri,
+        routingKeys: routingKeys.Distinct().ToList(),
+        accept: accept.Distinct().ToList()
+    );
+
+    // Always use relative references for service IDs as per spec
+    string serviceId;
+    if (jsonObject.ContainsKey("id"))
+    {
+        // If ID is provided, use it as-is if relative, or extract the fragment if absolute
+        var rawId = jsonObject["id"].GetValue<string>();
+        serviceId = rawId.StartsWith("#") ? rawId : "#" + rawId.Split("#").Last();
+    }
+    else
+    {
+        // Generate relative ID if none provided
+        serviceId = serviceIndex == 0 ? "#service" : $"#service-{serviceIndex}";
+    }
+
+    return new Service(
+        id: serviceId,
+        serviceEndpoint: serviceEndpoint,
+        type: type);
+}
     private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)
     {
         jsonObject.TryGetPropertyValue(DidDocConstants.Type, out JsonNode? typeJsonNode);
-        var type = typeJsonNode.AsValue().ToString();
+        var type = typeJsonNode?.AsValue().ToString() ?? 
+            throw new ArgumentException($"No 'type' field in method {jsonObject}");
 
-        if (type.Equals(VerificationMethodTypeAgreement.X25519KeyAgreementKey2019.Value))
-        {
+        if (type == VerificationMethodTypeAgreement.X25519KeyAgreementKey2019.Value)
             return VerificationMethodTypeAgreement.X25519KeyAgreementKey2019;
-        }
-        else if (type.Equals(VerificationMethodTypeAgreement.X25519KeyAgreementKey2020.Value))
-        {
+        
+        if (type == VerificationMethodTypeAgreement.X25519KeyAgreementKey2020.Value)
             return VerificationMethodTypeAgreement.X25519KeyAgreementKey2020;
-        }
-        else if (type.Equals(VerificationMethodTypeAuthentication.Ed25519VerificationKey2018.Value))
-        {
+        
+        if (type == VerificationMethodTypeAuthentication.Ed25519VerificationKey2018.Value)
             return VerificationMethodTypeAuthentication.Ed25519VerificationKey2018;
-        }
-        else if (type.Equals(VerificationMethodTypeAuthentication.Ed25519VerificationKey2020.Value))
-        {
+        
+        if (type == VerificationMethodTypeAuthentication.Ed25519VerificationKey2020.Value)
             return VerificationMethodTypeAuthentication.Ed25519VerificationKey2020;
-        }
-        else if (type.Equals(VerificationMethodTypeAuthentication.JsonWebKey2020.Value))
+        
+        if (type == VerificationMethodTypeAuthentication.JsonWebKey2020.Value)
         {
-            jsonObject.TryGetPropertyValue(PublicKeyFieldValues.Jwk, out JsonNode? vJsonNode);
-            var crv = vJsonNode!["crv"].ToString();
-            if (crv == "X25519")
-            {
-                return VerificationMethodTypeAgreement.JsonWebKey2020;
-            }
-            else
-            {
-                return VerificationMethodTypeAuthentication.JsonWebKey2020;
-            }
+            var jwkNode = jsonObject[PublicKeyFieldValues.Jwk] ??
+                          throw new ArgumentException($"No 'jwk' field in method {jsonObject}");
+            var crv = jwkNode["crv"]?.GetValue<string>() ??
+                      throw new ArgumentException($"No 'crv' field in method {jsonObject}");
+            
+            return crv == "X25519" 
+                ? VerificationMethodTypeAgreement.JsonWebKey2020 
+                : VerificationMethodTypeAuthentication.JsonWebKey2020;
         }
-        else
-        {
-            throw new System.Exception("Unknown verification method type " + type);
-        }
+    
+        throw new ArgumentException($"Unknown verification method type {type}");
     }
 }
