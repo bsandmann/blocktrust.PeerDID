@@ -48,7 +48,7 @@ public static class PeerDidResolver
                 PeerDidHelper.GetVerificationMethod(peerDid.Value, decodedEncumbasis)
             });
     }
-
+    
     private static DidDocPeerDid BuildDidDocNumalgo2(PeerDid peerDid, VerificationMaterialFormatPeerDid format)
 {
     var keys = peerDid.Value.Substring(11);
@@ -57,20 +57,18 @@ public static class PeerDidResolver
     var keyAgreement = new List<VerificationMethodPeerDid>();
     var keyCounter = 1;
 
-    // First pass: Process keyAgreement (E) keys first
+    // First process encryption keys to maintain key numbering
     foreach (var part in keys.Split('.'))
     {
         if (string.IsNullOrEmpty(part)) continue;
-        
         var prefix = part[0];
         var value = part.Substring(1);
-
-        if (prefix == 'E')  // KEY_AGREEMENT
+        if (prefix == 'E')  
         {
             var decodedAgreemEncumbasis = DecodeMultibaseEncnumbasisAgreement(value, format);
             keyAgreement.Add(new VerificationMethodPeerDid
             {
-                Id = $"#key-{keyCounter}", // Using relative ID per spec
+                Id = $"#key-{keyCounter}", 
                 Controller = peerDid.Value,
                 VerMaterial = decodedAgreemEncumbasis.VerMaterial
             });
@@ -78,40 +76,38 @@ public static class PeerDidResolver
         }
     }
 
-    // Second pass: Process authentication (V) keys
+    // Then process authentication keys and services
     foreach (var part in keys.Split('.'))
     {
         if (string.IsNullOrEmpty(part)) continue;
-        
         var prefix = part[0];
         var value = part.Substring(1);
-
-        if (prefix == 'V')  // AUTHENTICATION
+        if (prefix == 'V')  
         {
             var decodedAuthEncumbasis = DecodeMultibaseEncnumbasisAuth(value, format);
             authentications.Add(new VerificationMethodPeerDid
             {
-                Id = $"#key-{keyCounter}", // Using relative ID per spec
+                Id = $"#key-{keyCounter}", 
                 Controller = peerDid.Value,
                 VerMaterial = decodedAuthEncumbasis.VerMaterial
             });
             keyCounter++;
         }
-        else if (prefix == 'S')  // SERVICE
+        else if (prefix == 'S')  
         {
             encodedServices.Add(value);
         }
     }
-
-    // Process services
-    List<Service>? services = null;
-   if (encodedServices.Any())
+List<Service>? services = null;
+if (encodedServices.Any())
 {
-    try
+    try 
     {
-        services = encodedServices.Select((encodedService, index) =>
+        services = new List<Service>();
+        var serviceIndex = 0; // Track service index across all encoded services
+
+        foreach(var encodedService in encodedServices)
         {
-            // Convert Base64Url to Base64 with validation
             if (string.IsNullOrEmpty(encodedService))
             {
                 throw new ArgumentException("Invalid service: empty service data");
@@ -123,80 +119,106 @@ public static class PeerDidResolver
                 base64 = encodedService
                     .Replace('-', '+')
                     .Replace('_', '/');
-
-                // Add padding if needed
                 switch (base64.Length % 4)
                 {
                     case 2: base64 += "=="; break;
                     case 3: base64 += "="; break;
                 }
-
                 var decodedBytes = Convert.FromBase64String(base64);
                 var decodedJson = System.Text.Encoding.UTF8.GetString(decodedBytes);
-                
-                // Validate JSON format
                 var jsonElement = JsonSerializer.Deserialize<JsonElement>(decodedJson);
-                
-                // Try to deserialize as array first
-                var serviceDataList = new List<Dictionary<string, object>>();
-                
+
+                List<JsonElement> serviceElements;
                 if (jsonElement.ValueKind == JsonValueKind.Array)
                 {
-                    foreach (var element in jsonElement.EnumerateArray())
-                    {
-                        // Validate service object
-                        if (!element.TryGetProperty("t", out _) || !element.TryGetProperty("s", out _))
-                        {
-                            throw new ArgumentException("Invalid service: missing required fields");
-                        }
-                        serviceDataList.Add(JsonSerializer.Deserialize<Dictionary<string, object>>(element.GetRawText()));
-                    }
-                }
-                else if (jsonElement.ValueKind == JsonValueKind.Object)
-                {
-                    // Validate service object
-                    if (!jsonElement.TryGetProperty("t", out _) || !jsonElement.TryGetProperty("s", out _))
-                    {
-                        throw new ArgumentException("Invalid service: missing required fields");
-                    }
-                    serviceDataList.Add(JsonSerializer.Deserialize<Dictionary<string, object>>(decodedJson));
+                    serviceElements = jsonElement.EnumerateArray().ToList();
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid service: must be object or array");
+                    serviceElements = new List<JsonElement> { jsonElement };
                 }
 
-                // Process each service in the list
-                return serviceDataList.Select((serviceData, serviceIndex) =>
+                foreach(var element in serviceElements)
                 {
+                    if (!element.TryGetProperty("t", out _) || !element.TryGetProperty("s", out _))
+                    {
+                        throw new ArgumentException("Invalid service: missing required fields");
+                    }
+
+                    var serviceType = element.GetProperty("t").GetString() == "dm"
+                        ? "DIDCommMessaging"
+                        : element.GetProperty("t").GetString();
+
+                    var serviceEndpointElement = element.GetProperty("s");
+                    string uri;
+                    List<string?> routingKeys = null;
+                    List<string?> accept = null;
+
+                    if (serviceEndpointElement.ValueKind == JsonValueKind.String)
+                    {
+                        uri = serviceEndpointElement.GetString();
+                        
+                        if (element.TryGetProperty("r", out var routingKeysElement))
+                        {
+                            routingKeys = routingKeysElement.EnumerateArray()
+                                .Select(x => x.GetString())
+                                .Where(x => x != null)
+                                .ToList();
+                        }
+                        
+                        if (element.TryGetProperty("a", out var acceptElement))
+                        {
+                            accept = acceptElement.EnumerateArray()
+                                .Select(x => x.GetString())
+                                .Where(x => x != null)
+                                .ToList();
+                        }
+                    }
+                    else
+                    {
+                        // Handle case where "s" is an object
+                        uri = serviceEndpointElement.GetProperty("uri").GetString();
+                        
+                        if (serviceEndpointElement.TryGetProperty("r", out var routingKeysElement))
+                        {
+                            routingKeys = routingKeysElement.EnumerateArray()
+                                .Select(x => x.GetString())
+                                .Where(x => x != null)
+                                .ToList();
+                        }
+                        
+                        if (serviceEndpointElement.TryGetProperty("a", out var acceptElement))
+                        {
+                            accept = acceptElement.EnumerateArray()
+                                .Select(x => x.GetString())
+                                .Where(x => x != null)
+                                .ToList();
+                        }
+                    }
+
                     var serviceEndpoint = new ServiceEndpoint(
-                        uri: serviceData["s"].ToString(),
-                        routingKeys: serviceData.ContainsKey("r") 
-                            ? JsonSerializer.Deserialize<List<string>>(serviceData["r"].ToString())
-                            : null,
-                        accept: serviceData.ContainsKey("a") 
-                            ? JsonSerializer.Deserialize<List<string>>(serviceData["a"].ToString())
-                            : null
+                        uri: uri,
+                        routingKeys: routingKeys,
+                        accept: accept
                     );
 
-                    return new Service(
+                    services.Add(new Service(
                         id: serviceIndex == 0 ? "#service" : $"#service-{serviceIndex}",
-                        type: serviceData.ContainsKey("t") 
-                            ? serviceData["t"].ToString() == "dm" ? "DIDCommMessaging" : serviceData["t"].ToString()
-                            : "DIDCommMessaging",
+                        type: serviceType,
                         serviceEndpoint: serviceEndpoint
-                    );
-                }).ToList();
+                    ));
+                    serviceIndex++;
+                }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Invalid service");
+                throw new ArgumentException($"Invalid service: {ex.Message}");
             }
-        }).SelectMany(x => x).ToList();
+        }
     }
     catch (Exception ex)
     {
-        throw new ArgumentException("Invalid service");
+        throw new ArgumentException($"Invalid service: {ex.Message}");
     }
 }
     return new DidDocPeerDid(
@@ -206,7 +228,8 @@ public static class PeerDidResolver
         services: services
     );
 }
-private static DecodedEncumbasis DecodeMultibaseEncnumbasisAuth(
+    
+    private static DecodedEncumbasis DecodeMultibaseEncnumbasisAuth(
         string multibase,
         VerificationMaterialFormatPeerDid format
     )

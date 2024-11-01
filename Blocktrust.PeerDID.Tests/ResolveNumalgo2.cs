@@ -22,7 +22,7 @@ namespace Blocktrust.PeerDID.Tests
             return JsonConvert.SerializeObject(sortedJson, Formatting.None);
         }
 
-// Add JsonNormalizer class
+        // Add JsonNormalizer class
         public static class JsonNormalizer 
         {
             public static string Normalize(string json)
@@ -55,6 +55,132 @@ namespace Blocktrust.PeerDID.Tests
             }
             return sorted;
         }
+        
+         public class DidTestData
+    {
+        public string Did { get; set; }
+        public string ExpectedJson { get; set; }
+
+        public DidTestData(string did, string expectedJson)
+        {
+            Did = did;
+            ExpectedJson = expectedJson;
+        }
+    }
+
+    public static IEnumerable<object[]> DIDTestCases()
+    {
+        var testCases = new List<DidTestData>
+        {
+            new DidTestData(
+                did: "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQxIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTEiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX19",
+                expectedJson: """
+                {
+                  "@context": [
+                    "https://www.w3.org/ns/did/v1",
+                    "https://w3id.org/security/suites/ed25519-2020/v1",
+                    "https://w3id.org/security/suites/x25519-2020/v1"
+                  ],
+                  "id": "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQxIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTEiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX19",
+                  "authentication": [
+                    {
+                      "id": "#key-2",
+                      "type": "Ed25519VerificationKey2020",
+                      "controller": "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQxIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTEiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX19",
+                      "publicKeyMultibase": "z6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V"
+                    }
+                  ],
+                  "keyAgreement": [
+                    {
+                      "id": "#key-1",
+                      "type": "X25519KeyAgreementKey2020",
+                      "controller": "did:peer:2.Ez6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud.Vz6MkqRYqQiSgvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQxIiwiciI6WyJkaWQ6ZXhhbXBsZTpzb21lbWVkaWF0b3Ijc29tZWtleTEiXSwiYSI6WyJkaWRjb21tL3YyIiwiZGlkY29tbS9haXAyO2Vudj1yZmM1ODciXX19",
+                      "publicKeyMultibase": "z6LSpSrLxbAhg2SHwKk7kwpsH7DM7QjFS5iK6qP87eViohud"
+                    }
+                  ],
+                  "service": [
+                    {
+                      "id": "#service",
+                      "type": "DIDCommMessaging",
+                      "serviceEndpoint": {
+                        "uri": "https://example.com/endpoint1",
+                        "routingKeys": [
+                          "did:example:somemediator#somekey1"
+                        ],
+                        "accept": [
+                          "didcomm/v2",
+                          "didcomm/aip2;env=rfc587"
+                        ]
+                      }
+                    }
+                  ]
+                }
+                """),
+            new DidTestData(
+                did: "did:peer:2.Ez6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y.Vz6Mkhh1e5CEYYq6JBUcTZ6Cp2ranCWRrv7Yax3Le4N59R6dd.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vc2FuZGJveC1tZWRpYXRvci5hdGFsYXByaXNtLmlvIiwiYSI6WyJkaWRjb21tL3YyIl19fQ.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6IndzczovL3NhbmRib3gtbWVkaWF0b3IuYXRhbGFwcmlzbS5pby93cyIsImEiOlsiZGlkY29tbS92MiJdfX0",
+                expectedJson: """
+                {
+                  "@context": [
+                    "https://www.w3.org/ns/did/v1",
+                    "https://w3id.org/security/suites/ed25519-2020/v1",
+                    "https://w3id.org/security/suites/x25519-2020/v1"
+                  ],
+                  "authentication": [
+                    {
+                      "id": "#key-2",
+                      "type": "Ed25519VerificationKey2020",
+                      "controller": "did:peer:2.Ez6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y.Vz6Mkhh1e5CEYYq6JBUcTZ6Cp2ranCWRrv7Yax3Le4N59R6dd.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vc2FuZGJveC1tZWRpYXRvci5hdGFsYXByaXNtLmlvIiwiYSI6WyJkaWRjb21tL3YyIl19fQ.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6IndzczovL3NhbmRib3gtbWVkaWF0b3IuYXRhbGFwcmlzbS5pby93cyIsImEiOlsiZGlkY29tbS92MiJdfX0",
+                      "publicKeyMultibase": "z6Mkhh1e5CEYYq6JBUcTZ6Cp2ranCWRrv7Yax3Le4N59R6dd"
+                    }
+                  ],
+                  "id": "did:peer:2.Ez6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y.Vz6Mkhh1e5CEYYq6JBUcTZ6Cp2ranCWRrv7Yax3Le4N59R6dd.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vc2FuZGJveC1tZWRpYXRvci5hdGFsYXByaXNtLmlvIiwiYSI6WyJkaWRjb21tL3YyIl19fQ.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6IndzczovL3NhbmRib3gtbWVkaWF0b3IuYXRhbGFwcmlzbS5pby93cyIsImEiOlsiZGlkY29tbS92MiJdfX0",
+                  "keyAgreement": [
+                    {
+                      "id": "#key-1", 
+                      "type": "X25519KeyAgreementKey2020",
+                      "controller": "did:peer:2.Ez6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y.Vz6Mkhh1e5CEYYq6JBUcTZ6Cp2ranCWRrv7Yax3Le4N59R6dd.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vc2FuZGJveC1tZWRpYXRvci5hdGFsYXByaXNtLmlvIiwiYSI6WyJkaWRjb21tL3YyIl19fQ.SeyJ0IjoiZG0iLCJzIjp7InVyaSI6IndzczovL3NhbmRib3gtbWVkaWF0b3IuYXRhbGFwcmlzbS5pby93cyIsImEiOlsiZGlkY29tbS92MiJdfX0",
+                      "publicKeyMultibase": "z6LSghwSE437wnDE1pt3X6hVDUQzSjsHzinpX3XFvMjRAm7y"
+                    }
+                  ],
+                  "service": [
+                    {
+                      "id": "#service",
+                      "type": "DIDCommMessaging",
+                      "serviceEndpoint": {
+                        "uri": "https://sandbox-mediator.atalaprism.io",
+                        "accept": [
+                          "didcomm/v2"
+                        ]
+                      }
+                    },
+                    {
+                      "id": "#service-1",
+                      "type": "DIDCommMessaging", 
+                      "serviceEndpoint": {
+                        "uri": "wss://sandbox-mediator.atalaprism.io/ws",
+                        "accept": [
+                          "didcomm/v2"
+                        ]
+                      }
+                    }
+                  ]
+                }
+                """)
+        };
+
+        return testCases.Select(tc => new object[] { tc });
+    }
+
+    [Theory]
+    [MemberData(nameof(DIDTestCases))]
+    public void DIDTests(DidTestData testData)
+    {
+        var realValue = PeerDidResolver.ResolvePeerDid(new PeerDid(testData.Did), VerificationMaterialFormatPeerDid.Multibase);
+        var expectedJson = NormalizeJson(testData.ExpectedJson);
+        var actualJson = NormalizeJson(realValue.Value);
+
+        Assert.Equal(expectedJson, actualJson);
+    }
 
         [Fact]
         public void TestResolvePositiveDefault()
@@ -124,7 +250,7 @@ namespace Blocktrust.PeerDID.Tests
                 ".Vz6MkqRYqQi0gvZQdnBytw86Qbs2ZWUkGv22od935YF4s8M7V" +
                 ".SeyJ0IjoiZG0iLCJzIjp7InVyaSI6Imh0dHBzOi8vZXhhbXBsZS5jb20vZW5kcG9pbnQifX0"
             ), VerificationMaterialFormatPeerDid.Multibase);
-            // Assert.Matches(new Regex("Invalid key.*"), result.Errors.First().Message);
+            Assert.Matches(new Regex("Does not match.*"), result.Errors.First().Message);
         }
         [Fact]
         public void TestResolveMalformedService()
