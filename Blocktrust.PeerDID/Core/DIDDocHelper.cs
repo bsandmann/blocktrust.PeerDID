@@ -138,6 +138,7 @@ private static VerificationMethodPeerDid ProcessVerificationMethod(JsonObject js
             value: value)
     };
 }
+
 private static Service ProcessService(JsonObject jsonObject, string did, int serviceIndex)
 {
     if (jsonObject == null || !jsonObject.ContainsKey(ServiceConstants.ServiceType))
@@ -148,88 +149,40 @@ private static Service ProcessService(JsonObject jsonObject, string did, int ser
     var type = jsonObject[ServiceConstants.ServiceType]?.ToString() ??
                throw new ArgumentException($"No 'type' field in service {jsonObject}");
 
-    // Initialize with empty collections
-    var routingKeys = new List<string>();
-    var accept = new List<string>();
-    string? uri = null;
-
-    // Extract metadata from the DID string for did:peer:2
-    if (did.StartsWith("did:peer:2"))
+    var serviceEndpointNode = jsonObject[ServiceConstants.ServiceEndpoint];
+    if (serviceEndpointNode == null)
     {
-        var parts = did.Split('.');
-        if (parts.Length > 3)
-        {
-            var encodedMetadata = parts[^1];
-            if (encodedMetadata.StartsWith("S"))
-            {
-                try
-                {
-                    // Remove the 'S' prefix and decode
-                    var base64 = encodedMetadata[1..].Replace('-', '+').Replace('_', '/');
-                    while (base64.Length % 4 != 0) base64 += '=';
-                    var decodedBytes = Convert.FromBase64String(base64);
-                    var decodedJson = System.Text.Encoding.UTF8.GetString(decodedBytes);
-                    
-                    // Handle both single object and array formats
-                    var parsedNode = JsonNode.Parse(decodedJson);
-                    JsonObject serviceMetadata;
-                    
-                    if (parsedNode is JsonArray serviceArray && serviceIndex < serviceArray.Count)
-                    {
-                        serviceMetadata = serviceArray[serviceIndex].AsObject();
-                    }
-                    else if (parsedNode is JsonObject singleService)
-                    {
-                        serviceMetadata = singleService;
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Invalid service metadata format");
-                    }
+        throw new ArgumentException($"No service endpoint in service {jsonObject}");
+    }
 
-                    // Extract service data
-                    if (serviceMetadata.ContainsKey("s")) // service endpoint
-                    {
-                        uri = serviceMetadata["s"].GetValue<string>();
-                    }
-                    if (serviceMetadata.ContainsKey("r")) // routing keys
-                    {
-                        routingKeys.AddRange(serviceMetadata["r"].AsArray().Select(x => x.GetValue<string>()));
-                    }
-                    if (serviceMetadata.ContainsKey("a")) // accept
-                    {
-                        accept.AddRange(serviceMetadata["a"].AsArray().Select(x => x.GetValue<string>()));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (ex is ArgumentException)
-                        throw;
-                    throw new ArgumentException($"Failed to decode service metadata from DID: {ex.Message}");
-                }
+    string? uri = null;
+    List<string> routingKeys = new();
+    List<string> accept = new();
+
+    if (serviceEndpointNode is JsonValue)
+    {
+        uri = serviceEndpointNode.GetValue<string>();
+    }
+    else if (serviceEndpointNode is JsonObject serviceEndpointObj)
+    {
+        uri = serviceEndpointObj["uri"]?.GetValue<string>();
+
+        if (serviceEndpointObj.ContainsKey("routingKeys"))
+        {
+            var routingKeysArray = serviceEndpointObj["routingKeys"]?.AsArray();
+            if (routingKeysArray != null)
+            {
+                routingKeys.AddRange(routingKeysArray.Select(x => x?.GetValue<string>()).Where(x => x != null));
             }
         }
-    }
 
-    // Process serviceEndpoint from the DID Document
-    var endpointNode = jsonObject[ServiceConstants.ServiceEndpoint];
-    if (endpointNode is JsonValue) // Legacy format with direct URI
-    {
-        uri = endpointNode.GetValue<string>();
-    }
-    else if (endpointNode?.AsObject() is JsonObject serviceEndpointObj)
-    {
-        // New format
-        uri = serviceEndpointObj["uri"]?.GetValue<string>();
-        
-        if (serviceEndpointObj.ContainsKey("routingKeys") && serviceEndpointObj["routingKeys"]?.AsArray() is JsonArray rKeys)
+        if (serviceEndpointObj.ContainsKey("accept"))
         {
-            routingKeys.AddRange(rKeys.Select(x => x.GetValue<string>()));
-        }
-        
-        if (serviceEndpointObj.ContainsKey("accept") && serviceEndpointObj["accept"]?.AsArray() is JsonArray acc)
-        {
-            accept.AddRange(acc.Select(x => x.GetValue<string>()));
+            var acceptArray = serviceEndpointObj["accept"]?.AsArray();
+            if (acceptArray != null)
+            {
+                accept.AddRange(acceptArray.Select(x => x?.GetValue<string>()).Where(x => x != null));
+            }
         }
     }
 
@@ -237,23 +190,21 @@ private static Service ProcessService(JsonObject jsonObject, string did, int ser
     {
         throw new ArgumentException($"No valid URI found in service endpoint {jsonObject}");
     }
+
     var serviceEndpoint = new ServiceEndpoint(
         uri: uri,
-        routingKeys: routingKeys.Distinct().ToList(),
-        accept: accept.Distinct().ToList()
+        routingKeys: routingKeys.Any() ? routingKeys : null,
+        accept: accept.Any() ? accept : null
     );
 
-    // Always use relative references for service IDs as per spec
     string serviceId;
     if (jsonObject.ContainsKey("id"))
     {
-        // If ID is provided, use it as-is if relative, or extract the fragment if absolute
         var rawId = jsonObject["id"].GetValue<string>();
         serviceId = rawId.StartsWith("#") ? rawId : "#" + rawId.Split("#").Last();
     }
     else
     {
-        // Generate relative ID if none provided
         serviceId = serviceIndex == 0 ? "#service" : $"#service-{serviceIndex}";
     }
 
@@ -262,7 +213,7 @@ private static Service ProcessService(JsonObject jsonObject, string did, int ser
         serviceEndpoint: serviceEndpoint,
         type: type);
 }
-    private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)
+private static VerificationMethodTypePeerDid GetVerMethodType(JsonObject jsonObject)
     {
         jsonObject.TryGetPropertyValue(DidDocConstants.Type, out JsonNode? typeJsonNode);
         var type = typeJsonNode?.AsValue().ToString() ?? 
