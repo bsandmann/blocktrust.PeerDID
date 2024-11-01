@@ -46,35 +46,74 @@ public class DidDocPeerDid
         Services = null;
     }
 
-    public static Result<DidDocPeerDid> FromJson(string value)
+public static Result<DidDocPeerDid> FromJson(string value)
+{
+    try
     {
-        try
+        var jsonNode = JsonNode.Parse(value);
+        if (jsonNode == null || jsonNode is not JsonObject jsonObject)
         {
-            var jsonNode = JsonNode.Parse(value);
-            if (jsonNode == null || jsonNode is not JsonObject jsonObject)
-            {
-                return Result.Fail("Invalid JSON input: Root element must be an object.");
-            }
+            return Result.Fail("Invalid JSON input: Root element must be an object.");
+        }
 
-            // Ensure 'id' is present and of expected type
-            if (!jsonObject.ContainsKey(DidDocConstants.Id) || jsonObject[DidDocConstants.Id] is not JsonValue)
-            {
-                return Result.Fail("Missing or invalid 'id' field: Expected a JSON string.");
-            }
+        if (!jsonObject.ContainsKey(DidDocConstants.Id) || jsonObject[DidDocConstants.Id] is not JsonValue)
+        {
+            return Result.Fail("Missing or invalid 'id' field: Expected a JSON string.");
+        }
 
-            var doc = DidDocHelper.DidDocFromJson(jsonObject);
-            return Result.Ok(doc);
-        }
-        catch (InvalidOperationException e) when (e.Message.Contains("JsonObject"))
+        // Create new JsonObject for service processing
+        if (jsonObject.ContainsKey(DidDocConstants.Service))
         {
-            return Result.Fail("DIDDoc could not be parsed from JSON: Expected JSON object but received another type.");
+            var services = jsonObject[DidDocConstants.Service].AsArray();
+            for (int i = 0; i < services.Count; i++)
+            {
+                var service = services[i].AsObject();
+                
+                // Ensure service has id with correct format
+                if (!service.ContainsKey("id"))
+                {
+                    service["id"] = i == 0 ? "#service" : $"#service-{i}";
+                }
+
+                // Handle serviceEndpoint conversion if needed
+                if (service.ContainsKey("serviceEndpoint"))
+                {
+                    var endpoint = service["serviceEndpoint"];
+                    if (endpoint is JsonValue)
+                    {
+                        // Convert string endpoint to object format
+                        service["serviceEndpoint"] = new JsonObject
+                        {
+                            ["uri"] = endpoint.ToString()
+                        };
+                    }
+                    else if (endpoint is JsonObject endpointObj)
+                    {
+                        // Ensure uri exists
+                        if (!endpointObj.ContainsKey("uri"))
+                        {
+                            return Result.Fail("Service endpoint must contain 'uri' field");
+                        }
+                    }
+                }
+            }
+            
+            // Replace the services array in the original object
+            jsonObject[DidDocConstants.Service] = JsonNode.Parse(services.ToJsonString());
         }
-        catch (Exception e)
-        {
-            return Result.Fail($"DIDDoc could not be parsed from JSON: {e.Message}");
-        }
+
+        var doc = DidDocHelper.DidDocFromJson(jsonObject);
+        return Result.Ok(doc);
     }
-
+    catch (InvalidOperationException e) when (e.Message.Contains("JsonObject"))
+    {
+        return Result.Fail("DIDDoc could not be parsed from JSON: Expected JSON object but received another type.");
+    }
+    catch (Exception e)
+    {
+        return Result.Fail($"DIDDoc could not be parsed from JSON: {e.Message}");
+    }
+}
     public List<string> AuthenticationKids => Authentications.Select(item => item.Id).ToList();
 
     public List<string> AgreementKids => KeyAgreements.Select(item => $"{Did}#{item.Id}").ToList();
