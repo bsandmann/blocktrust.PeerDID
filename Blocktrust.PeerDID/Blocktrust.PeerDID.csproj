@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Blocktrust.Common\Blocktrust.Common.csproj" />
+      <ProjectReference Include="..\..\blocktrust.Core\Blocktrust.Common\Blocktrust.Common.csproj" />
     </ItemGroup>
 
 </Project>

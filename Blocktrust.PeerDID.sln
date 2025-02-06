@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID", "Block
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.PeerDID.Tests", "Blocktrust.PeerDID.Tests\Blocktrust.PeerDID.Tests.csproj", "{4882BE5B-0AB8-4054-ABD4-AC98924518CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blocktrust.Common", "Blocktrust.Common\Blocktrust.Common.csproj", "{E626C79C-4560-4E97-B796-A12E4405ACC4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
